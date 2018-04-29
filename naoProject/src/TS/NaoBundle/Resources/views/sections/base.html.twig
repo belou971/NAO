@@ -1,0 +1,76 @@
+{# #########################################################################################
+ Author: Eve ODIN
+ Date  : 24/04/18 15:05
+
+ Description: This is the template base of a Web page of the NAO Project.
+              It contents the structure position:
+              1. Header template
+              2. footer template
+              3. Sidebar template
+              4. Common tags of the Web Pages
+######################################################################################### #}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    {% block head %}
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>{% block title %}{% endblock %}</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="{{ asset('bundles/tsnao/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+
+        <!-- Theme CSS -->
+        {% stylesheets 'bundles/tsnao/css/nao.css' %}
+            <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+        {% endstylesheets %}
+
+        {#<script src="https://use.fontawesome.com/4de1676336.js"></script>#}
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    {% endblock %}
+</head>
+
+<body>
+
+    {%   include 'TSNaoBundle:sections:header.html.twig' %}
+
+    <!-- Content Body -->
+    <div class="container-fluid position-content">
+        <div class="row">
+            <!-- Main Page Contain -->
+            <div class="main-contain col-lg-offset-1 col-lg-7 col-sm-6">
+                {% block content %}{% endblock %}
+            </div>
+
+            <!-- Sidebar template -->
+            {% include '@TSNao/sections/sidebar.html.twig' %}
+        </div>
+    </div>
+
+    {% include 'TSNaoBundle:sections:footer.html.twig' %}
+
+    <!-- jQuery -->
+    <script src="{{ asset('bundles/tsnao/jquery/jquery.min.js' ) }}"></script>
+    <script src="{{ asset('bundles/tsnao/bootstrap/js/bootstrap.js') }}"></script>
+
+    {% block js %}{% endblock %}
+
+</body>
+
+</html>
