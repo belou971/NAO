@@ -1,5 +1,7 @@
 <?php
 
+// src/TS/NaoBundle/Controller
+
 namespace TS\NaoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
