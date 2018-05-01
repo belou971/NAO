@@ -31,7 +31,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{limit}} caractères.")
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères.")
      */
     private $name;
 
@@ -39,7 +40,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="surname", type="string", length=255)
-     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{limit}} caractères.")
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères.")
      */
     private $surname;
 
@@ -47,7 +49,7 @@ class User
      * @var string|null
      *
      * @ORM\Column(name="pseudo", type="string", length=255, nullable=true)
-     * @Assert\Length(min=2, minMessage="Le pseudo doit faire au moins {{limit}} caractères.")
+     * @Assert\Length(min=2, minMessage="Le pseudo doit faire au moins {{ limit }} caractères.")
      */
     private $pseudo;
 
@@ -63,7 +65,6 @@ class User
      * @var string
      *
      * @ORM\Column(name="pwd", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
      */
     private $pwd;
 
@@ -71,6 +72,7 @@ class User
      * @var ProfilEnum
      *
      * @ORM\Column(type="ProfilType")
+     * @Assert\NotBlank(message="Aucun type de profil n'a été affilié à ce compte.")
      */
     private $profil;
 
@@ -234,7 +236,6 @@ class User
         }
     }
 
-
     /**
      * Set profil.
      *
@@ -244,6 +245,10 @@ class User
      */
     public function setProfil($profil)
     {
+        if (!in_array($profil, ProfilEnum::getValues())) {
+            throw new \InvalidArgumentException('Ce type de profil est inconnu.');
+        }
+
         $this->profil = $profil;
 
         return $this;
@@ -288,6 +293,7 @@ class User
     public function __construct()
     {
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->profil = ProfilEnum::BIRD_FANCIER;
     }
 
     /**

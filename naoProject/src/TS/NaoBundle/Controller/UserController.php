@@ -19,6 +19,9 @@ class UserController extends Controller
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			
 			$em = $this->getDoctrine()->getManager();
+			$em->persist($user);
+			$em->flush();
+
 			return new Response('Bravo!');
 		}
 		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView()));

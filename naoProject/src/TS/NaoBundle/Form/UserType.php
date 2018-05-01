@@ -5,6 +5,7 @@ namespace TS\NaoBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -19,18 +20,26 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', RepeatedType::class, array(
+        $builder->add('name', TextType::class, array(
+                    'label' => 'Nom *'))
+                ->add('surname', TextType::class, array(
+                    'label' => 'Prénom *'))
+                ->add('pseudo', TextType::class, array(
+                    'label' => 'Pseudo',
+                    'required' => false))
+                ->add('email', RepeatedType::class, array(
                     'type' => EmailType::class,
                     'invalid_message' => 'L\'adresse e-mail doit être identique.',
-                    'first_options' => array('label' => 'Adresse e-mail'),
-                    'second_options' => array('label' => 'Confirmez votre adresse e-mail')))
+                    'first_options' => array('label' => 'Adresse e-mail *'),
+                    'second_options' => array('label' => 'Confirmez votre adresse e-mail *')))
                 ->add('pwd', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'invalid_message' => 'Le mot de passe doit être identique.',
-                    'first_options' => array('label' => 'Mot de passe'),
-                    'second_options' => array('label' => 'Confirmez votre mot de passe')))
+                    'first_options' => array('label' => 'Mot de passe *'),
+                    'second_options' => array('label' => 'Confirmez votre mot de passe *')))
                 ->add('cgu', CheckboxType::class, array(
                     'mapped' => false,
+                    'label' => 'J\'accepte les conditions générales d\'utilisation',
                     'required' => false,
                     'constraints' => array(new IsTrue(array('message' => 'Veuillez accepter les conditions générales d\'utilisation pour continuer.')))))
                 ->add('S\'inscrire', SubmitType::class);
