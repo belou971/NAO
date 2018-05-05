@@ -40,7 +40,6 @@ class UserType extends AbstractType
                 ->add('cgu', CheckboxType::class, array(
                     'mapped' => false,
                     'label' => 'J\'accepte les conditions générales d\'utilisation',
-                    'required' => false,
                     'constraints' => array(new IsTrue(array('message' => 'Veuillez accepter les conditions générales d\'utilisation pour continuer.')))))
                 ->add('S\'inscrire', SubmitType::class);
     }/**

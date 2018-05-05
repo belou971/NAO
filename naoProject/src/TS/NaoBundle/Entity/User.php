@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *
  * @ORM\Table(name="nao_user")
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(fields="email", message="Cette adresse e-mail est déjà utilisée.")
  * @UniqueEntity(fields="pseudo", message="Ce pseudo existe déjà.")
  */
@@ -64,7 +65,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="pwd", type="string", length=255, unique=true)
+     * @ORM\Column(name="pwd", type="string", length=255)
      */
     private $pwd;
 

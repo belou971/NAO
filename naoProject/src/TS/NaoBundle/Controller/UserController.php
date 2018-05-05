@@ -22,14 +22,14 @@ class UserController extends Controller
 			$em->persist($user);
 			$em->flush();
 
-			return new Response('Bravo!');
+			return new Response('Inscrit !');
 		}
 		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView()));
 	}
 
 	public function loginAction()
 	{
-
+		return $this->render('@TSNao/User/login.html.twig');
 	}
 
 	public function deleteAccountAction()

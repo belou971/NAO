@@ -33,3 +33,19 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    
+    naobunble.email.registration_confirmation:
+        class: TS\NaoBundle\Email\RegistrationConfirmation
+        arguments:
+            - "@mailer"
+            - "%mailer_user%"
+        public: true
+
+    naobundle.doctrine_listener.registration_confirmation:
+        class: TS\NaoBundle\DoctrineListener\RegistrationListener
+        arguments:
+            - "@naobunble.email.registration_confirmation"
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+        public: true

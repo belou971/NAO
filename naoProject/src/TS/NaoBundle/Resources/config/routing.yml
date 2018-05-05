@@ -5,3 +5,8 @@ ts_nao_homepage:
 ts_nao_registration:
     path: /registration
     defaults: { _controller: TSNaoBundle:User:registration }
+
+ts_nao_login:
+    path: /login
+    defaults:
+        _controller: TSNaoBundle:User:login
