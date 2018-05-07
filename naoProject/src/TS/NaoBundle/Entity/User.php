@@ -96,6 +96,13 @@ class User implements UserInterface
      */
     private $observations;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="recovery_token", type="string", length=255, nullable=true)
+     */
+    private $recovery_token;
+
 
     /**
      * Get id.
@@ -364,5 +371,29 @@ class User implements UserInterface
     public function eraseCredentials()
     {
 
+    }
+
+    /**
+     * Set recoveryToken.
+     *
+     * @param string|null $recoveryToken
+     *
+     * @return User
+     */
+    public function setRecoveryToken($recoveryToken = null)
+    {
+        $this->recovery_token = $recoveryToken;
+
+        return $this;
+    }
+
+    /**
+     * Get recoveryToken.
+     *
+     * @return string|null
+     */
+    public function getRecoveryToken()
+    {
+        return $this->recovery_token;
     }
 }

@@ -19,6 +19,16 @@ ts_nao_login_check:
 ts_nao_logout:
     path: /logout
 
+ts_nao_recovery:
+    path: /recovery
+    defaults:
+        _controller: TSNaoBundle:User:recovery
+
+ts_nao_reset_password:
+    path: /reset-password
+    defaults:
+        _controller: TSNaoBundle:User:resetPassword
+
 ts_nao_dashbord:
     path: /account
     defaults:

@@ -42,6 +42,28 @@ class UserController extends Controller
 
 	}
 
+	public function recoveryAction(Request $request)
+	{
+		$submittedToken = $request->request->get('_csrf_token');
+
+    	if($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $submittedToken))
+    	{
+    		$email = $request->request->get('email');
+
+    		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
+    		$recoveryService->recovery($email);
+
+    		return $this->redirectToRoute('ts_nao_homepage');
+    	}
+
+    	return $this->render('@TSNao/User/recovery.html.twig');
+	}
+
+	public function resetPasswordAction()
+	{
+		return new Response('Dernière étape !');
+	}
+
 	/*
 	 * @Security("has_role('ROLE_BIRD_FANCIER')")
 	 */

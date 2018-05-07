@@ -49,3 +49,11 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
         public: true
+
+    naobunble.password_recovery.password_recovery:
+        class: TS\NaoBundle\PasswordRecovery\PasswordRecovery
+        arguments:
+            - "@mailer"
+            - "@doctrine.orm.entity_manager"
+            - "%mailer_user%"
+        public: true
