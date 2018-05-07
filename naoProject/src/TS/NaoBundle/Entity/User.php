@@ -7,17 +7,19 @@ use TS\NaoBundle\Enum\ProfilEnum;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Asset\Exception\InvalidArgumentException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
  *
  * @ORM\Table(name="nao_user")
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\UserRepository")
- * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(fields="email", message="Cette adresse e-mail est déjà utilisée.")
- * @UniqueEntity(fields="pseudo", message="Ce pseudo existe déjà.")
+ * @UniqueEntity(fields="username", message="Ce nom d'utilisateur existe déjà.")
+ * @ORM\HasLifecycleCallbacks()
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -49,10 +51,10 @@ class User
     /**
      * @var string|null
      *
-     * @ORM\Column(name="pseudo", type="string", length=255, nullable=true)
-     * @Assert\Length(min=2, minMessage="Le pseudo doit faire au moins {{ limit }} caractères.")
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     * @Assert\Length(min=2, minMessage="Le nom d'utilisateur doit faire au moins {{ limit }} caractères.")
      */
-    private $pseudo;
+    private $username;
 
     /**
      * @var string
@@ -65,17 +67,20 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="pwd", type="string", length=255)
+     * @ORM\Column(name="password", type="string", length=255)
      */
-    private $pwd;
+    private $password;
 
     /**
-     * @var ProfilEnum
-     *
-     * @ORM\Column(type="ProfilType")
+     * @ORM\Column(name="salt", type="string", length=255, nullable=true)
+     */
+    private $salt;
+
+    /**
+     * @ORM\Column(name="roles", type="array")
      * @Assert\NotBlank(message="Aucun type de profil n'a été affilié à ce compte.")
      */
-    private $profil;
+    private $roles = array();
 
     /**
      * @var string
@@ -151,27 +156,27 @@ class User
     }
 
     /**
-     * Set pseudo.
+     * Set username.
      *
-     * @param string|null $pseudo
+     * @param string|null $username
      *
      * @return User
      */
-    public function setPseudo($pseudo = null)
+    public function setUsername($username = null)
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }
 
     /**
-     * Get pseudo.
+     * Get username.
      *
      * @return string|null
      */
-    public function getPseudo()
+    public function getUsername()
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
     /**
@@ -199,70 +204,93 @@ class User
     }
 
     /**
-     * Set pwd.
+     * Set password.
      *
-     * @param string $pwd
+     * @param string $password
      *
      * @return User
      */
-    public function setPwd($pwd)
+    public function setPassword($password)
     {
-        $this->pwd = $pwd;
+        $this->password = $password;
 
         return $this;
     }
 
     /**
-     * Get pwd.
+     * Get password.
      *
      * @return string
      */
-    public function getPwd()
+    public function getPassword()
     {
-        return $this->pwd;
+        return $this->password;
     }
 
     /**
      * @Assert\Callback
      */
-    public function isPwdValid(ExecutionContextInterface $context)
+    public function isPasswordValid(ExecutionContextInterface $context)
     {
-        $pwd = strtolower($this->getPwd());
+        $password = strtolower($this->getPassword());
 
-        if (!preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#', $this->getPwd())) {
-            $context->buildViolation('Votre mot de passe doit faire au minimum 6 caractères et contenir au moins 1 lettre min, 1 lettre maj et 1 chiffre.')->atPath('pwd')->addViolation();
+        if (!preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#', $this->getPassword())) {
+            $context->buildViolation('Votre mot de passe doit faire au minimum 6 caractères et contenir au moins 1 lettre min, 1 lettre maj et 1 chiffre.')->atPath('password')->addViolation();
         }
-        elseif ($pwd == strtolower($this->getEmail()) || $pwd == strtolower($this->getName()) || $pwd == strtolower($this->getSurname()) || $pwd == strtolower($this->getPseudo())) {
-            $context->buildViolation('Votre mot de passe doit être différent de votre nom, prénom, adresse e-mail ou de votre pseudo.')->atPath('pwd')->addViolation();
+        elseif ($password == strtolower($this->getEmail()) || $password == strtolower($this->getName()) || $password == strtolower($this->getSurname()) || $password == strtolower($this->getUsername())) {
+            $context->buildViolation('Votre mot de passe doit être différent de votre nom, prénom, adresse e-mail ou de votre nom d\'utilisateur.')->atPath('password')->addViolation();
         }
     }
 
     /**
-     * Set profil.
+     * Set salt.
      *
-     * @param ProfilType $profil
+     * @param string $salt
      *
      * @return User
      */
-    public function setProfil($profil)
+    public function setSalt($salt)
     {
-        if (!in_array($profil, ProfilEnum::getValues())) {
-            throw new \InvalidArgumentException('Ce type de profil est inconnu.');
-        }
-
-        $this->profil = $profil;
+        $this->salt = $salt;
 
         return $this;
     }
 
     /**
-     * Get profil.
+     * Get salt.
      *
-     * @return ProfilType
+     * @return string
      */
-    public function getProfil()
+    public function getSalt()
     {
-        return $this->profil;
+        return $this->salt;
+    }
+
+    /**
+     * Set roles.
+     *
+     * @param array $roles
+     *
+     * @return User
+     */
+    public function setRoles($roles)
+    {
+        if(!in_array($roles, ProfilEnum::getValues())) {
+            throw new InvalidArgumentException('Ce type de profil est inconnu.');
+        }
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Get roles.
+     *
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
     }
 
     /**
@@ -294,7 +322,7 @@ class User
     public function __construct()
     {
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->profil = ProfilEnum::BIRD_FANCIER;
+        $this->roles = ProfilEnum::BIRD_FANCIER;
     }
 
     /**
@@ -331,5 +359,10 @@ class User
     public function getObservations()
     {
         return $this->observations;
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }

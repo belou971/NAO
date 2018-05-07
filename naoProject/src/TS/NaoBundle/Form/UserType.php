@@ -24,7 +24,7 @@ class UserType extends AbstractType
                     'label' => 'Nom *'))
                 ->add('surname', TextType::class, array(
                     'label' => 'Prénom *'))
-                ->add('pseudo', TextType::class, array(
+                ->add('username', TextType::class, array(
                     'label' => 'Pseudo',
                     'required' => false))
                 ->add('email', RepeatedType::class, array(
@@ -32,7 +32,7 @@ class UserType extends AbstractType
                     'invalid_message' => 'L\'adresse e-mail doit être identique.',
                     'first_options' => array('label' => 'Adresse e-mail *'),
                     'second_options' => array('label' => 'Confirmez votre adresse e-mail *')))
-                ->add('pwd', RepeatedType::class, array(
+                ->add('password', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'invalid_message' => 'Le mot de passe doit être identique.',
                     'first_options' => array('label' => 'Mot de passe *'),

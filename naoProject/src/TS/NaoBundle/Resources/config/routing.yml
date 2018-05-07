@@ -1,12 +1,25 @@
 ts_nao_homepage:
     path:     /
-    defaults: { _controller: TSNaoBundle:Welcome:index }
+    defaults:
+        _controller: TSNaoBundle:Welcome:index
 
 ts_nao_registration:
     path: /registration
-    defaults: { _controller: TSNaoBundle:User:registration }
+    defaults:
+        _controller: TSNaoBundle:User:registration
 
 ts_nao_login:
     path: /login
     defaults:
         _controller: TSNaoBundle:User:login
+
+ts_nao_login_check:
+    path: /login_check
+
+ts_nao_logout:
+    path: /logout
+
+ts_nao_dashbord:
+    path: /account
+    defaults:
+        _controller: TSNaoBundle:User:dashboard
