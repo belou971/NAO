@@ -21,7 +21,12 @@
 			<input type="checkbox" id="remember_me" name="_remember_me" />
     		<label for="remember_me">Se souvenir de moi</label>
 			<br />
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
 			<input type="submit" value="Connexion" />
 		</form>
+
+		<p>
+			<a href="{{ path('ts_nao_recovery') }}">Mot de passe oublié</a>
+		</p>
 	</body>
 <html>
