@@ -1,4 +1,5 @@
 <?php
+// src/TS/NaoBundle/Entity/User.php
 
 namespace TS\NaoBundle\Entity;
 
@@ -6,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use TS\NaoBundle\Enum\ProfilEnum;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Asset\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -17,7 +17,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Cette adresse e-mail est déjà utilisée.")
  * @UniqueEntity(fields="username", message="Ce nom d'utilisateur existe déjà.")
- * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
 {
@@ -68,6 +67,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\Regex(pattern="#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#", message="Votre mot de passe doit faire au minimum 6 caractères et contenir au moins 1 lettre min, 1 lettre maj et 1 chiffre.")
      */
     private $password;
 
@@ -232,21 +232,6 @@ class User implements UserInterface
     public function getPassword()
     {
         return $this->password;
-    }
-
-    /**
-     * @Assert\Callback
-     */
-    public function isPasswordValid(ExecutionContextInterface $context)
-    {
-        $password = strtolower($this->getPassword());
-
-        if (!preg_match('#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#', $this->getPassword())) {
-            $context->buildViolation('Votre mot de passe doit faire au minimum 6 caractères et contenir au moins 1 lettre min, 1 lettre maj et 1 chiffre.')->atPath('password')->addViolation();
-        }
-        elseif ($password == strtolower($this->getEmail()) || $password == strtolower($this->getName()) || $password == strtolower($this->getSurname()) || $password == strtolower($this->getUsername())) {
-            $context->buildViolation('Votre mot de passe doit être différent de votre nom, prénom, adresse e-mail ou de votre nom d\'utilisateur.')->atPath('password')->addViolation();
-        }
     }
 
     /**

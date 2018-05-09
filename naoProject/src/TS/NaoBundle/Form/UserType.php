@@ -1,4 +1,5 @@
 <?php
+// src/TS/NaoBundle/Form/UserType.php
 
 namespace TS\NaoBundle\Form;
 

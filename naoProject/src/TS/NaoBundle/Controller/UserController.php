@@ -63,15 +63,15 @@ class UserController extends Controller
 	{
 		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
 		$form = $this->createForm(ResetPasswordType::class);
-		
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+		if ($request->isMethod('POST')) {
 
-			$recoveryService->reset($request->request->get('email'), $form->get('password')->getData());
-			return $this->redirectToRoute('ts_nao_login');
+			if ($form->handleRequest($request)->isValid()) {
+				$recoveryService->reset($request->request->get('email'), $form->get('password')->getData());
+				return $this->redirectToRoute('ts_nao_login');
+			}
+			return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $request->request->get('email')));
 		}
-
 		if ($request->query->get('email') && $request->query->get('identifier')) {
-			
 			$email = $request->query->get('email');
 			$token = $request->query->get('identifier');
 			if ($recoveryService->verify($email, $token)) {
