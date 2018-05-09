@@ -25,20 +25,59 @@ class PasswordRecovery
 	{
 		$user = $this->em->getRepository('TSNaoBundle:User')->findOneBy(array('email' => $email));
 
-		if (!$user instanceof User) {
+		if (!$user instanceof User || $user == null) {
 			return;
 		}
 
 		$user->setRecoveryToken(bin2hex(random_bytes(16)));
+		$this->em->flush();
 
-		$this->em->flush($user);
-		$this->sendEmail($user);
+		$this->sendEmailRecovery($user);
 	}
 
-	public function sendEmail(User $user)
+	public function verify($email, $token)
+	{
+		$user = $this->em->getRepository('TSNaoBundle:User')->findOneBy(array('email' => $email));
+
+		if (!$user instanceof User || $user == null) {
+			return false;
+		}
+		elseif ($user->getRecoveryToken() != $token) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	public function reset($email, $password)
+	{
+		$user = $this->em->getRepository('TSNaoBundle:User')->findOneBy(array('email' => $email));
+
+		if (!$user instanceof User || $user == null) {
+			return;
+		}
+
+		$user->setPassword($password);
+		$user->setRecoveryToken(null);
+		$this->em->flush();
+
+		$this->sendEmailConfirmation($user);
+	}
+
+	public function sendEmailRecovery(User $user)
 	{
 		$message = new \Swift_Message('Mot de passe oublié');
 		$message->setBody($this->templating->render('@TSNao/Email/email_recovery.html.twig', array('email' => $user->getEmail(), 'identifier' => $user->getRecoveryToken())), 'text/html');
+
+		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($user->getEmail());
+		$this->mailer->send($message);
+	}
+
+	public function sendEmailConfirmation(User $user)
+	{
+		$message = new \Swift_Message('Mot de passe changé !');
+		$message->setBody($this->templating->render('@TSNao/Email/confirm_pass.html.twig'), 'text/html');
 		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($user->getEmail());
 		$this->mailer->send($message);
 	}

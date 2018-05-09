@@ -25,7 +25,7 @@ ts_nao_recovery:
         _controller: TSNaoBundle:User:recovery
 
 ts_nao_reset_password:
-    path: /reset-password
+    path: /reset-password/
     defaults:
         _controller: TSNaoBundle:User:resetPassword
 

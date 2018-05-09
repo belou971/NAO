@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use TS\NaoBundle\Entity\User;
 use TS\NaoBundle\Form\UserType;
+use TS\NaoBundle\Form\ResetPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserController extends Controller
@@ -23,7 +24,7 @@ class UserController extends Controller
 			$em->persist($user);
 			$em->flush();
 
-			return new Response('Inscrit !');
+			return $this->redirectToRoute('ts_nao_login');
 		}
 		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView()));
 	}
@@ -39,7 +40,6 @@ class UserController extends Controller
 		return $this->render('@TSNao/User/login.html.twig', array(
 			'last_username' => $authenticationUtils->getLastUsername(),
 			'error' => $authenticationUtils->getLastAuthenticationError()));
-
 	}
 
 	public function recoveryAction(Request $request)
@@ -59,9 +59,27 @@ class UserController extends Controller
     	return $this->render('@TSNao/User/recovery.html.twig');
 	}
 
-	public function resetPasswordAction()
+	public function resetPasswordAction(Request $request)
 	{
-		return new Response('Dernière étape !');
+		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
+		$form = $this->createForm(ResetPasswordType::class);
+		
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+			$recoveryService->reset($request->request->get('email'), $form->get('password')->getData());
+			return $this->redirectToRoute('ts_nao_login');
+		}
+
+		if ($request->query->get('email') && $request->query->get('identifier')) {
+			
+			$email = $request->query->get('email');
+			$token = $request->query->get('identifier');
+			if ($recoveryService->verify($email, $token)) {
+
+				return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $email));
+			}
+		}
+		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
 	/*
