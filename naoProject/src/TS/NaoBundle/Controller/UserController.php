@@ -18,7 +18,6 @@ class UserController extends Controller
 	{
 		$user = new User();
 		$form = $this->createForm(UserType::class, $user);
-
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			
 			$em = $this->getDoctrine()->getManager();
@@ -27,12 +26,14 @@ class UserController extends Controller
 
 			return $this->redirectToRoute('ts_nao_login');
 		}
+		
 		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView()));
 	}
 
 	public function loginAction()
 	{
 		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+			
 			return $this->redirectToRoute('ts_nao_dashboard');
 		}
 
@@ -46,11 +47,9 @@ class UserController extends Controller
 	public function recoveryAction(Request $request)
 	{
 		$submittedToken = $request->request->get('_csrf_token');
-
     	if($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $submittedToken))
     	{
     		$email = $request->request->get('email');
-
     		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
     		$recoveryService->recovery($email);
 
@@ -93,7 +92,7 @@ class UserController extends Controller
 		$form = $this->get('form.factory')->create();
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
 		{
-			$user= $this->get('security.token_storage')->getToken()->getUser();
+			$user= $this->getUser();
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($user);
 			$em->flush();

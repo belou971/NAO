@@ -19,7 +19,7 @@ class RegistrationConfirmation
 		$this->mailerUser = $mailerUser;
 	}
 
-	public function sendNewMail(User $user)
+	public function sendEmail(User $user)
 	{
 		$message = new \Swift_Message('Confirmation d\'inscription', 'Bienvenue !'); // à insérer ici template mail de bienvenue.
 		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($user->getEmail());

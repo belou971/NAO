@@ -27,6 +27,6 @@ class RegistrationListener
 			return;
 		}
 
-		$this->registration->sendNewMail($entity);
+		$this->registration->sendEmail($entity);
 	}
 }

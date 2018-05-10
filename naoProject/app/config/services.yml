@@ -57,3 +57,12 @@ services:
             - "@doctrine.orm.entity_manager"
             - "%mailer_user%"
         public: true
+
+    naobundle.doctrine_listener.delete_account_confirmation:
+        class: TS\NaoBundle\DoctrineListener\DeleteAccountListener
+        arguments:
+            - "@mailer"
+            - "%mailer_user%"
+        tags:
+            - { name: doctrine.event_listener, event: postRemove }
+        public: true
