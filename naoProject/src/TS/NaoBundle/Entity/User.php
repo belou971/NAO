@@ -314,7 +314,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->roles = ProfilEnum::BIRD_FANCIER;
+        $this->roles = array(ProfilEnum::BIRD_FANCIER);
     }
 
     /**

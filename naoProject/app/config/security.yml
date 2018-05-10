@@ -27,7 +27,7 @@ security:
             form_login:
                 login_path: ts_nao_login
                 check_path: ts_nao_login_check
-                default_target_path: ts_nao_dashbord
+                default_target_path: ts_nao_dashboard
                 csrf_token_generator: security.csrf.token_manager
 
             remember_me:

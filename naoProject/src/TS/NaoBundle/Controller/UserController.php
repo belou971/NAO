@@ -10,6 +10,7 @@ use TS\NaoBundle\Entity\User;
 use TS\NaoBundle\Form\UserType;
 use TS\NaoBundle\Form\ResetPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -32,7 +33,7 @@ class UserController extends Controller
 	public function loginAction()
 	{
 		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-			return $this->redirectToRoute('ts_nao_dashbord');
+			return $this->redirectToRoute('ts_nao_dashboard');
 		}
 
 		$authenticationUtils = $this->get('security.authentication_utils');
@@ -82,16 +83,27 @@ class UserController extends Controller
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
-	/*
-	 * @Security("has_role('ROLE_BIRD_FANCIER')")
-	 */
 	public function dashboardAction()
 	{
-		return $this->render('@TSNao/User/dashbord.html.twig');
+		return $this->render('@TSNao/User/dashboard.html.twig');
 	}
 
-	public function deleteAccountAction()
+	public function deleteAccountAction(Request $request)
 	{
-		
+		$form = $this->get('form.factory')->create();
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
+		{
+			$user= $this->get('security.token_storage')->getToken()->getUser();
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($user);
+			$em->flush();
+
+			$this->get('security.token_storage')->setToken(null);
+			$request->getSession()->invalidate();
+
+			return $this->redirectToRoute('ts_nao_homepage');
+		}
+
+		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView()));
 	}
 }
