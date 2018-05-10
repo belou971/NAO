@@ -178,7 +178,7 @@ body {
 }
 
 .main-contain{
-    background-color: #3e8f3e;
+    background-color: #ffffff;
     border: 2px solid purple;
     margin-right: 20px;
 }
@@ -195,7 +195,6 @@ body {
 }
 
 .sidebar-subtitle {
-    /*padding: 8px;*/
     border-top: #B7872A 15px solid;
     border-left: #B7872A 12px solid;
     border-right: #B7872A 10px solid;
@@ -255,6 +254,62 @@ body {
         margin-left: 0.6em;
         margin-right: 1.2em;
     }
+}
+
+
+/**********************************************************************************************************************/
+/*                                                Openstreetmap style                                                          */
+/**********************************************************************************************************************/
+#mapid { height:670px; }
+
+
+/**********************************************************************************************************************/
+/*                                                Recherche inputs style                                                          */
+/**********************************************************************************************************************/
+
+.search-box {
+    margin-bottom: 0.8em;
+}
+
+.search-box .tab-content {
+    padding:35px 15px;
+}
+
+input#input-specimen,
+input#input-cities {
+    width: 45em;
+    height: 4em;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: .1em .3em;
+    border-color: #b56f2a;
+}
+
+.dropdown-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    height: 4em;
+    width: 5em;
+    margin-left: -.3em;
+}
+
+.dropdown-btn-color {
+    color: #b56f2a;
+    background-color: #ffffff;
+    border-color: #b56f2a;
+}
+
+.submit-btn {
+    color: #ffffff;
+    background-color: #b7872a;
+    border-color: #b56f2a;
+    height: 4em;
+    width: 8em;
+    margin-left: 2em;
+}
+
+.awesomplete > ul {
+    z-index: 401 !important;
 }
 
 /**********************************************************************************************************************/

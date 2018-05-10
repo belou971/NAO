@@ -10,4 +10,55 @@ namespace TS\NaoBundle\Repository;
  */
 class TAXREFRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return array
+     */
+    public function getAllNomVern() {
+        $result = array();
+        $qb     = $this->createQueryBuilder('taxref');
+
+        $qb->select( 'DISTINCT taxref.nomVern')
+            ->Where('taxref.nomVern is not null')
+            ->OrderBy('taxref.nomVern', 'ASC');
+
+        $query = $qb->getQuery();
+        $qb_result = $query->getResult();
+
+        foreach ($qb_result as $line){
+            if( !empty($line["nomVern"]) ) {
+                $result[] = $line["nomVern"];
+            }
+        }
+
+        return $result;
+    }
+
+    public function getAllLbNom() {
+        $result = array();
+        $qb     = $this->createQueryBuilder('taxref');
+
+        $qb->select( 'DISTINCT taxref.lbNom')
+            ->Where('taxref.lbNom is not null')
+            ->OrderBy('taxref.lbNom', 'ASC');
+
+        $query = $qb->getQuery();
+        $qb_result = $query->getResult();
+
+        foreach ($qb_result as $line){
+            if( !empty($line["lbNom"]) ) {
+                $result[] = $line["lbNom"];
+            }
+        }
+
+        return $result;
+    }
+
+    public function getSpecimenNames() {
+        $nomsVerm = $this->getAllNomVern();
+        $lbNoms = $this->getAllLbNom();
+
+        $specimenNames = array_merge($nomsVerm, $lbNoms);
+
+        return $specimenNames;
+    }
 }

@@ -1,3 +1,7 @@
 ts_nao_homepage:
     path:     /
-    defaults: { _controller: TSNaoBundle:Welcome:index }
+    defaults: { _controller: TSNaoBundle:Search:index }
+
+ts_nao_specimens_names:
+  path: /specimens_name
+  defaults: { _controller: TSNaoBundle:Search:loadSpecimens }
