@@ -67,12 +67,12 @@ swiftmailer:
     host: '%mailer_host%'
     username: '%mailer_user%'
     password: '%mailer_password%'
-<<<<<<< HEAD
+#<<<<<<< HEAD
     auth_mode: '%mailer_auth_mode%'
     port: '%mailer_port%'
     encryption: '%mailer_encryption%'
     spool: { type: memory }
-=======
+#=======
     spool: { type: memory }
 
 # AsseticBundle configuration
@@ -84,4 +84,4 @@ assetic:
 
 fos_js_routing:
   routes_to_expose: [ts_nao_specimens_names]
->>>>>>> eeec2adaa07d3f870bc8e9fb2a154c24f5df61c5
+#>>>>>>> eeec2adaa07d3f870bc8e9fb2a154c24f5df61c5
