@@ -1,0 +1,41 @@
+{# #########################################################################################
+ Author     : Eve ODIN
+ Date       : 24/04/18 15:05
+
+ Description: Page Header
+              Set your header on the line below.
+######################################################################################### #}
+<header class="site-header">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand brand-link" href="{{ path('ts_nao_homepage') }}">
+                    <img src="{{ asset('bundles/tsnao/img/logo200x98.png') }}" alt="NAO logo" >
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse align-navbar" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav main-menu">
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Nos membres</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Proposer une observation</a></li>
+                </ul>
+
+                <ul class="nav nav-pills nav-stacked pull-right signup">
+                    <li><a href="#">Se connecter</a></li>
+                    <li><a href="#">Créer un compte</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</header>

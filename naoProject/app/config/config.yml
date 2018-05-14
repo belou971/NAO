@@ -20,6 +20,8 @@ framework:
     csrf_protection: ~
     validation: { enable_annotations: true }
     #serializer: { enable_annotations: true }
+    templating:
+        engines: ['twig']
     default_locale: '%locale%'
     trusted_hosts: ~
     session:
@@ -65,7 +67,21 @@ swiftmailer:
     host: '%mailer_host%'
     username: '%mailer_user%'
     password: '%mailer_password%'
+<<<<<<< HEAD
     auth_mode: '%mailer_auth_mode%'
     port: '%mailer_port%'
     encryption: '%mailer_encryption%'
     spool: { type: memory }
+=======
+    spool: { type: memory }
+
+# AsseticBundle configuration
+assetic:
+  debug:          '%kernel.debug%'
+  use_controller: '%kernel.debug%'
+  filters:
+      cssrewrite: ~
+
+fos_js_routing:
+  routes_to_expose: [ts_nao_specimens_names]
+>>>>>>> eeec2adaa07d3f870bc8e9fb2a154c24f5df61c5
