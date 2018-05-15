@@ -82,11 +82,6 @@ class UserController extends Controller
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
-	public function dashboardAction()
-	{
-		return $this->render('@TSNao/User/dashboard.html.twig');
-	}
-
 	public function deleteAccountAction(Request $request)
 	{
 		$form = $this->get('form.factory')->create();
