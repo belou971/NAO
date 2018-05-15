@@ -29,7 +29,7 @@ class PasswordRecovery
 			return;
 		}
 
-		$user->setRecoveryToken(bin2hex(random_bytes(16)));
+		$user->setConfirmToken(bin2hex(random_bytes(16)));
 		$this->em->flush();
 
 		$this->sendEmailRecovery($user);
@@ -42,7 +42,7 @@ class PasswordRecovery
 		if (!$user instanceof User || $user == null) {
 			return false;
 		}
-		elseif ($user->getRecoveryToken() != $token) {
+		elseif ($user->getConfirmToken() != $token) {
 			return false;
 		}
 		else {
@@ -59,7 +59,7 @@ class PasswordRecovery
 		}
 
 		$user->setPassword($password);
-		$user->setRecoveryToken(null);
+		$user->setConfirmToken(null);
 		$this->em->flush();
 
 		$this->sendEmailConfirmation($user);
@@ -68,7 +68,7 @@ class PasswordRecovery
 	public function sendEmailRecovery(User $user)
 	{
 		$message = new \Swift_Message('Mot de passe oublié');
-		$message->setBody($this->templating->render('@TSNao/Email/email_recovery.html.twig', array('email' => $user->getEmail(), 'identifier' => $user->getRecoveryToken())), 'text/html');
+		$message->setBody($this->templating->render('@TSNao/Email/email_recovery.html.twig', array('email' => $user->getEmail(), 'identifier' => $user->getConfirmToken())), 'text/html');
 
 		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($user->getEmail());
 		$this->mailer->send($message);
