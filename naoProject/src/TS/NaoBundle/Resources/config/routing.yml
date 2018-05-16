@@ -1,6 +1,5 @@
 ts_nao_homepage:
     path:     /
-#<<<<<<< HEAD
     defaults:
         _controller: TSNaoBundle:Search:index
 
@@ -39,10 +38,7 @@ ts_nao_delete_account:
     path: /account/delete-account
     defaults:
         _controller: TSNaoBundle:User:deleteAccount
-#=======
-    defaults: { _controller: TSNaoBundle:Search:index }
 
 ts_nao_specimens_names:
   path: /specimens_name
   defaults: { _controller: TSNaoBundle:Search:loadSpecimens }
-#>>>>>>> eeec2adaa07d3f870bc8e9fb2a154c24f5df61c5
