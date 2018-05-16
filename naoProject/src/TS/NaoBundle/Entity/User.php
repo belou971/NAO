@@ -276,6 +276,8 @@ class User
     {
         $this->observations[] = $observation;
 
+        $observation->setUser($this);
+
         return $this;
     }
 

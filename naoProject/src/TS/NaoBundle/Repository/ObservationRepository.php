@@ -1,6 +1,7 @@
 <?php
 
 namespace TS\NaoBundle\Repository;
+use TS\NaoBundle\Enum\StateEnum;
 
 /**
  * ObservationRepository
@@ -10,4 +11,38 @@ namespace TS\NaoBundle\Repository;
  */
 class ObservationRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByName($specimen_name) {
+
+        $subQueryBuilder = $this->_em->createQueryBuilder();
+        $subQueryBuilder
+            ->select('tax.cdNom')
+            ->from('TSNaoBundle:TAXREF', 'tax')
+            ->where('tax.lbNom = :name')
+            ->orWhere('tax.nomVern = :name');
+
+        $builder = $this->createQueryBuilder('obs');
+        $builder
+            ->where($builder->expr()->in('obs.taxref', $subQueryBuilder->getDQL()))
+            ->setParameter('name', $specimen_name)
+            ->andWhere('obs.state = :status')
+            ->setParameter('status', StateEnum::VALIDATE);
+        $observations = $builder->getQuery()->getArrayResult();
+
+        return $observations;
+    }
+
+    public function findByCity($min_lat_lon, $max_lat_lon) {
+
+        $builder = $this->createQueryBuilder('obs');
+        $builder
+            ->where('obs.longitude BETWEEN :minLon AND :maxLon')
+            ->setParameter('minLon', $min_lat_lon[0])
+            ->setParameter('maxLon', $max_lat_lon[0])
+            ->andWhere('obs.latitude BETWEEN :minLat AND :maxLat')
+            ->setParameter('minLat', $min_lat_lon[1])
+            ->setParameter('maxLat', $max_lat_lon[1]);
+        $observations = $builder->getQuery()->getArrayResult();
+
+        return $observations;
+    }
 }

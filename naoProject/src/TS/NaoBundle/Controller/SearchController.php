@@ -2,10 +2,13 @@
 
 namespace TS\NaoBundle\Controller;
 
-use Doctrine\DBAL\Exception\DatabaseObjectNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use TS\NaoBundle\Component\ActionType;
+use TS\NaoBundle\Component\DataManager;
+use TS\NaoBundle\Component\RequestManager;
 
 class SearchController extends Controller
 {
@@ -15,14 +18,70 @@ class SearchController extends Controller
     }
 
     public function loadSpecimensAction() {
-        $taxrefRepo = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:TAXREF');
-        if(is_null($taxrefRepo)) {
-           throw new NotFoundHttpException("Impossible d'accèder à la base de données");
+        $em = $this->getDoctrine()->getManager();
+
+        $data = DataManager::getInstance($em)->get(ActionType::LOAD_SPECIMENS, array());
+        $response = json_decode($data, true);
+
+        $jsonResponse = new JsonResponse($response["data"]);
+        $jsonResponse->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+
+        return $jsonResponse;
+    }
+
+    public function findByNameAction(Request $request) {
+
+        //step1 : tester la validité de la request
+        $requestParams= array("method" => $request->getMethod(), "content"=>$request->getContent());
+        $requestData = RequestManager::getInstance()->get(ActionType::SEARCH_SPECIMEN_BY_NAME, $requestParams);
+        if(count($requestData["errors"]) > 0) {
+            $response["errors"] = $requestData["errors"];
+            return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
-        $response = new JsonResponse($taxrefRepo->getSpecimenNames());
-        $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        //step2 : //Récupérer les observations ayant le nom du specimen
+        $em = $this->getDoctrine()->getManager();
+        $specimenToFind = $requestData["input_data"]["specimen_name"];
+        $parameters = array("name" => $specimenToFind);
+        $response = DataManager::getInstance($em)->get(ActionType::SEARCH_SPECIMEN_BY_NAME, $parameters);
 
-        return $response;
+        return new Response($response);
+    }
+
+    public function findByCityAction(Request $request) {
+
+        //step1 : tester la validité de la request
+        $requestParams = array("method" => $request->getMethod(), "content" =>$request->getContent());
+        $requestData = RequestManager::getInstance()->get(ActionType::SEARCH_SPECIMEN_BY_CITY, $requestParams);
+        if(count($requestData["errors"]) > 0) {
+            $response["errors"] = $requestData["errors"];
+            return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+        //step2 : //Récupérer les observations ayant le nom du specimen
+        $em = $this->getDoctrine()->getManager();
+        $data = $requestData["input_data"]['geo_properties']["features"][0];
+        $parameters = array("city_properties" => $data["properties"], "city_geometry" => $data["geometry"]);
+        $response   = DataManager::getInstance($em)->get(ActionType::SEARCH_SPECIMEN_BY_CITY, $parameters);
+
+        return new Response($response);
+    }
+
+    public function findByCoordAction(Request $request) {
+
+        //step1 : tester la validité de la request
+        $requestParams= array("method" => $request->getMethod(), "content"=>$request->getContent());
+        $requestData = RequestManager::getInstance()->get(ActionType::SEARCH_SPECIMEN_BY_COORD, $requestParams);
+        if(count($requestData["errors"]) > 0) {
+            $response["errors"] = $requestData["errors"];
+            return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+        //step2 : //Récupérer les observations a partir de coordonnées gps
+        $em = $this->getDoctrine()->getManager();
+        $parameters = $requestData["input_data"];
+        $response   = DataManager::getInstance($em)->get(ActionType::SEARCH_SPECIMEN_BY_COORD, $parameters);
+
+        return new Response($response);
     }
 }

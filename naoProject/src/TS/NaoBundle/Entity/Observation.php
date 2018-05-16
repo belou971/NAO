@@ -58,16 +58,16 @@ class Observation
     private $nbSpecimen;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(name="longitude", type="integer")
+     * @ORM\Column(name="longitude", type="float")
      */
     private $longitude;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(name="latitude", type="integer")
+     * @ORM\Column(name="latitude", type="float")
      */
     private $latitude;
 
@@ -100,6 +100,13 @@ class Observation
      */
     private $user;
 
+    /**
+     * @var TAXREF
+     *
+     * @ORM\ManyToOne(targetEntity="TS\NaoBundle\Entity\TAXREF", cascade={"persist"})
+     * @ORM\JoinColumn(name="taxref", referencedColumnName="cd_nom", unique=false, nullable=false)
+     */
+    private $taxref;
 
     /**
      * Get id.
@@ -121,6 +128,8 @@ class Observation
     public function setDtCreation($dtCreation)
     {
         $this->dtCreation = $dtCreation;
+
+        $this->setDtModification($this->dtCreation);
 
         return $this;
     }
@@ -234,7 +243,7 @@ class Observation
     /**
      * Set longitude.
      *
-     * @param int $longitude
+     * @param float $longitude
      *
      * @return Observation
      */
@@ -248,7 +257,7 @@ class Observation
     /**
      * Get longitude.
      *
-     * @return int
+     * @return float
      */
     public function getLongitude()
     {
@@ -258,7 +267,7 @@ class Observation
     /**
      * Set latitude.
      *
-     * @param int $latitude
+     * @param float $latitude
      *
      * @return Observation
      */
@@ -272,7 +281,7 @@ class Observation
     /**
      * Get latitude.
      *
-     * @return int
+     * @return float
      */
     public function getLatitude()
     {
@@ -392,5 +401,29 @@ class Observation
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set taxref.
+     *
+     * @param \TS\NaoBundle\Entity\TAXREF $taxref
+     *
+     * @return Observation
+     */
+    public function setTaxref(\TS\NaoBundle\Entity\TAXREF $taxref)
+    {
+        $this->taxref = $taxref;
+
+        return $this;
+    }
+
+    /**
+     * Get taxref.
+     *
+     * @return \TS\NaoBundle\Entity\TAXREF
+     */
+    public function getTaxref()
+    {
+        return $this->taxref;
     }
 }
