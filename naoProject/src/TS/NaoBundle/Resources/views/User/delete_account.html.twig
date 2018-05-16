@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Suppression de compte</title>
+	</head>
+	<body>
+		<h1>Voulez-vous supprimer votre compte ?</h1>
+
+		<form action="{{ path('ts_nao_delete_account') }}" method="post">
+			<a href="{{ path('ts_nao_dashboard') }}">Retour au tableau de bord</a>
+
+			{{ form_rest(form) }}
+
+			<input type="submit" value="Supprimer" />
+		</form>
+	</body>
+</html>

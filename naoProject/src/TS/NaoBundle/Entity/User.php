@@ -1,17 +1,24 @@
 <?php
+// src/TS/NaoBundle/Entity/User.php
 
 namespace TS\NaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use TS\NaoBundle\Enum\ProfilEnum;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Asset\Exception\InvalidArgumentException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
  *
  * @ORM\Table(name="nao_user")
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Cette adresse e-mail est déjà utilisée.")
+ * @UniqueEntity(fields="username", message="Ce nom d'utilisateur existe déjà.")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int
@@ -26,6 +33,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, minMessage="Le nom doit faire au moins {{ limit }} caractères.")
      */
     private $name;
 
@@ -33,36 +42,45 @@ class User
      * @var string
      *
      * @ORM\Column(name="surname", type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=2, minMessage="Le prénom doit faire au moins {{ limit }} caractères.")
      */
     private $surname;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="pseudo", type="string", length=255, nullable=true)
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
+     * @Assert\Length(min=2, minMessage="Le nom d'utilisateur doit faire au moins {{ limit }} caractères.")
      */
-    private $pseudo;
+    private $username;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\Email(message="Veuillez entrer une adresse e-mail correcte.", checkMX=true)
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pwd", type="string", length=255, unique=true)
+     * @ORM\Column(name="password", type="string", length=255)
+     * @Assert\Regex(pattern="#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$#", message="Votre mot de passe doit faire au minimum 6 caractères et contenir au moins 1 lettre min, 1 lettre maj et 1 chiffre.")
      */
-    private $pwd;
+    private $password;
 
     /**
-     * @var ProfilEnum
-     *
-     * @ORM\Column(type="ProfilType")
+     * @ORM\Column(name="salt", type="string", length=255, nullable=true)
      */
-    private $profil;
+    private $salt;
+
+    /**
+     * @ORM\Column(name="roles", type="array")
+     * @Assert\NotBlank(message="Aucun type de profil n'a été affilié à ce compte.")
+     */
+    private $roles = array();
 
     /**
      * @var string
@@ -77,6 +95,13 @@ class User
      * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Observation", mappedBy="user", cascade={"remove"})
      */
     private $observations;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="recovery_token", type="string", length=255, nullable=true)
+     */
+    private $recovery_token;
 
 
     /**
@@ -138,27 +163,27 @@ class User
     }
 
     /**
-     * Set pseudo.
+     * Set username.
      *
-     * @param string|null $pseudo
+     * @param string|null $username
      *
      * @return User
      */
-    public function setPseudo($pseudo = null)
+    public function setUsername($username = null)
     {
-        $this->pseudo = $pseudo;
+        $this->username = $username;
 
         return $this;
     }
 
     /**
-     * Get pseudo.
+     * Get username.
      *
      * @return string|null
      */
-    public function getPseudo()
+    public function getUsername()
     {
-        return $this->pseudo;
+        return $this->username;
     }
 
     /**
@@ -186,52 +211,78 @@ class User
     }
 
     /**
-     * Set pwd.
+     * Set password.
      *
-     * @param string $pwd
+     * @param string $password
      *
      * @return User
      */
-    public function setPwd($pwd)
+    public function setPassword($password)
     {
-        $this->pwd = $pwd;
+        $this->password = $password;
 
         return $this;
     }
 
     /**
-     * Get pwd.
+     * Get password.
      *
      * @return string
      */
-    public function getPwd()
+    public function getPassword()
     {
-        return $this->pwd;
+        return $this->password;
     }
 
-
     /**
-     * Set profil.
+     * Set salt.
      *
-     * @param ProfilType $profil
+     * @param string $salt
      *
      * @return User
      */
-    public function setProfil($profil)
+    public function setSalt($salt)
     {
-        $this->profil = $profil;
+        $this->salt = $salt;
 
         return $this;
     }
 
     /**
-     * Get profil.
+     * Get salt.
      *
-     * @return ProfilType
+     * @return string
      */
-    public function getProfil()
+    public function getSalt()
     {
-        return $this->profil;
+        return $this->salt;
+    }
+
+    /**
+     * Set roles.
+     *
+     * @param array $roles
+     *
+     * @return User
+     */
+    public function setRoles($roles)
+    {
+        if(!in_array($roles, ProfilEnum::getValues())) {
+            throw new InvalidArgumentException('Ce type de profil est inconnu.');
+        }
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Get roles.
+     *
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
     }
 
     /**
@@ -263,6 +314,7 @@ class User
     public function __construct()
     {
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = array(ProfilEnum::BIRD_FANCIER);
     }
 
     /**
@@ -301,5 +353,34 @@ class User
     public function getObservations()
     {
         return $this->observations;
+    }
+
+    public function eraseCredentials()
+    {
+
+    }
+
+    /**
+     * Set recoveryToken.
+     *
+     * @param string|null $recoveryToken
+     *
+     * @return User
+     */
+    public function setRecoveryToken($recoveryToken = null)
+    {
+        $this->recovery_token = $recoveryToken;
+
+        return $this;
+    }
+
+    /**
+     * Get recoveryToken.
+     *
+     * @return string|null
+     */
+    public function getRecoveryToken()
+    {
+        return $this->recovery_token;
     }
 }

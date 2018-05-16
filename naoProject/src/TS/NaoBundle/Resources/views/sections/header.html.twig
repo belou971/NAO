@@ -24,7 +24,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse align-navbar" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav main-menu">
-                    <li><a href="#">Accueil</a></li>
+                    <li><a href="{{ path('ts_nao_homepage') }}">Accueil</a></li>
                     <li><a href="#">Nos membres</a></li>
                     <li><a href="#">Blog</a></li>
                     <li><a href="#">Contact</a></li>
@@ -32,8 +32,8 @@
                 </ul>
 
                 <ul class="nav nav-pills nav-stacked pull-right signup">
-                    <li><a href="#">Se connecter</a></li>
-                    <li><a href="#">Créer un compte</a></li>
+                    <li><a href="{{ path('ts_nao_login') }}">Se connecter</a></li>
+                    <li><a href="{{ path('ts_nao_registration') }}">Créer un compte</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

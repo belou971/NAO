@@ -11,9 +11,9 @@ namespace  TS\NaoBundle\Enum;
 
 class ProfilEnum
 {
-    const BIRD_FANCIER = "bird_fancier";
-    const NATURALIST   = "naturalist";
-    const ADMIN        = "admin";
+    const BIRD_FANCIER = 'ROLE_BIRD_FANCIER';
+    const NATURALIST   = 'ROLE_NATURALIST';
+    const ADMIN        = 'ROLE_ADMIN';
 
     static public function getValues() {
         $values[] = ProfilEnum::BIRD_FANCIER;

@@ -1,6 +1,43 @@
 ts_nao_homepage:
     path:     /
-    defaults: { _controller: TSNaoBundle:Search:index }
+    defaults:
+        _controller: TSNaoBundle:Search:index
+
+ts_nao_registration:
+    path: /registration
+    defaults:
+        _controller: TSNaoBundle:User:registration
+
+ts_nao_login:
+    path: /login
+    defaults:
+        _controller: TSNaoBundle:User:login
+
+ts_nao_login_check:
+    path: /login_check
+
+ts_nao_logout:
+    path: /logout
+
+ts_nao_recovery:
+    path: /recovery
+    defaults:
+        _controller: TSNaoBundle:User:recovery
+
+ts_nao_reset_password:
+    path: /reset-password/
+    defaults:
+        _controller: TSNaoBundle:User:resetPassword
+
+ts_nao_dashboard:
+    path: /account
+    defaults:
+        _controller: TSNaoBundle:User:dashboard
+
+ts_nao_delete_account:
+    path: /account/delete-account
+    defaults:
+        _controller: TSNaoBundle:User:deleteAccount
 
 ts_nao_specimens_names:
   path: /specimens_name

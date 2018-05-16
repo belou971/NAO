@@ -17,6 +17,7 @@
 /web/bundles/
 /.idea/naoProject.iml
 /.idea/modules.xml
+/*.php~
 Supprimerait .idea/inspectionProfiles/
 Supprimerait .idea/workspace.xml
 Supprimerait var/cache/
