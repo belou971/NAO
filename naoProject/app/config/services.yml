@@ -35,8 +35,8 @@ services:
     #         $someArgument: 'some_value'
 
     
-    naobunble.email.registration_confirmation:
-        class: TS\NaoBundle\Email\RegistrationConfirmation
+    naobundle.email.mailing:
+        class: TS\NaoBundle\Email\Mailing
         arguments:
             - "@mailer"
             - "%mailer_user%"
@@ -45,24 +45,21 @@ services:
     naobundle.doctrine_listener.registration_confirmation:
         class: TS\NaoBundle\DoctrineListener\RegistrationListener
         arguments:
-            - "@naobunble.email.registration_confirmation"
+            - "@naobundle.email.mailing"
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-        public: true
-
-    naobunble.password_recovery.password_recovery:
-        class: TS\NaoBundle\PasswordRecovery\PasswordRecovery
-        arguments:
-            - "@mailer"
-            - "@doctrine.orm.entity_manager"
-            - "%mailer_user%"
         public: true
 
     naobundle.doctrine_listener.delete_account_confirmation:
         class: TS\NaoBundle\DoctrineListener\DeleteAccountListener
         arguments:
-            - "@mailer"
-            - "%mailer_user%"
+            - "@naobundle.email.mailing"
         tags:
             - { name: doctrine.event_listener, event: postRemove }
+        public: true
+
+    naobundle.account.account:
+        class: TS\NaoBundle\Account\Account
+        arguments:
+            - "@naobundle.email.mailing"
         public: true

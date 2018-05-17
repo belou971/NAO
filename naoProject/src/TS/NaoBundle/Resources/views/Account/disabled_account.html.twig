@@ -9,7 +9,14 @@
 
 		<p>Veuillez activer votre compte. Le lien d'activation se trouve dans l'e-mail de bienvenue envoyé à l'adresse saisie lors de l'inscription. Cet e-maill peut se trouver dans votre dossier indésirables.</p>
 		<p>Si vous n'avez pas reçu cet email veuillez cliquer ci-dessous pour le recevoir.</p>
-		<a href="#">Recevoir l'e-mail de bienvenue.</a>
+		
+		<form action="{{ path('ts_nao_disabled') }}" method="post">
+			
+			{{ form_rest(form) }}
+			<input type="hidden" name="email" id="email" value="{{ email }}" />
+			<input type="submit" value="Recevoir l'email de bienvenue." />
+	
+		</form>
 
 	</body>
 <html>

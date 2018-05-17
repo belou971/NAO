@@ -324,6 +324,7 @@ class User implements UserInterface
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = array(ProfilEnum::BIRD_FANCIER);
         $this->active = false;
+        $this->confirmToken = bin2hex(random_bytes(16));
     }
 
     /**

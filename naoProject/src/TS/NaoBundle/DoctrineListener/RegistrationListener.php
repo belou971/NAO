@@ -4,29 +4,29 @@
 namespace TS\NaoBundle\DoctrineListener;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use TS\NaoBundle\Email\RegistrationConfirmation;
+use TS\NaoBundle\Email\Mailing;
 use TS\NaoBundle\Entity\User;
 
 class RegistrationListener
 {
 	/**
-	 * @var RegistrationConfirmation
+	 * @var Mailing
 	 */
-	private $registration;
+	private $mailer;
 
-	public function __construct(RegistrationConfirmation $registration)
+	public function __construct(Mailing $mailer)
 	{
-		$this->registration = $registration;
+		$this->mailer = $mailer;
 	}
 
 	public function postPersist(LifecycleEventArgs $args)
 	{
-		$entity = $args->getObject();
+		$user = $args->getObject();
 
-		if(!$entity instanceof User) {
+		if(!$user instanceof User) {
 			return;
 		}
 
-		$this->registration->sendEmail($entity);
+		$this->mailer->confirmRegistration($user);
 	}
 }

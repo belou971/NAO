@@ -4,27 +4,19 @@
 namespace TS\NaoBundle\DoctrineListener;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use TS\NaoBundle\Email\Mailing;
 use TS\NaoBundle\Entity\User;
 
 class DeleteAccountListener
 {
 	/**
-	 * @var \Swift_Mailer
+	 * @var Mailing
 	 */
 	private $mailer;
-	private $mailerUser;
 
-	public function __construct(\Swift_Mailer $mailer, $mailerUser)
+	public function __construct(Mailing $mailer)
 	{
 		$this->mailer = $mailer;
-		$this->mailerUser = $mailerUser;
-	}
-
-	public function sendEmail(User $user)
-	{
-		$message = new \Swift_Message('Suppression de compte', 'Votre compte a bien été supprimé.');
-		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($user->getEmail());
-		$this->mailer->send($message);
 	}
 
 	public function postRemove(LifecycleEventArgs $args)
@@ -35,6 +27,6 @@ class DeleteAccountListener
 			return;
 		}
 
-		$this->sendEmail($user);
+		$this->mailer->deleteAccount($user);
 	}
 }

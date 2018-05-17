@@ -40,6 +40,16 @@ ts_nao_dashboard:
     defaults:
         _controller: TSNaoBundle:Account:dashboard
 
+ts_nao_active_account:
+    path: /active
+    defaults:
+        _controller: TSNaoBundle:Account:active
+
+ts_nao_disabled:
+    path: /disabled
+    defaults:
+        _controller: TSNaoBundle:Account:disabled
+
 ts_nao_specimens_names:
   path: /specimens_name
   defaults: { _controller: TSNaoBundle:Search:loadSpecimens }
