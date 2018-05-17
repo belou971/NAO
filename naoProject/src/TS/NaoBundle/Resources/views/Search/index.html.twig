@@ -42,7 +42,7 @@
                             <button class="dropdown-btn btn dropdown-btn-color" type="button"><i class="fas fa-caret-down"></i></button>
                         </div>
 
-                        <button type="button" name="submit_btn" class="btn submit-btn"><i class="fa fa-search fa-fw"></i></button>
+                        <button type="button" name="submit_btn" class="btn submit-btn" disabled="disabled"><i class="fa fa-search fa-fw"></i></button>
                     </form>
                 </div>
 
@@ -50,10 +50,10 @@
                 <div class="tab-pane" id="cities">
                     <form class="form-inline">
                         <div class="form-group">
-                            <input id="input-cities" class="dropdown-input form-control" placeholder="Entrer le nom de la ville" />
+                            <input id="input-cities" type="text" class="dropdown-input form-control" placeholder="Entrer le nom de la ville" />
                         </div>
 
-                        <button type="submit" class="btn submit-btn"><i class="fa fa-search fa-fw"></i></button>
+                        <button type="button" class="btn submit-btn" disabled="disabled"><i class="fa fa-search fa-fw"></i></button>
                     </form>
                 </div>
 
@@ -62,6 +62,12 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="search-message text-success purchase-flow-border col-sm-12 text-center" style="display: none;">
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-12">
             <div id="mapid"></div>

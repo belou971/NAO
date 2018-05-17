@@ -69,7 +69,7 @@ class DataManager
 
 
     private function loadSpecimens() {
-        $response = array("errors" => array(), "data" => array() );
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
 
         $taxrefRepo = $this->em->getRepository('TSNaoBundle:TAXREF');
         if(is_null($taxrefRepo)) {
@@ -88,7 +88,7 @@ class DataManager
 
 
     private function findSpecimenByNameAction($parameters) {
-        $response = array("errors" => array(), "data" => array() );
+        $response = array("errors" => array(), "data" => array(), "messages" => array());
 
         //Check whether there is a parameters
         if(!array_key_exists("name", $parameters)) {
@@ -103,9 +103,13 @@ class DataManager
 
             try {
                 $listObservations = $observationRepo->findByName($parameters["name"]);
+                $nbObservations = count($listObservations);
 
-                if(0 === count($listObservations)) {
-                    $response["errors"] = array("Aucune observation trouvé pour l'espèce " .$parameters["name"]);
+                if(0 === $nbObservations) {
+                    $response["messages"] = array("Aucune observation trouvé pour l'espèce " .$parameters["name"]);
+                }
+                else {
+                    $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour l'espèce " .$parameters["name"]);
                 }
                 $response["data"] = $listObservations;
             }
@@ -122,7 +126,7 @@ class DataManager
 
 
     private function findSpecimenByCityAction($parameters) {
-        $response = array("errors" => array(), "data" => array(), "contour" => array());
+        $response = array("errors" => array(), "data" => array(), "contour" => array(), "messages" => array());
 
         foreach($parameters as $param) {
             if(array_key_exists("nom", $param)){
@@ -156,9 +160,13 @@ class DataManager
             $max_lat_lon = $this->getMaxLatLon($geometry);
 
             $listObservations = $observationRepo->findByCity($min_lat_lon, $max_lat_lon);
+            $nbObservations = count($listObservations);
 
-            if(0 === count($listObservations)) {
-                $response["errors"] = array("Aucune observation trouvé dans la ville ".$parameters["city_properties"]["nom"]);
+            if(0 === $nbObservations) {
+                $response["messages"] = array("Aucune observation trouvé pour l'espèce " .$parameters["city_properties"]["nom"]);
+            }
+            else {
+                $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour l'espèce " .$parameters["city_properties"]["nom"]);
             }
             $response["data"] = $listObservations;
         }
@@ -174,7 +182,7 @@ class DataManager
 
 
     private function findSpecimenByCoordAction($parameters) {
-        $response = array("errors" => array(), "data" => array(), "contour" => array());
+        $response = array("errors" => array(), "data" => array(), "contour" => array(), "messages" => array());
 
         //Find in database all the observations with location(lat, lon) is contained in geometry in parameter
         $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
@@ -190,9 +198,13 @@ class DataManager
             $max_lat_lon = $this->getMaxLatLon($geometry);
 
             $listObservations = $observationRepo->findByCity($min_lat_lon, $max_lat_lon);
+            $nbObservations = count($listObservations);
 
-            if(0 === count($listObservations)) {
-                $response["errors"] = array("Aucune observation trouvé dans la ville ".$parameters["nom"]);
+            if(0 === $nbObservations) {
+                $response["messages"] = array("Aucune observation trouvé pour l'espèce " .$parameters["nom"]);
+            }
+            else {
+                $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour l'espèce " .$parameters["nom"]);
             }
             $response["data"] = $listObservations;
         }

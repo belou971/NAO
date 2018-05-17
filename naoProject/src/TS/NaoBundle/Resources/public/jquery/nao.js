@@ -1,5 +1,5 @@
 /**********************************************************************************************************************/
-/*                                                   specimen autocompletion manager                                           */
+/*                                                 Specimen auto-completion manager                                    */
 /**********************************************************************************************************************/
 var xhr = new XMLHttpRequest();
 xhr.open('GET', Routing.generate('ts_nao_specimens_names'), true);
@@ -23,8 +23,75 @@ xhr.onload = function() {
 };
 xhr.send();
 
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*                       Event on search button of the research by the name of a specimen                             */
+/* ------------------------------------------------------------------------------------------------------------------ */
+document.getElementById("input-specimen").addEventListener("awesomplete-selectcomplete", function (event) {
+    $('#input-specimen').val(event.text.value);
+    $('#specimen button[name=submit_btn]').prop('disabled', false);
+});
+
+$specimen_search_btn = $('#specimen button[name=submit_btn]');
+$specimen_search_btn.on('click', function () {
+    var oldMarkers = getAllMarkers();
+    removeAllMarkers(oldMarkers);
+
+    var $name = $('#input-specimen').val();
+    var $data = {specimen_name: $name};
+    $.ajax({
+        type: 'post',
+        url: Routing.generate('ts_nao_search_specimen_by_name'),
+        data: JSON.stringify($data),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        success: function (response) {
+            var outputData = response.data;
+            var outputMessages = response.messages;
+            var errors = response.errors;
+
+            if(errors.length === 0) {
+                setResearchMessage(outputMessages);
+
+                var group = outputData.map(addObservationOnMap);
+                mymap.fitBounds(L.featureGroup(group).getBounds());
+            }
+            else {
+                setResearchMessage(errors);
+            }
+
+            displayResearchMeassage();
+
+            $('#input-specimen').val("");
+        }
+    });
+});
+
+function removeAllMarkers(markers) {
+    $.each(markers, function (idx, marker) {
+        mymap.removeLayer(marker);
+    });
+}
+
+function removeMarker(marker) {
+    mymap.removeLayer(marker);
+}
+
+function getAllMarkers() {
+    var layers = mymap._layers;
+    var markers = [];
+
+    $.each(layers, function (item) {
+        if (layers[item]._latlng) {
+
+            markers.push(this);
+        }
+    });
+
+    return markers;
+}
+
 /**********************************************************************************************************************/
-/*                                                   cities autocompletion manager                                           */
+/*                                                 Cities auto-completion manager                                     */
 /**********************************************************************************************************************/
 var citiesInput = document.querySelector("input#input-cities");
 var awesomplete2 = new Awesomplete( citiesInput, {
@@ -45,11 +112,29 @@ $("input#input-cities").on("keyup", function() {
     })
 });
 
-document.getElementById("input-cities").addEventListener("awesomplete-select", function (event) {
-    console.log(event.text.value);
-});
+function displayResearchMeassage()
+{
+    $('.search-message').css('display', 'block');
+}
 
+function hideResearchMeassage()
+{
+    $('.date-message').css('display', 'none');
+}
 
+function setResearchMessage(messages)
+{
+    var htmlMessage = "";
+    $.each(messages, function(idx, message) {
+        htmlMessage += "<p>"+message+"</p>";
+    });
+
+    $('div.search-message').html(htmlMessage);
+}
+
+/**********************************************************************************************************************/
+/*                                                 OpenStreetMap manager                                     */
+/**********************************************************************************************************************/
 var mymap = L.map('mapid').setView([47.102732, 2.443096], 11);
 
 var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -68,7 +153,11 @@ var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     radius: 90
 }).addTo(mymap);*/
 
-var fresnes = L.circle([48.757766, 2.3231051], {
+function addObservationOnMap(observation) {
+    return L.marker([observation.latitude, observation.longitude]).addTo(mymap);
+}
+
+/*var fresnes = L.circle([48.757766, 2.3231051], {
     color: 'brown',
     fillColor: '#b73e0b',
     fillOpacity: 0.8,
@@ -109,4 +198,4 @@ L.control.layers(null, overlayMaps).addTo(mymap);
 
 var group = L.featureGroup([fresnes, paris, massy, lyon]);
 
-mymap.fitBounds(group.getBounds());
+mymap.fitBounds(group.getBounds());*/
