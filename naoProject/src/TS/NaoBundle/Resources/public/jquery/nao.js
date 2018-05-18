@@ -1,5 +1,5 @@
 /**********************************************************************************************************************/
-/*                                                 Specimen auto-completion manager                                    */
+/*                                                 Specimen auto-completion manager                                   */
 /**********************************************************************************************************************/
 var xhr = new XMLHttpRequest();
 xhr.open('GET', Routing.generate('ts_nao_specimens_names'), true);
@@ -48,15 +48,17 @@ $specimen_search_btn.on('click', function () {
             var outputData = response.data;
             var outputMessages = response.messages;
             var errors = response.errors;
+            var hasFound = outputData.length > 0;
 
             if(errors.length === 0) {
-                setResearchMessage(outputMessages);
-
-                var group = outputData.map(addObservationOnMap);
-                mymap.fitBounds(L.featureGroup(group).getBounds());
+                setResearchMessage(outputMessages,hasFound);
+                if(hasFound) {
+                    var group = outputData.map(addObservationOnMap);
+                    mymap.fitBounds(L.featureGroup(group).getBounds());
+                }
             }
             else {
-                setResearchMessage(errors);
+                setResearchMessage(errors, hasFound);
             }
 
             displayResearchMeassage();
@@ -101,6 +103,10 @@ var awesomplete2 = new Awesomplete( citiesInput, {
                                     replace: function(text){
                                         this.input.value = text;
                                     } });
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*                       Event on search button of the research by the city                                           */
+/* ------------------------------------------------------------------------------------------------------------------ */
 $("input#input-cities").on("keyup", function() {
     var url = "https://geo.api.gouv.fr/communes?nom="+this.value+"&format=json&geometry=centre";
     $.get(url)
@@ -112,6 +118,69 @@ $("input#input-cities").on("keyup", function() {
     })
 });
 
+document.getElementById("input-cities").addEventListener("awesomplete-selectcomplete", function (event) {
+    //$('#input-cities').val(event.text.value);
+    $('#cities button[name=submit_btn]').prop('disabled', false);
+});
+
+$('#cities button[name=submit_btn]').on('click', function() {
+    var selected_city = extract_selected_city($('#input-cities').val());
+    if(2 === Object.keys(selected_city).length){
+        var url = "https://geo.api.gouv.fr/communes?nom="+selected_city["nom"]+"&codeDepartement="+selected_city["departement"]+"&fields=nom&format=geojson&geometry=contour";
+        $.get(url)
+            .done(function(cityInfo) {
+                if(cityInfo["features"].length > 1){
+                    var firstFeature = cityInfo["features"][0];
+                    cityInfo["features"] = [firstFeature];
+                }
+
+                var data = {city:selected_city["nom"], geo_properties:cityInfo};
+                console.log(data);
+                $.ajax({
+                    type: 'post',
+                    url: Routing.generate('ts_nao_search_specimen_by_city'),
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        var outputData = response.data;
+                        var outputMessages = response.messages;
+                        var errors = response.errors;
+                        var hasFound = outputData.length > 0;
+
+                        if(errors.length === 0) {
+                            setResearchMessage(outputMessages, hasFound);
+                            outputData.map(addObservationOnMap);
+                        }
+                        else {
+                            setResearchMessage(errors, hasFound);
+                        }
+
+                        var group = addPolygonOfCity(cityInfo).getBounds();
+                        mymap.fitBounds(group);
+
+                        displayResearchMeassage();
+
+                        $('#input-cities').val("");
+                    }
+                });
+
+            })
+
+    }
+});
+
+function extract_selected_city(value){
+    var city = [];
+    var idx_separator = value.indexOf('-');
+    if(idx_separator > 0) {
+        var length_value = value.length;
+        city["nom"] = value.substr(0, idx_separator-1);
+        city["departement"]=value.substr(idx_separator+2, length_value-1);
+    }
+    return city;
+}
+
 function displayResearchMeassage()
 {
     $('.search-message').css('display', 'block');
@@ -122,14 +191,25 @@ function hideResearchMeassage()
     $('.date-message').css('display', 'none');
 }
 
-function setResearchMessage(messages)
+function setResearchMessage(messages, hasFound)
 {
     var htmlMessage = "";
     $.each(messages, function(idx, message) {
         htmlMessage += "<p>"+message+"</p>";
     });
 
-    $('div.search-message').html(htmlMessage);
+    var search_mesg_container = $('div.search-message');
+    search_mesg_container.html(htmlMessage);
+
+    if(hasFound && search_mesg_container.hasClass('text-danger')){
+        search_mesg_container.removeClass('text-danger');
+        search_mesg_container.addClass('text-success');
+    }
+
+    if(!hasFound && search_mesg_container.hasClass('text-success')){
+        search_mesg_container.removeClass('text-success');
+        search_mesg_container.addClass('text-danger');
+    }
 }
 
 /**********************************************************************************************************************/
@@ -155,6 +235,10 @@ var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
 
 function addObservationOnMap(observation) {
     return L.marker([observation.latitude, observation.longitude]).addTo(mymap);
+}
+
+function addPolygonOfCity(contour) {
+    return L.geoJSON(contour).addTo(mymap);
 }
 
 /*var fresnes = L.circle([48.757766, 2.3231051], {

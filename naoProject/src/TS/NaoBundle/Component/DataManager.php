@@ -163,10 +163,10 @@ class DataManager
             $nbObservations = count($listObservations);
 
             if(0 === $nbObservations) {
-                $response["messages"] = array("Aucune observation trouvé pour l'espèce " .$parameters["city_properties"]["nom"]);
+                $response["messages"] = array("Aucune observation trouvé pour la ville " .$parameters["city_properties"]["nom"]);
             }
             else {
-                $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour l'espèce " .$parameters["city_properties"]["nom"]);
+                $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour la ville " .$parameters["city_properties"]["nom"]);
             }
             $response["data"] = $listObservations;
         }
