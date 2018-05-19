@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use TS\NaoBundle\Entity\User;
+use TS\NaoBundle\Form\RequestUpgradeType;
 
 class AccountController extends Controller
 {
@@ -19,7 +20,7 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_disabled');
 		}
 
-		return $this->render('@TSNao/User/dashboard.html.twig');
+		return $this->render('@TSNao/Account/dashboard.html.twig');
 	}
 
 	public function activeAction(Request $request)
@@ -31,19 +32,21 @@ class AccountController extends Controller
 			$token = $request->query->get('identifier');
 
 			if ($accountService->activate($email, $token)) {
-
-				return $this->redirectToRoute('ts_nao_dashboard');
+				return $this->redirectToRoute('ts_nao_login');
 			}
 		}
 
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
+	/**
+     * @Security("has_role('ROLE_BIRD_FANCIER')")
+     */
 	public function disabledAction(Request $request)
 	{
 		$user = $this->getUser();
 		$form = $this->get('form.factory')->create();
-		
+
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			$accountService = $this->get('naobundle.account.account');
 			$accountService->sendBackConfirmRegistration($request->request->get('email'));
@@ -51,13 +54,29 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_homepage');
 		}
 
-		if (!$user instanceof User || $user->getActive()) {
-			return $this->redirectToRoute('ts_nao_login');
+		if ($user->getActive()) {
+			return $this->redirectToRoute('ts_nao_dashboard');
 		}
 
 		$this->get('security.token_storage')->setToken(null);
 		$request->getSession()->invalidate();
 
 		return $this->render('@TSNao/Account/disabled_account.html.twig', array('email' => $user->getEmail(), 'form' => $form->createView()));
+	}
+
+	public function requestUpgradeAction(Request $request)
+	{
+		$form = $this->createForm(RequestUpgradeType::class);
+		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+			
+			return new Response ('Formulaire validé !');
+		}
+
+		return $this->render('@TSNao/Account/request_upgrade.html.twig', array('form' => $form->createView()));
+	}
+
+	public function upgradeAction(Request $request)
+	{
+
 	}
 }

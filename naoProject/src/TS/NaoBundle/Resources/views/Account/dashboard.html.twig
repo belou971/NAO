@@ -10,6 +10,12 @@
 			<a href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
 		</p>
 
+		{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
+			<p>
+				<a href="{{ path('ts_nao_request_upgrade') }}">Demander une amélioration du compte</a>
+			</p>
+		{% endif %}
+
 		<p>
 			<a href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
 		</p>

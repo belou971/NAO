@@ -50,6 +50,11 @@ ts_nao_disabled:
     defaults:
         _controller: TSNaoBundle:Account:disabled
 
+ts_nao_request_upgrade:
+    path: /account/upgrade/request
+    defaults:
+        _controller: TSNaoBundle:Account:requestUpgrade
+
 ts_nao_specimens_names:
   path: /specimens_name
   defaults: { _controller: TSNaoBundle:Search:loadSpecimens }

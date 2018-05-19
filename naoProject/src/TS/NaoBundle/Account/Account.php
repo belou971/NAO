@@ -90,4 +90,9 @@ class Account
 			$this->mailer->confirmRegistration($user);
 		}
 	}
+
+	public function saveGrade()
+	{
+		
+	}
 }
