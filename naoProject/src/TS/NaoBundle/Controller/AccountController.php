@@ -43,11 +43,16 @@ class AccountController extends Controller
 	{
 		$user = $this->getUser();
 		$form = $this->get('form.factory')->create();
+		
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			$accountService = $this->get('naobundle.account.account');
 			$accountService->sendBackConfirmRegistration($request->request->get('email'));
 
 			return $this->redirectToRoute('ts_nao_homepage');
+		}
+
+		if (!$user instanceof User || $user->getActive()) {
+			return $this->redirectToRoute('ts_nao_login');
 		}
 
 		$this->get('security.token_storage')->setToken(null);
