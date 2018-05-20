@@ -69,7 +69,14 @@ class AccountController extends Controller
 		$form = $this->createForm(RequestUpgradeType::class);
 		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
 			
-			return new Response ('Formulaire validé !');
+			$accountService = $this->get('naobundle.account.account');
+			$result = $accountService->saveGrade($form->get('grade')->getData());
+
+			if ($result != null) {
+				return new Response($result);
+			}
+
+			return $this->redirectToRoute('ts_nao_dashboard');
 		}
 
 		return $this->render('@TSNao/Account/request_upgrade.html.twig', array('form' => $form->createView()));

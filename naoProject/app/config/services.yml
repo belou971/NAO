@@ -62,4 +62,6 @@ services:
         class: TS\NaoBundle\Account\Account
         arguments:
             - "@naobundle.email.mailing"
+            - '@security.token_storage'
+            - "%grades_directory%"
         public: true
