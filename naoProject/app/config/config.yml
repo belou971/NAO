@@ -83,3 +83,4 @@ assetic:
 
 fos_js_routing:
   routes_to_expose: [ts_nao_specimens_names]
+  routes_to_expose: [ts_nao_specimens_names]

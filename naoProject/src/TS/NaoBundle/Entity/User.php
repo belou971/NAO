@@ -338,6 +338,8 @@ class User implements UserInterface
     {
         $this->observations[] = $observation;
 
+        $observation->setUser($this);
+
         return $this;
     }
 

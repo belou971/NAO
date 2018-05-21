@@ -33,7 +33,6 @@ ts_nao_delete_account:
     path: /account/delete-account
     defaults:
         _controller: TSNaoBundle:User:deleteAccount
-    defaults: { _controller: TSNaoBundle:Search:index }
 
 ts_nao_dashboard:
     path: /account
@@ -63,3 +62,15 @@ ts_nao_upgrade_request_list:
 ts_nao_specimens_names:
   path: /specimens_name
   defaults: { _controller: TSNaoBundle:Search:loadSpecimens }
+
+ts_nao_search_specimen_by_name:
+  path: /search_specimen_by_name
+  defaults: { _controller: TSNaoBundle:Search:findByName }
+
+ts_nao_search_specimen_by_city:
+  path: /search_specimen_by_city
+  defaults: { _controller: TSNaoBundle:Search:findByCity }
+
+ts_nao_search_specimen_by_coord:
+  path: /search_specimen_by_coord
+  defaults: { _controller: TSNaoBundle:Search:findByCoord }

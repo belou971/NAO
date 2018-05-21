@@ -45,10 +45,10 @@ abstract class EnumType extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if(!in_array($value, $this->values, true)){
+        if(!in_array($value, $this->getValues(), true)){
             throw new \UnexpectedValueException(sprintf('La valeur "%s" n\'est pas un type de %s reconnu. Les valeurs
              attendues sont [%s]',
-                $value, $this->nameType, implode(", ", $this->values)));
+                $value, $this->nameType, implode(", ", $this->getValues())));
         }
 
         return $value;
