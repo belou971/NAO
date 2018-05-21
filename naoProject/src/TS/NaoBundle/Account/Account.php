@@ -100,11 +100,10 @@ class Account
 
 	public function saveGrade(File $file)
 	{
-		$this->targetDirectory = $this->targetDirectory . $this->currentUser->getEmail() . '/';
 		$fileName = md5(uniqid()) . '.' . $file->guessExtension();
 		
 		try{
-			$file->move($this->targetDirectory, $fileName );
+			$file->move($this->targetDirectory . $this->currentUser->getEmail() . '/', $fileName );
 		} 
 		catch(FileException $e) {
 			$message = $e->getMessage();
@@ -112,7 +111,7 @@ class Account
 			return $message;
 		}
 		
-		$this->currentUser->setGrade($this->targetDirectory . $fileName);
+		$this->currentUser->setGrade($this->currentUser->getEmail() . '/' . $fileName);
 		$this->em->flush();
 	}
 }

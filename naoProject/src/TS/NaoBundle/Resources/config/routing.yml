@@ -55,6 +55,11 @@ ts_nao_request_upgrade:
     defaults:
         _controller: TSNaoBundle:Account:requestUpgrade
 
+ts_nao_upgrade_request_list:
+    path: /account/upgrade/list
+    defaults:
+        _controller: TSNaoBundle:Account:upgradeRequestList
+
 ts_nao_specimens_names:
   path: /specimens_name
   defaults: { _controller: TSNaoBundle:Search:loadSpecimens }

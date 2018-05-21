@@ -16,6 +16,12 @@
 			</p>
 		{% endif %}
 
+		{% if 'ROLE_ADMIN' in app.user.roles %}
+			<p>
+				<a href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
+			</p>
+		{% endif %}
+
 		<p>
 			<a href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
 		</p>

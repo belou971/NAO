@@ -82,8 +82,13 @@ class AccountController extends Controller
 		return $this->render('@TSNao/Account/request_upgrade.html.twig', array('form' => $form->createView()));
 	}
 
-	public function upgradeAction(Request $request)
+	/*
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
+	public function upgradeRequestListAction(Request $request)
 	{
-
+		$requestList = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:User')->getUpgradeRequestList();
+		
+		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList));
 	}
 }
