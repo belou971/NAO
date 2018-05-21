@@ -119,54 +119,50 @@ $("input#input-cities").on("keyup", function() {
 });
 
 document.getElementById("input-cities").addEventListener("awesomplete-selectcomplete", function (event) {
-    //$('#input-cities').val(event.text.value);
     $('#cities button[name=submit_btn]').prop('disabled', false);
 });
 
 $('#cities button[name=submit_btn]').on('click', function() {
     var selected_city = extract_selected_city($('#input-cities').val());
-    if(2 === Object.keys(selected_city).length){
-        var url = "https://geo.api.gouv.fr/communes?nom="+selected_city["nom"]+"&codeDepartement="+selected_city["departement"]+"&fields=nom&format=geojson&geometry=contour";
+    if(2 === Object.keys(selected_city).length) {
+        var url = "https://geo.api.gouv.fr/communes?nom=" + selected_city["nom"] + "&codeDepartement=" + selected_city["departement"] + "&fields=nom&format=geojson&geometry=contour";
         $.get(url)
-            .done(function(cityInfo) {
-                if(cityInfo["features"].length > 1){
+            .done(function (cityInfo) {
+                if (cityInfo["features"].length > 1) {
                     var firstFeature = cityInfo["features"][0];
                     cityInfo["features"] = [firstFeature];
                 }
+            });
 
-                var data = {city:selected_city["nom"], geo_properties:cityInfo};
-                console.log(data);
-                $.ajax({
-                    type: 'post',
-                    url: Routing.generate('ts_nao_search_specimen_by_city'),
-                    data: JSON.stringify(data),
-                    dataType: 'json',
-                    contentType: "application/json; charset=utf-8",
-                    success: function (response) {
-                        var outputData = response.data;
-                        var outputMessages = response.messages;
-                        var errors = response.errors;
-                        var hasFound = outputData.length > 0;
+        var data = {city: selected_city["nom"], geo_properties: cityInfo};
+        $.ajax({
+            type: 'post',
+            url: Routing.generate('ts_nao_search_specimen_by_city'),
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                var outputData = response.data;
+                var outputMessages = response.messages;
+                var errors = response.errors;
+                var hasFound = outputData.length > 0;
 
-                        if(errors.length === 0) {
-                            setResearchMessage(outputMessages, hasFound);
-                            outputData.map(addObservationOnMap);
-                        }
-                        else {
-                            setResearchMessage(errors, hasFound);
-                        }
+                if (errors.length === 0) {
+                    setResearchMessage(outputMessages, hasFound);
+                    outputData.map(addObservationOnMap);
+                }
+                else {
+                    setResearchMessage(errors, hasFound);
+                }
 
-                        var group = addPolygonOfCity(cityInfo).getBounds();
-                        mymap.fitBounds(group);
+                var group = addPolygonOfCity(cityInfo).getBounds();
+                mymap.fitBounds(group);
 
-                        displayResearchMeassage();
+                displayResearchMeassage();
 
-                        $('#input-cities').val("");
-                    }
-                });
-
-            })
-
+                $('#input-cities').val("");
+            }
+        })
     }
 });
 
@@ -211,6 +207,67 @@ function setResearchMessage(messages, hasFound)
         search_mesg_container.addClass('text-danger');
     }
 }
+
+/**********************************************************************************************************************/
+/*                                                 Cities auto-completion manager                                     */
+/**********************************************************************************************************************/
+
+function enablesearchBtn() {
+    var is_lat_set = $('#latitude').val().length > 0;
+    var is_lgn_set = $('#longitude').val().length > 0;
+    if(is_lat_set && is_lgn_set) {
+        $('#coord button[name=submit_btn]').prop('disabled', false);
+    }
+    else {
+        $('#coord button[name=submit_btn]').prop('disabled', true);
+    }
+}
+
+$('#latitude').on("input", enablesearchBtn);
+$('#longitude').on("input", enablesearchBtn);
+
+$('#coord button[name=submit_btn]').on('click', function(event) {
+    var coordLat = $('#latitude').val();
+    var coordLgn = $('#longitude').val();
+    //var url = "https://geo.api.gouv.fr/communes?fields=code,nom,centre,contour&lat="+coordLat+"&lon="+coordLgn;
+    var url = "https://geo.api.gouv.fr/communes?lat="+coordLat+"&lon="+coordLgn+"&fields=,nom,code&format=geojson&geometry=contour";
+    $.get(url)
+        .done (function(coordInfo){
+
+            var data = {coord_properties: coordInfo};
+            $.ajax({
+                type: 'post',
+                url: Routing.generate('ts_nao_search_specimen_by_coord'),
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var outputData = response.data;
+                    var outputMessages = response.messages;
+                    var errors = response.errors;
+                    var hasFound = outputData.length > 0;
+
+                    if (errors.length === 0) {
+                        setResearchMessage(outputMessages, hasFound);
+                        outputData.map(addObservationOnMap);
+                    }
+                    else {
+                        setResearchMessage(errors, hasFound);
+                    }
+
+                    var group = addPolygonOfCity(coordInfo).getBounds();
+                    mymap.fitBounds(group);
+
+                    displayResearchMeassage();
+
+                    $('#latitude').val("");
+                    $('#longitude').val("");
+                }
+            })
+
+
+        });
+});
 
 /**********************************************************************************************************************/
 /*                                                 OpenStreetMap manager                                     */

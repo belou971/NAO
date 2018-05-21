@@ -171,7 +171,7 @@ class RequestManager
             }
         }
 
-        $response["input_data"] = $parameters["coord_properties"][0];
+        $response["input_data"] = $parameters["coord_properties"]["features"][0];
 
         return $response;
     }

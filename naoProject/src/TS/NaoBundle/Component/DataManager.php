@@ -191,7 +191,7 @@ class DataManager
         }
 
         try {
-            $geometry = $parameters["contour"]["coordinates"][0];
+            $geometry = $parameters["geometry"]["coordinates"][0];
             $response["contour"] = $geometry;
             //get min (lon, lat) and max (lon, lat)
             $min_lat_lon = $this->getMinLatLon($geometry);
@@ -201,10 +201,10 @@ class DataManager
             $nbObservations = count($listObservations);
 
             if(0 === $nbObservations) {
-                $response["messages"] = array("Aucune observation trouvé pour l'espèce " .$parameters["nom"]);
+                $response["messages"] = array("Aucune observation trouvé autour de la position donnée");
             }
             else {
-                $response["messages"] = array($nbObservations." observation(s) trouvée(s) pour l'espèce " .$parameters["nom"]);
+                $response["messages"] = array($nbObservations." observation(s) trouvée(s) autour de la position donnée");
             }
             $response["data"] = $listObservations;
         }
