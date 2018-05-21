@@ -7,8 +7,11 @@ use TS\NaoBundle\PasswordRecovery\PasswordRecovery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\FileSystem\Exception\IOException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use TS\NaoBundle\Entity\User;
+use TS\NaoBundle\Enum\ProfilEnum;
 use TS\NaoBundle\Email\Mailing;
 
 class Account
@@ -113,5 +116,47 @@ class Account
 		
 		$this->currentUser->setGrade($this->currentUser->getEmail() . '/' . $fileName);
 		$this->em->flush();
+	}
+
+	public function upgrade($email, $status)
+	{
+		$user = $this->getUser($email);
+
+		if ($user == null) {
+			return;
+		}
+
+		$result = $this->deleteGrade($user);
+		
+		if (!empty($result)) {
+			return $result;
+		}
+
+		elseif ($status == "0") {
+
+			$this->em->flush();
+			return 'La demande de ' . $user->getName() . ' ' . $user->getSurname() . ' a bien été rejetée.';
+		}
+		
+		$user->setRoles(ProfilEnum::NATURALIST);
+		$this->em->flush();
+		return $user->getName() . ' ' . $user->getSurname() . ' est désormais reconnu(e) comme Naturaliste.';
+	}
+
+	public function deleteGrade(User $user)
+	{
+		$files = new FileSystem();
+
+		try {
+			$files->remove($this->targetDirectory . $user->getGrade());
+			$files->remove($this->targetDirectory . $user->getEmail());
+		}
+		catch (IOException $e) {
+			$message = 'Impossible de supprimer le document de ' . $user->getName() . ' ' . $user->getSurname();
+			
+			return $message;
+		}
+
+		$user->setGrade(null);
 	}
 }

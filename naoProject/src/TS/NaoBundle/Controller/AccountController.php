@@ -82,13 +82,24 @@ class AccountController extends Controller
 		return $this->render('@TSNao/Account/request_upgrade.html.twig', array('form' => $form->createView()));
 	}
 
-	/*
-	 * @Security("has_role('ROLE_ADMIN')")
-	 */
+	/**
+     * @Security("has_role('ROLE_ADMIN')")
+     */
 	public function upgradeRequestListAction(Request $request)
 	{
 		$requestList = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:User')->getUpgradeRequestList();
-		
-		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList));
+		$form = $this->get('form.factory')->create();
+
+		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+			$email = $request->request->get('email');
+			$status = $request->request->get('status');
+			$accountService = $this->get('naobundle.account.account');
+			$result = $accountService->upgrade($email, $status);
+			// Mettre la valeur de $result dans un message flash !
+
+			return $this->redirectToRoute('ts_nao_upgrade_request_list');
+		}
+
+		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList, 'form' => $form->createView()));
 	}
 }
