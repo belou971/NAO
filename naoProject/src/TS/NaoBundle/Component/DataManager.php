@@ -9,6 +9,7 @@ namespace TS\NaoBundle\Component;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use TS\NaoBundle\Enum\ProfilEnum;
 
 class DataManager
 {
@@ -62,6 +63,10 @@ class DataManager
 
         if(ActionType::SEARCH_SPECIMEN_BY_COORD === $action) {
             $response = $this->findSpecimenByCoordAction($parameters);
+        }
+
+        if (ActionType::ZOOM_MAX === $action) {
+            $response = $this->getZoomMax($parameters);
         }
 
         return $response;
@@ -267,5 +272,28 @@ class DataManager
         }
 
         return array($lat, $lon);
+    }
+
+    private function getZoomMax($parameters) {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        $zoomMaxSetting = array();
+        $zoomMaxSetting[ProfilEnum::BIRD_FANCIER] = 12;
+        $zoomMaxSetting[ProfilEnum::NATURALIST]   = 15;
+        $zoomMaxSetting[ProfilEnum::ADMIN]        = 18;
+
+        if (!array_key_exists("profil", $parameters)) {
+            $response["errors"] = array("Le paramètre 'profil' est introuvable");
+        }
+
+        if(true === $parameters['logged']) {
+            $profil = $parameters["profil"];
+            $response["data"] = array("zoomMax" => $zoomMaxSetting[$profil]);
+        }
+        else {
+            $response["data"] = array("zoomMax" => 10);
+        }
+
+        return $response;
     }
 }

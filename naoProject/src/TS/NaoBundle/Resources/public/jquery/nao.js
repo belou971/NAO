@@ -33,8 +33,7 @@ document.getElementById("input-specimen").addEventListener("awesomplete-selectco
 
 $specimen_search_btn = $('#specimen button[name=submit_btn]');
 $specimen_search_btn.on('click', function () {
-    //var oldMarkers = getAllMarkers();
-    removeLayers(/*oldMarkers*/);
+    removeLayers();
 
     var $name = $('#input-specimen').val();
     var $data = {specimen_name: $name};
@@ -77,6 +76,7 @@ function removeLayers() {
     });
 
     resetMap();
+    updateZoomMax();
 }
 
 
@@ -138,7 +138,6 @@ $('#cities button[name=submit_btn]').on('click', function() {
 
                         if (errors.length === 0) {
                             setResearchMessage(outputMessages, hasFound);
-                            //markersOnMap = outputData.map(addObservationOnMap);
                             AddMarkersToClusterGroup(outputData);
                         }
                         else {
@@ -244,7 +243,6 @@ $('#coord button[name=submit_btn]').on('click', function(event) {
 
                     if (errors.length === 0) {
                         setResearchMessage(outputMessages, hasFound);
-                        //markersOnMap = outputData.map(addObservationOnMap);
                         AddMarkersToClusterGroup(outputData);
                     }
                     else {
@@ -269,13 +267,13 @@ $('#coord button[name=submit_btn]').on('click', function(event) {
 });
 
 /**********************************************************************************************************************/
-/*                                                 OpenStreetMap manager                                     */
+/*                                                 OpenStreetMap manager                                              */
 /**********************************************************************************************************************/
 var mymap = L.map('mapid').setView([46.90296, 1.90925], 6);
 
 var mapLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    maxZoom: 14,
+    /*maxZoom: 14,*/
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1IjoiYmVsb3U5NzEiLCJhIjoiY2pnbXBrMW52MnhzNDJxbnpnb3p5YjU0MCJ9.yh0DNDJQUqv1IHeb9OEbtA'
 });
@@ -307,3 +305,19 @@ function addPolygonOfCity(contour) {
     return L.geoJSON(contour).addTo(mymap);
 }
 
+function updateZoomMax() {
+    var url = Routing.generate('ts_nao_zoom_setting');
+    $.get(url)
+        .done(function (data) {
+            var response = JSON.parse(data);
+            var outputData = response.data;
+            var outputMessages = response.messages;
+            var errors = response.errors;
+
+            if(outputData.zoomMax > 0) {
+                mymap.options.maxZoom = outputData.zoomMax;
+                mymap.fire('zoomend');
+            }
+        });
+
+}
