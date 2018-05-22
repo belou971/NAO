@@ -10,4 +10,12 @@ namespace TS\NaoBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function getUpgradeRequestList()
+	{
+		$qb = $this->createQueryBuilder('u');
+		$qb->where('u.grade IS NOT NULL');
+		$result = $qb->getQuery()->getArrayResult();
+
+		return $result;
+	}
 }

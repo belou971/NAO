@@ -50,8 +50,8 @@ class UserController extends Controller
     	if($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $submittedToken))
     	{
     		$email = $request->request->get('email');
-    		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
-    		$recoveryService->recovery($email);
+    		$accountService = $this->get('naobundle.account.account');
+    		$accountService->recovery($email);
 
     		return $this->redirectToRoute('ts_nao_homepage');
     	}
@@ -61,30 +61,26 @@ class UserController extends Controller
 
 	public function resetPasswordAction(Request $request)
 	{
-		$recoveryService = $this->get('naobunble.password_recovery.password_recovery');
+		$accountService = $this->get('naobundle.account.account');
 		$form = $this->createForm(ResetPasswordType::class);
 		if ($request->isMethod('POST')) {
 
 			if ($form->handleRequest($request)->isValid()) {
-				$recoveryService->reset($request->request->get('email'), $form->get('password')->getData());
+				$accountService->resetPassword($request->request->get('email'), $form->get('password')->getData());
 				return $this->redirectToRoute('ts_nao_login');
 			}
 			return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $request->request->get('email')));
 		}
+
 		if ($request->query->get('email') && $request->query->get('identifier')) {
 			$email = $request->query->get('email');
 			$token = $request->query->get('identifier');
-			if ($recoveryService->verify($email, $token)) {
+			if ($accountService->verify($email, $token) != null) {
 
 				return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $email));
 			}
 		}
 		return $this->redirectToRoute('ts_nao_homepage');
-	}
-
-	public function dashboardAction()
-	{
-		return $this->render('@TSNao/User/dashboard.html.twig');
 	}
 
 	public function deleteAccountAction(Request $request)

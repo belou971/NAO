@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Liste des demandes d'amélioration de compte</title>
+	</head>
+
+	<body>
+		<p>
+			<a href="{{ path('ts_nao_dashboard') }}">Retour</a>
+		</p>
+
+		{% for request in requestList %}
+			<p>
+				{{ request.name }} {{ request.surname }}<br />
+				<a href="{{ asset('uploads/grades/') }}{{ request.grade }}" target="_blank">Document fournis</a>
+			</p>
+			<form action="{{ path('ts_nao_upgrade_request_list') }}" method="post">
+				<input type="radio" id="agree" name="status" value="1" />
+				<label for="agree">Accepter</label>
+
+				<input type="radio" id="decline" name="status" value="0" />
+				<label for="decline">Refuser</label>
+
+				<input type="hidden" name="email" id="email" value="{{ request.email }}" />
+				{{ form_rest(form) }}
+
+				<input type="submit" value="Procéder" />
+			</form>
+
+		{% else %}
+			<p>Aucune nouvelle demande d'amélioration.</p>
+		{% endfor %}
+	</body>
+</html>

@@ -99,9 +99,17 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="recovery_token", type="string", length=255, nullable=true)
+     * @ORM\Column(name="confirmToken", type="string", length=255, nullable=true)
      */
-    private $recovery_token;
+    private $confirmToken;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="active", type="boolean")
+     * @Assert\Type(type="bool", message="Une erreur s'est produite à l'activation de votre compte.")
+     */
+    private $active;
 
 
     /**
@@ -270,7 +278,7 @@ class User implements UserInterface
         if(!in_array($roles, ProfilEnum::getValues())) {
             throw new InvalidArgumentException('Ce type de profil est inconnu.');
         }
-        $this->roles = $roles;
+        $this->roles = array($roles);
 
         return $this;
     }
@@ -315,6 +323,8 @@ class User implements UserInterface
     {
         $this->observations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = array(ProfilEnum::BIRD_FANCIER);
+        $this->active = false;
+        $this->confirmToken = bin2hex(random_bytes(16));
     }
 
     /**
@@ -361,26 +371,50 @@ class User implements UserInterface
     }
 
     /**
-     * Set recoveryToken.
+     * Set confirmToken.
      *
-     * @param string|null $recoveryToken
+     * @param string|null $confirmToken
      *
      * @return User
      */
-    public function setRecoveryToken($recoveryToken = null)
+    public function setConfirmToken($confirmToken = null)
     {
-        $this->recovery_token = $recoveryToken;
+        $this->confirmToken = $confirmToken;
 
         return $this;
     }
 
     /**
-     * Get recoveryToken.
+     * Get confirmToken.
      *
      * @return string|null
      */
-    public function getRecoveryToken()
+    public function getConfirmToken()
     {
-        return $this->recovery_token;
+        return $this->confirmToken;
+    }
+
+    /**
+     * Set active.
+     *
+     * @param bool $active
+     *
+     * @return User
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active.
+     *
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }
