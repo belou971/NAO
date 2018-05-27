@@ -38,10 +38,7 @@ class AccountController extends Controller
 
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
-
-	/**
-     * @Security("has_role('ROLE_BIRD_FANCIER')")
-     */
+	
 	public function disabledAction(Request $request)
 	{
 		$user = $this->getUser();
@@ -70,13 +67,9 @@ class AccountController extends Controller
 		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
 			
 			$accountService = $this->get('naobundle.account.account');
-			$result = $accountService->saveGrade($form->get('grade')->getData());
+			$accountService->saveGrade($form->get('grade')->getData());
 
-			if ($result != null) {
-				return new Response($result);
-			}
-
-			return $this->redirectToRoute('ts_nao_dashboard');
+			return $this->redirectToRoute('ts_nao_request_upgrade');
 		}
 
 		return $this->render('@TSNao/Account/request_upgrade.html.twig', array('form' => $form->createView()));
@@ -94,8 +87,7 @@ class AccountController extends Controller
 			$email = $request->request->get('email');
 			$status = $request->request->get('status');
 			$accountService = $this->get('naobundle.account.account');
-			$result = $accountService->upgrade($email, $status);
-			// Mettre la valeur de $result dans un message flash !
+			$accountService->upgrade($email, $status);
 
 			return $this->redirectToRoute('ts_nao_upgrade_request_list');
 		}

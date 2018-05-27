@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\FileSystem\Exception\IOException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use TS\NaoBundle\Entity\User;
 use TS\NaoBundle\Enum\ProfilEnum;
 use TS\NaoBundle\Email\Mailing;
@@ -18,13 +19,15 @@ class Account
 {
 	private $mailer;
 	private $currentUser;
+	private $flashMessage;
 	private $targetDirectory;
 	private $em;
 
-	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, $targetDirectory, EntityManagerInterface $em)
+	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, EntityManagerInterface $em)
 	{
 		$this->mailer = $mailer;
 		$this->currentUser = $tokenStorage->getToken()->getUser();
+		$this->flashMessage = $requestStack->getCurrentRequest()->getSession()->getFlashBag();
 		$this->targetDirectory = $targetDirectory;
 		$this->em = $em;
 	}
@@ -44,61 +47,73 @@ class Account
 	{
 		$user = $this->getUser($email);
 
-		if ($user != null && $user->getConfirmToken() == $token) {
-			
-			return $user;
+		if ($user == null || $user->getConfirmToken() != $token) {
+			$this->flashMessage->add('error', 'Impossible de réinitialiser le mot de passe. L\'utilisateur n\'est pas reconnu.');
+			return;
 		}
+
+		return $user;
 	}
 
 	public function activate($email, $token)
 	{
 		$user = $this->verify($email, $token);
 
-		if ($user != null) {
-
-			$user->setActive(true);
-			$user->setConfirmToken(null);
-			$this->em->flush();
-
-			return true;
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible d\'activer votre compte. L\'identifiant est inconnu.');
+			return false;
 		}
 
-		return false;
+		$user->setActive(true);
+		$user->setConfirmToken(null);
+		$this->em->flush();
+		$this->flashMessage->add('success', 'Votre compte a bien été activé.');
+
+		return true;
 	}
 
 	public function recovery($email)
 	{
 		$user = $this->getUser($email);
 
-		if ($user != null) {
-			
-			$user->setConfirmToken(bin2hex(random_bytes(16)));
-			$this->em->flush();
-			$this->mailer->recoveryPassword($user);
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible de réinitialiser votre mot de passe. L\'identifiant est inconnu.');
+			return;
 		}
+
+		$user->setConfirmToken(bin2hex(random_bytes(16)));
+		$this->em->flush();
+		$this->mailer->recoveryPassword($user);
+		$this->flashMessage->add('success', 'Le mail de récupération de mot de passe a bien été envoyé.');
 	}
 
 	public function resetPassword($email, $password)
 	{
 		$user = $this->getUser($email);
 
-		if ($user != null) {
-			
-			$user->setPassword($password);
-			$user->setConfirmToken(null);
-			$this->em->flush();
-			$this->mailer->confirmEditPassword($user);
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible de mettre à jour le mot de passe. L\'utilisateur n\'a pas été reconnu.');
+			return;
 		}
+
+		$user->setPassword($password);
+		$user->setConfirmToken(null);
+		$this->em->flush();
+		$this->mailer->confirmEditPassword($user);
+		$this->flashMessage->add('success', 'Mot de passe mis à jour.');
 	}
 
 	public function sendBackConfirmRegistration($email)
 	{
 		$user = $this->getUser($email);
 
-		if ($user != null) {
-
-			$this->mailer->confirmRegistration($user);
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible d\'envoyer le mail de confirmation d\'inscription. L\'utilisateur n\'a pas été reconnu.');
+			return;
 		}
+
+		$this->mailer->confirmRegistration($user);
+		$this->flashMessage->add('success', 'Votre demande de renvoi d\'e-mail a bien été prise en compte.');
 	}
 
 	public function saveGrade(File $file)
@@ -106,16 +121,21 @@ class Account
 		$fileName = md5(uniqid()) . '.' . $file->guessExtension();
 		
 		try{
+			if (!$this->currentUser instanceof User) {
+				$this->flashMessage->add('error', 'Impossible d\'enregistrer le fichier envoyé.');
+				return;
+			}
+
 			$file->move($this->targetDirectory . $this->currentUser->getEmail() . '/', $fileName );
 		} 
 		catch(FileException $e) {
-			$message = $e->getMessage();
-
-			return $message;
+			$this->flashMessage->add('error', 'Impossible d\'enregistrer le fichier envoyé.');
+			return;
 		}
 		
 		$this->currentUser->setGrade($this->currentUser->getEmail() . '/' . $fileName);
 		$this->em->flush();
+		$this->flashMessage->add('success', 'Votre demande d\'amélioration de compte a bien été envoyé. Vous recevrez la réponse par e-mail.');
 	}
 
 	public function upgrade($email, $status)
@@ -123,24 +143,26 @@ class Account
 		$user = $this->getUser($email);
 
 		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible d\'effectuer votre demande. L\'utilisateur n\'a pas été reconnu.');
 			return;
 		}
 
-		$result = $this->deleteGrade($user);
+		$this->deleteGrade($user);
 		
-		if (!empty($result)) {
-			return $result;
+		if ($user->getGrade() != null) {
+			return;
 		}
 
 		elseif ($status == "0") {
 
 			$this->em->flush();
-			return 'La demande de ' . $user->getName() . ' ' . $user->getSurname() . ' a bien été rejetée.';
+			$this->flashMessage->add('success', 'La demande de ' . $user->getName() . ' ' . $user->getSurname() . ' a bien été rejetée.');
+			return;
 		}
 		
 		$user->setRoles(ProfilEnum::NATURALIST);
 		$this->em->flush();
-		return $user->getName() . ' ' . $user->getSurname() . ' est désormais reconnu(e) comme Naturaliste.';
+		$this->flashMessage->add('success', $user->getName() . ' ' . $user->getSurname() . ' est désormais reconnu(e) comme Naturaliste.');
 	}
 
 	public function deleteGrade(User $user)
@@ -152,9 +174,8 @@ class Account
 			$files->remove($this->targetDirectory . $user->getEmail());
 		}
 		catch (IOException $e) {
-			$message = 'Impossible de supprimer le document de ' . $user->getName() . ' ' . $user->getSurname();
-			
-			return $message;
+			$this->flashMessage->add('error', 'Impossible de supprimer le document de ' . $user->getName() . ' ' . $user->getSurname());
+			return;
 		}
 
 		$user->setGrade(null);

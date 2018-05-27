@@ -23,6 +23,7 @@ class UserController extends Controller
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
+			$request->getSession()->getFlashBag()->add('success', 'Compte crée avec succès.');
 
 			return $this->redirectToRoute('ts_nao_login');
 		}
@@ -93,6 +94,7 @@ class UserController extends Controller
 			$em->remove($user);
 			$em->flush();
 
+			$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
 			$this->get('security.token_storage')->setToken(null);
 			$request->getSession()->invalidate();
 
