@@ -63,21 +63,18 @@ class RequestManager
             if (ActionType::SEARCH_SPECIMEN_BY_NAME === $action) {
                 $response = $this->inputFindSpecimenByNameAction($content);
             }
-            else {
-                $response["errors"] = array("The request method is not a post");
-            }
-
-        } else if(0 === strcasecmp("get", $parameters["method"])) {
-
-            if (ActionType::SEARCH_SPECIMEN_BY_CITY === $action) {
+            else if (ActionType::SEARCH_SPECIMEN_BY_CITY === $action) {
                 $response = $this->inputFindSpecimenByCityAction($content);
             }
             else if (ActionType::SEARCH_SPECIMEN_BY_COORD === $action) {
                 $response = $this->inputFindSpecimenByCoordAction($content);
             }
             else {
-                $response["errors"] = array("The request method is not a get");
+                $response["errors"] = array("The request method is not a post");
             }
+
+        } else if(0 === strcasecmp("get", $parameters["method"])) {
+            $response["errors"] = array("The request method is not a get");
         }
         else {
             $response["errors"] = array("There is not an action associated to your request");
@@ -119,12 +116,12 @@ class RequestManager
         $response = array("errors" => array(), "input_data" => array() );
 
         if(!array_key_exists("city", $parameters)) {
-            $response["errors"] = array("Syntax error in content request, \'city\' property not found");
+            $response["errors"] = array("Syntax error in content request, 'city' property not found");
             return $response;
         }
 
         if(!array_key_exists("geo_properties", $parameters)) {
-            $response["errors"] = array("Syntax error in content request, \'geo_properties\' property not found");
+            $response["errors"] = array("Syntax error in content request, 'geo_properties' property not found");
             return $response;
         }
 
@@ -174,7 +171,7 @@ class RequestManager
             }
         }
 
-        $response["input_data"] = $parameters["coord_properties"][0];
+        $response["input_data"] = $parameters["coord_properties"]["features"][0];
 
         return $response;
     }

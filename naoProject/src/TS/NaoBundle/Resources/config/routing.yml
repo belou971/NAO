@@ -74,3 +74,7 @@ ts_nao_search_specimen_by_city:
 ts_nao_search_specimen_by_coord:
   path: /search_specimen_by_coord
   defaults: { _controller: TSNaoBundle:Search:findByCoord }
+
+ts_nao_zoom_setting:
+  path: /zoom_max
+  defaults: { _controller: TSNaoBundle:Search:getZoomMax }

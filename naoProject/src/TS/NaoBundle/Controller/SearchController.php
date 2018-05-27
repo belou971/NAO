@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use TS\NaoBundle\Component\ActionType;
 use TS\NaoBundle\Component\DataManager;
 use TS\NaoBundle\Component\RequestManager;
+use TS\NaoBundle\Enum\ProfilEnum;
 
 class SearchController extends Controller
 {
@@ -81,6 +82,28 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $parameters = $requestData["input_data"];
         $response   = DataManager::getInstance($em)->get(ActionType::SEARCH_SPECIMEN_BY_COORD, $parameters);
+
+        return new Response($response);
+    }
+
+    public function getZoomMaxAction() {
+
+        $user = $this->getUser();
+        $logged = !is_null($user);
+        $parameters = array("logged"=>$logged, "profil"=>"");
+        if($logged) {
+            $roles  = $user->getRoles();
+            if(in_array(ProfilEnum::ADMIN, $roles)){
+                $parameters["profil"] = ProfilEnum::ADMIN;
+            } else if(in_array(ProfilEnum::NATURALIST, $roles)) {
+                $parameters["profil"] = ProfilEnum::NATURALIST;
+            } else {
+                $parameters["profil"] = ProfilEnum::BIRD_FANCIER;
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $response = DataManager::getInstance($em)->get(ActionType::ZOOM_MAX, $parameters);
 
         return new Response($response);
     }
