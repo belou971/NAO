@@ -84,16 +84,23 @@ class UserController extends Controller
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
+	/**
+     * @Security("has_role('ROLE_BIRD_FANCIER')")
+     */
 	public function deleteAccountAction(Request $request)
 	{
+		$user = $this->getUser();
+
+		if (!$user->getActive()) {
+			return $this->redirectToRoute('ts_nao_disabled');
+		}
+
 		$form = $this->get('form.factory')->create();
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
-		{
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			$user= $this->getUser();
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($user);
 			$em->flush();
-
 			$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
 			$this->get('security.token_storage')->setToken(null);
 			$request->getSession()->invalidate();

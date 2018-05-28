@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-sm-2 text-center">
 
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted('ROLE_ADMIN') and app.user.active == true %}
                     <button class="btn btn-success btn-sm" href="#" type="button">Espace administration</button>
                 {% endif %}
 

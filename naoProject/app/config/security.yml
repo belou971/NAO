@@ -36,7 +36,3 @@ security:
             logout:
                 path: ts_nao_logout
                 target: ts_nao_homepage
-
-    access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/account, roles: ROLE_BIRD_FANCIER }
