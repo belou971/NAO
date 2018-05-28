@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use TS\NaoBundle\Entity\User;
 use TS\NaoBundle\Form\UserType;
+use TS\NaoBundle\Form\ContactType;
 use TS\NaoBundle\Form\ResetPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -109,5 +110,16 @@ class UserController extends Controller
 		}
 
 		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView()));
+	}
+
+	public function contactAction(Request $request)
+	{
+		$form = $this->createForm(ContactType::class);
+
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+			$request->getSession()->getFlashBag()->add('success', 'Message envoyé !');
+		}
+
+		return $this->render('@TSNao/User/contact.html.twig', array('form' => $form->createView()));
 	}
 }
