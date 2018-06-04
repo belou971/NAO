@@ -1,0 +1,106 @@
+
+
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <h1>{{ observation['title'] }}</h1>
+            <div class="row">
+                <div class="col-sm-2 text-center">
+                    {% if infos['url'] is not null %}
+                        {% set icone %}
+                            <img src="{{ infos['url'] }}" alt="{{ infos['alt'] }}" width="65" height="65" >
+                        {% endset %}
+                    {% else %}
+                        {% set icone %}
+                            <span class="fas fa-ban fa-10x bird_icone"></span>
+                        {% endset %}
+                    {% endif %}
+                    {{ icone }}
+                </div>
+                <div class="col-sm-10">
+                    <ol class="list-unstyled">
+                        <li>Auteur : <span>{{ infos['username'] }}</span></li>
+                        <li>Date d'observation : <span>{{ observation['dtCreation'].date }}</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if is_granted('ROLE_NATURALIST') or is_granted('ROLE_ADMIN') %}
+            {% set offset = "" %}
+            <div class="col-sm-3">
+                <div id="mapid" height="247"></div>
+                <div class="coordinates">
+                    <ul class="list-unstyled">
+                        <li>Latitude : <span id="lat">{{ observation['latitude'] }}</span></li>
+                        <li>Longitude : <span id="lgn">{{ observation['longitude'] }}</span></li>
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            {% set offset = "col-sm-offset-3" %}
+        {% endif %}
+
+        <div class="{{ offset }} col-sm-9">
+            <div class="taxref">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Informations de la base TAXREF</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="libelle">Espèce</td>
+                        <td class="value">{{ infos['lbNom'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="libelle">Autres noms connus</td>
+                        <td class="value">{{ infos['nomVern'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="libelle">Rang</td>
+                        <td class="value">{{ infos['rang'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="libelle">Habitat</td>
+                        <td class="value">{{ infos['habitat'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="libelle">Statut</td>
+                        <td class="value">{{ infos['status'] }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="description">
+                <div class="row">
+                    <div class="col-sm-6">Nombre d'individu observé</div>
+                    <div class="col-sm-6">{{ observation['nbSpecimen'] }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>
+                            {{ observation['remarks'] }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <a href="#">Consulter sa fiche INPM</a>
+            </div>
+        </div>
+    </div>
+
+    {% if (is_granted('ROLE_NATURALIST') or is_granted('ROLE_ADMIN'))and (observation['state'] == 'submit') %}
+        <div class="row">
+            <div class="col-sm-6">
+                <button type="button" class="btn btn-success">Valider</button>
+            </div>
+            <div class="col-sm-6">
+                <button type="button" class="btn btn-danger">Refuser</button>
+            </div>
+        </div>
+    {% endif %}
+
