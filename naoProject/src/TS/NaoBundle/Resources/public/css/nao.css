@@ -21,7 +21,6 @@ body {
 }
 
 .main-menu {
-    /*margin-left: 15%;*/
     font-size: 18px;
     border-top: #ffffff solid 1px;
     border-bottom: #ffffff solid 1px;
@@ -179,13 +178,16 @@ body {
 
 .main-contain{
     background-color: #ffffff;
-    border: 2px solid purple;
+
+}
+
+.main-contain-border{
+    border-right: 1px solid #663300;
     margin-right: 20px;
 }
 
 .sidebar {
     background-color: #ffffff;
-    border-left: 1px solid #663300;
 }
 
 .sidebar-module {
@@ -256,6 +258,18 @@ body {
     }
 }
 
+.module-item {
+    border: 2px solid #7777776e;
+    padding: 0.6em;
+    background-color: #eee;
+    margin-bottom: 2em;
+}
+
+.bird_icone {
+    background-color: #42840e;
+    padding: 0.3em;
+    color: #663300;
+}
 
 /**********************************************************************************************************************/
 /*                                                Openstreetmap style                                                          */

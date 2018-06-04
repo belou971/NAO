@@ -15,7 +15,7 @@ class SearchController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('@TSNao/Search/index.html.twig');
+        return $this->render('@TSNao/Search/index.html.twig', array("modal" => false));
     }
 
     public function loadSpecimensAction() {
@@ -40,7 +40,7 @@ class SearchController extends Controller
             return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
-        //step2 : //Récupérer les observations ayant le nom du specimen
+        //step2 : Récupérer les observations ayant le nom du specimen
         $em = $this->getDoctrine()->getManager();
         $specimenToFind = $requestData["input_data"]["specimen_name"];
         $parameters = array("name" => $specimenToFind);

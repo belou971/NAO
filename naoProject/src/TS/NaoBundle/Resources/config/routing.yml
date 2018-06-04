@@ -78,3 +78,17 @@ ts_nao_search_specimen_by_coord:
 ts_nao_zoom_setting:
   path: /zoom_max
   defaults: { _controller: TSNaoBundle:Search:getZoomMax }
+
+ts_nao_read_observation:
+  path: /read
+  defaults: { _controller: TSNaoBundle:Observation:readObservation }
+
+ts_nao_observation_view:
+  path: /view/{id}
+  defaults:
+    _controller: TSNaoBundle:Observation:readOnly
+
+ts_nao_observation_view_modal:
+  path: /modal/{id}
+  defaults:
+    _controller: TSNaoBundle:Observation:readOnlyModal

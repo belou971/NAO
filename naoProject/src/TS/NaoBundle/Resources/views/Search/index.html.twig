@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 search-box">
+        <div class="col-sm-12 search-box ">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#specimen" data-toggle="tab">Recherche à partir du nom</a></li>
                 <li><a href="#cities" data-toggle="tab">Recherche à partir du lieu</a></li>
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" data-toggle="modal" data-target="#observationModal">
         <div class="search-message text-success purchase-flow-border col-sm-12 text-center" style="display: none;">
         </div>
     </div>
@@ -87,6 +87,9 @@
             <div id="mapid"></div>
         </div>
     </div>
+
+    {% include 'TSNaoBundle:Observation:observation_modal.html.twig' %}
+
 {% endblock %}
 
 {% block js %}

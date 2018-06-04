@@ -28,12 +28,20 @@
                     <li><a href="#">Nos membres</a></li>
                     <li><a href="#">Blog</a></li>
                     <li><a href="#">Contact</a></li>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li><a href="{{ path('ts_nao_dashboard') }}">Mon compte</a></li>
+                    {% endif %}
                     <li><a href="#">Proposer une observation</a></li>
                 </ul>
 
                 <ul class="nav nav-pills nav-stacked pull-right signup">
-                    <li><a href="{{ path('ts_nao_login') }}">Se connecter</a></li>
-                    <li><a href="{{ path('ts_nao_registration') }}">Créer un compte</a></li>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <li>{{ app.user.username }}, Bienvenue</li>
+                        <li><a href="{{ path('ts_nao_logout') }}">Se déconnecter</a></li>
+                    {% elseif is_granted('IS_AUTHENTICATED_ANONYMOUSLY')  %}
+                        <li><a href="{{ path('ts_nao_login') }}">Se connecter</a></li>
+                        <li><a href="{{ path('ts_nao_registration') }}">Créer un compte</a></li>
+                    {% endif %}
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

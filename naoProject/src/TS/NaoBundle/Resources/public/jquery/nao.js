@@ -298,7 +298,34 @@ function AddMarkersToClusterGroup(obsList) {
 }
 
 function addObservationOnMap(observation) {
-    return L.marker([observation.latitude, observation.longitude], observation.specimen);
+    var lat = observation[0].latitude;
+    var lgn = observation[0].longitude;
+    var marker = L.marker([lat, lgn], {title: observation[0].specimen});
+
+    marker.on('click', getObservationContent(1));
+    return marker;
+}
+
+function getObservationContent(observationId) {
+    return function(event) {
+
+        var $data = {id: observationId};
+        $.ajax({
+            type: 'post',
+            url: Routing.generate('ts_nao_read_observation'),
+            data: JSON.stringify($data),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (content) {
+                var outputData = content.html;
+
+                $('.modal-body').html(outputData);
+                $('#observationModal').modal('show');
+            }
+        });
+
+
+    };
 }
 
 function addPolygonOfCity(contour) {

@@ -69,6 +69,14 @@ class DataManager
             $response = $this->getZoomMax($parameters);
         }
 
+        if(ActionType::LAST_OBSERVATIONS === $action) {
+            $response = $this->getLastObservations($parameters);
+        }
+
+        if (ActionType::READ_OBSERVATION === $action) {
+            $response = $this->getObservation($parameters);
+        }
+
         return $response;
     }
 
@@ -90,7 +98,6 @@ class DataManager
 
         return $response;
     }
-
 
     private function findSpecimenByNameAction($parameters) {
         $response = array("errors" => array(), "data" => array(), "messages" => array());
@@ -128,7 +135,6 @@ class DataManager
 
         return $response;
     }
-
 
     private function findSpecimenByCityAction($parameters) {
         $response = array("errors" => array(), "data" => array(), "contour" => array(), "messages" => array());
@@ -185,7 +191,6 @@ class DataManager
         return $response;
     }
 
-
     private function findSpecimenByCoordAction($parameters) {
         $response = array("errors" => array(), "data" => array(), "contour" => array(), "messages" => array());
 
@@ -222,7 +227,6 @@ class DataManager
 
         return $response;
     }
-
 
     private function getMaxLatLon($geometry) {
 
@@ -292,6 +296,77 @@ class DataManager
         }
         else {
             $response["data"] = array("zoomMax" => 10);
+        }
+
+        return $response;
+    }
+
+    private function getLastObservations($parameters) {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        if(!array_key_exists("nbObservations", $parameters)) {
+            $response["errors"] = array("le paramètre attendu [nbObservations] est absent");
+        }
+
+        //Find in database the last observations with a number of observations
+        // in the result limited by the number gave in parameter
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+            $listObservations = $observationRepo->findLastObservations($parameters["nbObservations"]);
+            $nbObservations = count($listObservations);
+
+            if(0 === $nbObservations) {
+                $response["messages"] = array("Aucune observation enregistrée dans notre site");
+            }
+
+            $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    private function getObservation($parameters)
+    {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        if(!array_key_exists("id", $parameters)) {
+            $response["errors"] = array("Indiquer un identifiant pour accéder à une observation");
+        }
+
+        //Find in database the observation identified by the given id in parameter
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+            $listObservations = $observationRepo->getObservation($parameters["id"]);
+            $nbObservations = count($listObservations);
+
+            if(0 === $nbObservations) {
+                $response["messages"] = array("cette observation est introuvable");
+            }
+
+            $observation = $listObservations[0][0];
+            unset($listObservations[0][0]);
+            array_unshift($listObservations, $observation);
+            $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
         }
 
         return $response;

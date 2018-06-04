@@ -14,6 +14,8 @@ class ActionType {
     const SEARCH_SPECIMEN_BY_CITY        = "search_specimen_by_city";
     const SEARCH_SPECIMEN_BY_COORD       = "search_specimen_by_coord";
     const ZOOM_MAX                       = "zoom_max";
+    const LAST_OBSERVATIONS              = "last_observations";
+    const READ_OBSERVATION               = "read_observation";
 
     /**
      * List of all references of messages
@@ -25,7 +27,9 @@ class ActionType {
         self::SEARCH_SPECIMEN_BY_NAME,
         self::SEARCH_SPECIMEN_BY_CITY,
         self::SEARCH_SPECIMEN_BY_COORD,
-        self::ZOOM_MAX
+        self::ZOOM_MAX,
+        self::LAST_OBSERVATIONS,
+        self::READ_OBSERVATION
     ];
 
     /**
