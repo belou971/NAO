@@ -17,6 +17,11 @@ class UserController extends Controller
 {
 	public function registrationAction(Request $request)
 	{
+		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+			
+			return $this->redirectToRoute('ts_nao_dashboard');
+		}
+	
 		$user = new User();
 		$form = $this->createForm(UserType::class, $user);
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -98,13 +103,11 @@ class UserController extends Controller
 
 		$form = $this->get('form.factory')->create();
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-			$user= $this->getUser();
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($user);
 			$em->flush();
 			$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
 			$this->get('security.token_storage')->setToken(null);
-			$request->getSession()->invalidate();
 
 			return $this->redirectToRoute('ts_nao_homepage');
 		}

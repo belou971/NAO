@@ -25,9 +25,8 @@
 		
 		<form action="{{ path('ts_nao_disabled') }}" method="post">
 			
-			{{ form_rest(form) }}
-			<input type="hidden" name="email" id="email" value="{{ email }}" />
 			<input type="submit" value="Recevoir l'email de bienvenue." />
+			{{ form_rest(form) }}
 	
 		</form>
 		

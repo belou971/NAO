@@ -58,7 +58,7 @@ class AccountController extends Controller
 
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			$accountService = $this->get('naobundle.account.account');
-			$accountService->sendBackConfirmRegistration($request->request->get('email'));
+			$accountService->sendBackConfirmRegistration($user->getEmail());
 
 			return $this->redirectToRoute('ts_nao_disabled');
 		}
