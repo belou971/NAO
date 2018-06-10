@@ -40,6 +40,9 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
+        - 'TSNaoBundle:sections:custom_theme.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -82,4 +85,4 @@ assetic:
       cssrewrite: ~
 
 fos_js_routing:
-  routes_to_expose: [ts_nao_specimens_names, ts_nao_search_specimen_by_name, ts_nao_search_specimen_by_city, ts_nao_search_specimen_by_coord, ts_nao_zoom_setting, ts_nao_read_observation]
+  routes_to_expose: [ts_nao_specimens_names, ts_nao_search_specimen_by_name, ts_nao_search_specimen_by_city, ts_nao_search_specimen_by_coord, ts_nao_zoom_setting, ts_nao_read_observation, ts_nao_observation_form]

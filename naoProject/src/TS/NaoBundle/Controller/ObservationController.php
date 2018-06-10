@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use TS\NaoBundle\Component\ActionType;
 use TS\NaoBundle\Component\DataManager;
 use TS\NaoBundle\Component\RequestManager;
+use TS\NaoBundle\Entity\Observation;
+use TS\NaoBundle\Form\ObservationType;
 
 class ObservationController extends Controller {
 
@@ -56,6 +58,44 @@ class ObservationController extends Controller {
 
         return $this->render('TSNaoBundle:sections:sidebar.html.twig', array("lastObservations" => $response["data"]));
     }
+
+    public function observationFormAction(Request $request) {
+
+        $em = $this->getDoctrine()->getManager();
+        $observation = new Observation();
+
+        //$session = $request->getSession();
+        //if(!is_null($session) && $session->has('booking')) {
+        //    $booking = $session->get('booking');
+        //}
+
+        $form = $this->createForm(ObservationType::class, $observation);
+
+        if($request->isMethod('POST') )
+        {
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()) {
+
+                //$session->set('observation', $form->getData());
+                $user = $this->getUser();
+                $logged = !is_null($user);
+                if($logged) {
+                    $observation = $form->getData();
+                    $observation->setUser($user);
+                    $observation->updateStatusFromUserRole();
+
+                    $em->persist($observation);
+                    $em->flush();
+
+                    return $this->redirectToRoute('ts_nao_dashboard');
+                }
+
+            }
+        }
+
+        return $this->render('TSNaoBundle:Observation:observationForm.html.twig', array('form' => $form->createView(), "modal" => false));
+    }
+
 
     private function getObservation($parameters, $manager)
     {

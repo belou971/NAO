@@ -1,0 +1,186 @@
+{% extends "@TSNao/sections/base.html.twig" %}
+
+{% block title %}Fiche d'observation{% endblock %}
+
+{% block cssspec %}
+    <link rel="stylesheet" href="{{ asset('bundles/tsnao/css/awesomplete.css') }}" />
+    <link href="{{ asset('bundles/tsnao/components/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block jsspec %}
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+<script src="{{ asset('bundles/tsnao/jquery/awesomplete.min.js' ) }}" async></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <h1>Proposer une nouvelle observation</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 form-box">
+            {{ form_start(form, {attr: {class: 'form-horizontal', novalidate: 'novalidate'}}) }}
+
+            {% if form.title.vars.valid  %}
+                {% set valid1_css = '' %}
+            {% else %}
+                {% set valid1_css = 'has-error' %}
+            {% endif %}
+            <div class="row form-group {{ valid1_css }}">
+                {{ form_label(form.title, 'Titre *', {'label_attr':{'class': 'col-sm-2 control-label'}}) }}
+                <div class="col-sm-10">
+                    {{ form_widget(form.title, {'attr':{'class': 'form-control'}}) }}
+                </div>
+                <div class="col-sm-offset-2 col-sm-9">
+                    {{ form_errors(form.title) }}
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">Identification</h3>
+                </div>
+                <div class="panel-body">
+                    {% if form.specimen.vars.valid  %}
+                        {% set valid2_css = '' %}
+                    {% else %}
+                        {% set valid2_css = 'has-error' %}
+                    {% endif %}
+                    {% if form.nbSpecimen.vars.valid  %}
+                        {% set valid3_css = '' %}
+                    {% else %}
+                        {% set valid3_css = 'has-error' %}
+                    {% endif %}
+                    <div class="row form-group {{ valid2_css }}">
+                        {{ form_label(form.specimen, 'Espèce *', {'label_attr':{'class': 'col-sm-3 control-label'}}) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.specimen, {'attr':{'class': 'form-control complete-specimen'}}) }}
+                        </div>
+                        <div class="col-sm-offset-3 col-sm-9">
+                            {{ form_errors(form.specimen) }}
+                        </div>
+                    </div>
+                    <div class="row form-group {{ valid3_css }}">
+                        {{ form_label(form.nbSpecimen, "Nombre d'individu observé", {'label_attr':{'class': 'col-sm-3 control-label'}}) }}
+                        <div class="col-sm-9">
+                            {{ form_widget(form.nbSpecimen, {'attr':{'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-sm-offset-3 col-sm-9">
+                            {{ form_errors(form.nbSpecimen) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">Lieu d'observation</h3>
+                </div>
+                <div class="panel-body">
+                            {% if form.latitude.vars.valid  %}
+                                {% set valid4_css = '' %}
+                            {% else %}
+                                {% set valid4_css = 'has-error' %}
+                            {% endif %}
+                            {% if form.longitude.vars.valid  %}
+                                {% set valid5_css = '' %}
+                            {% else %}
+                                {% set valid5_css = 'has-error' %}
+                            {% endif %}
+                            <div class="row form-group {{ valid4_css }} {{ valid5_css }}">
+                                {{ form_label(form.latitude, "Latitude", {'label_attr':{'class': 'col-sm-2 control-label'}}) }}
+                                <div class="col-sm-4">
+                                    {{ form_widget(form.latitude, {'attr':{'class': 'form-control'}}) }}
+                                </div>
+                                {{ form_label(form.longitude, "Longitude", {'label_attr':{'class': 'col-sm-2 control-label'}}) }}
+                                <div class="col-sm-4">
+                                    {{ form_widget(form.longitude, {'attr':{'class': 'form-control'}}) }}
+                                </div>
+                                <div class=" col-sm-offset-2 col-sm-4">
+                                    {{ form_errors(form.latitude) }}
+                                </div>
+                                <div class="col-sm-offset-2 col-sm-4">
+                                    {{ form_errors(form.longitude) }}
+                                </div>
+                            </div>
+
+                    {% if form.dtCreation.vars.valid  %}
+                        {% set valid6_css = '' %}
+                    {% else %}
+                        {% set valid6_css = 'has-error' %}
+                    {% endif %}
+                    <div class="row {{ valid6_css }}">
+                        {{ form_label(form.dtCreation, "Date d'observation", {'label_attr':{'class': 'col-sm-2 control-label'}}) }}
+                        <div class="col-sm-10">
+                            {{ form_widget(form.dtCreation) }}
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            {{ form_errors(form.dtCreation) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">Description</h3>
+                </div>
+                <div class="panel-body">
+                    {% if form.remarks.vars.valid  %}
+                        {% set valid7_css = '' %}
+                    {% else %}
+                        {% set valid7_css = 'has-error' %}
+                    {% endif %}
+                    <div class="row form-group {{ valid7_css }}">
+                        <div class="col-sm-12">
+                            {{ form_errors(form.remarks) }}
+                        </div>
+                        <div class="col-sm-12">
+                            {{ form_widget(form.remarks, {'attr':{'class': 'form-control', 'rows': '10'}}) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <div class="col-sm-4">
+                    {{ form_widget(form.reset, {'attr': {'class': 'btn btn-default btn-lg btn-width'}}) }}
+                </div>
+                <div class="col-sm-8">
+                {% set labelBtn = (is_granted('ROLE_NATURALIST') or is_granted('ROLE_ADMIN'))?'Valider':'Soumettre' %}
+                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-danger btn-lg btn-width'},'label': labelBtn}) }}
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('bundles/tsnao/jquery/nao-commons.js') }}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ asset('bundles/tsnao/components/moment/min/moment-with-locales.min.js') }}"></script>
+    <script src="{{ asset('bundles/tsnao/components/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('bundles/tsnao/components/moment/min/locales.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/tsnao/components/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+    <script>
+        $('.datetime-picker').datetimepicker({
+            locale: 'fr',
+            format: 'DD-MM-YYYY HH:mm',
+            maxDate: new Date() + 1,
+            useCurrent: false
+        });
+
+        $('.datetime-picker').on('dp.change', function(e){
+            $('.datetime-picker').val(e.date.format('DD-MM-YYYY HH:mm'));
+        });
+    </script>
+{% endblock %}

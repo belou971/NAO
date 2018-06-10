@@ -1,28 +1,3 @@
-/**********************************************************************************************************************/
-/*                                                 Specimen auto-completion manager                                   */
-/**********************************************************************************************************************/
-var xhr = new XMLHttpRequest();
-xhr.open('GET', Routing.generate('ts_nao_specimens_names'), true);
-xhr.onload = function() {
-   var list = JSON.parse(xhr.responseText);
-   var specimenInput = document.querySelector("input#input-specimen");
-   var awesomplete = new Awesomplete(specimenInput,{ list: list });
-    $('#specimen .dropdown-btn').on("click", function() {
-        if (awesomplete.ul.childNodes.length === 0) {
-            awesomplete.minChars = 1;
-            awesomplete.evaluate();
-        }
-        else if (awesomplete.ul.hasAttribute('hidden')) {
-            awesomplete.open();
-        }
-        else {
-            awesomplete.close();
-        }
-    });
-
-};
-xhr.send();
-
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the name of a specimen                             */
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -78,19 +53,6 @@ function removeLayers() {
     resetMap();
     updateZoomMax();
 }
-
-
-/**********************************************************************************************************************/
-/*                                                 Cities auto-completion manager                                     */
-/**********************************************************************************************************************/
-var citiesInput = document.querySelector("input#input-cities");
-var awesomplete2 = new Awesomplete( citiesInput, {
-                                    minChars:1,
-                                    autoFirst:true,
-                                    maxItems:5,
-                                    replace: function(text){
-                                        this.input.value = text;
-                                    } });
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the city                                           */

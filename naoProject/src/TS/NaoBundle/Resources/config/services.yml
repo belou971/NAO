@@ -2,3 +2,19 @@ services:
 #    ts_nao.example:
 #        class: TS\NaoBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+  form.type.datepicker:
+        class: TS\NaoBundle\Form\DateTimePickerType
+        tags:
+          - { name: form.type, alias: datetimepicker }
+
+  form.type.observation:
+        class: TS\NaoBundle\Form\ObservationType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+          - { name: form.type }
+
+
+#  ts_nao.fileuploader:
+#    class: TS\NaoBundle\Component\FileUploader
+#    arguments: ["%galery_directory%" ]
+#

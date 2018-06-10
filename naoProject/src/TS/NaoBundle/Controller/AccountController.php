@@ -20,7 +20,7 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_disabled');
 		}
 
-		return $this->render('@TSNao/Account/dashboard.html.twig');
+		return $this->render('@TSNao/Account/dashboard.html.twig', array('modal' => false));
 	}
 
 	public function activeAction(Request $request)

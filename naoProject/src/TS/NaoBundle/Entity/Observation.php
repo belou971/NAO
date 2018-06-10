@@ -3,7 +3,9 @@
 namespace TS\NaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use TS\NaoBundle\Enum\ProfilEnum;
 use TS\NaoBundle\Enum\StateEnum;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Observation
@@ -26,6 +28,8 @@ class Observation
      * @var \DateTime
      *
      * @ORM\Column(name="dt_creation", type="datetime")
+     * @Assert\DateTime(message = "La date n'est pas valide")
+     * @Assert\NotNull(message = "Indiquer quand à eu lieu l'observation")
      */
     private $dtCreation;
 
@@ -40,6 +44,7 @@ class Observation
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
+     * @Assert\NotBlank(message ="Le titre de l'observation est absente", payload={"severity"="error"})
      */
     private $title;
 
@@ -47,6 +52,7 @@ class Observation
      * @var string
      *
      * @ORM\Column(name="specimen", type="string", length=255)
+     * @Assert\NotBlank(message ="Le nom de l'espèce est vide", payload={"severity"="error"})
      */
     private $specimen;
 
@@ -54,6 +60,10 @@ class Observation
      * @var int
      *
      * @ORM\Column(name="nb_specimen", type="integer")
+     * @Assert\Range(
+     *     min=1,
+     *     minMessage="Au moins {{ limit }} oiseau est observé"
+     * )
      */
     private $nbSpecimen;
 
@@ -61,6 +71,7 @@ class Observation
      * @var float
      *
      * @ORM\Column(name="longitude", type="float")
+     * @Assert\NotBlank(message =" La longitude est absente", payload={"severity"="error"})
      */
     private $longitude;
 
@@ -68,6 +79,7 @@ class Observation
      * @var float
      *
      * @ORM\Column(name="latitude", type="float")
+     * @Assert\NotBlank(message ="La latitude est absente", payload={"severity"="error"})
      */
     private $latitude;
 
@@ -75,6 +87,7 @@ class Observation
      * @var string
      *
      * @ORM\Column(name="remarks", type="text")
+     * @Assert\NotBlank(message ="La description est vide", payload={"severity"="error"})
      */
     private $remarks;
 
@@ -89,6 +102,7 @@ class Observation
      * @var Image
      *
      * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Image", mappedBy="observation", cascade={"remove"})
+     *
      */
     private $images;
 
@@ -425,5 +439,32 @@ class Observation
     public function getTaxref()
     {
         return $this->taxref;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\IsTrue(message = "La date d'observation postérieure à aujourd'hui")
+     * @return bool
+     */
+    public function isBeforeTomorrow() {
+
+        $tomorrow = date_modify(new \DateTime(), '+1 day');
+
+        return ($this->dtCreation < $tomorrow);
+    }
+
+    public function updateStatusFromUserRole() {
+        if(is_null($this->user)) {
+            return;
+        }
+
+        $roles  = $this->user->getRoles();
+        if(in_array(ProfilEnum::ADMIN, $roles)){
+            $this->setState(StateEnum::VALIDATE);
+        } else if(in_array(ProfilEnum::NATURALIST, $roles)) {
+            $this->setState(StateEnum::VALIDATE);
+        } else {
+            $this->setState(StateEnum::SUBMIT);
+        }
     }
 }

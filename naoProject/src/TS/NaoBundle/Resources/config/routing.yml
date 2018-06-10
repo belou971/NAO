@@ -88,7 +88,6 @@ ts_nao_observation_view:
   defaults:
     _controller: TSNaoBundle:Observation:readOnly
 
-ts_nao_observation_view_modal:
-  path: /modal/{id}
-  defaults:
-    _controller: TSNaoBundle:Observation:readOnlyModal
+ts_nao_observation_form:
+  path: /observation/form
+  defaults: { _controller: TSNaoBundle:Observation:observationForm }

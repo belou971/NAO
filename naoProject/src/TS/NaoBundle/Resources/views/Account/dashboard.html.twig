@@ -1,29 +1,31 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Dashbord</title>
-	</head>
+{% extends "@TSNao/sections/base.html.twig" %}
 
-	<body>
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+	<p>
+		<a href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
+	</p>
+
+    {% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
 		<p>
-			<a href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
+			<a href="{{ path('ts_nao_request_upgrade') }}">Demander une amélioration du compte</a>
 		</p>
+    {% endif %}
 
-		{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
-			<p>
-				<a href="{{ path('ts_nao_request_upgrade') }}">Demander une amélioration du compte</a>
-			</p>
-		{% endif %}
-
-		{% if 'ROLE_ADMIN' in app.user.roles %}
-			<p>
-				<a href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
-			</p>
-		{% endif %}
-
+    {% if 'ROLE_ADMIN' in app.user.roles %}
 		<p>
-			<a href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
+			<a href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
 		</p>
-	</body>
-</html>
+    {% endif %}
+
+	<p>
+		<a href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
+	</p>
+{% endblock %}
+
+
+
+{% block js %}
+	<script src="{{ asset('bundles/tsnao/jquery/nao.js') }}"></script>
+{% endblock %}
