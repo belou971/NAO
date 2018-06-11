@@ -1,0 +1,9 @@
+<footer>
+	{% if is_granted('ROLE_ADMIN') and app.user.active == true %}
+    	<a class="btn btn-primary" role="button" href="#">Espace administration</a>
+    {% else %}
+    	<div></div>
+    {% endif %}
+    <p class="text-center">©2018 Nos Amis les Oiseaux, Tous droits réservés.</p>
+    <p>Mentions légales</p>
+</footer>

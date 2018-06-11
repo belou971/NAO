@@ -4,28 +4,24 @@
 
 	{% block content %}
 
-	{% for message in app.flashes('success') %}
+        <div class="transparent">
 
-            <div>
-                {{ message }}
-            </div>
+        	{%   include 'TSNaoBundle:sections:message.html.twig' %}
 
-        {% endfor %}
+        	<div class="form_layout">
+        		<div class="form_head">
+        			<p><i class="fa fa-question mr-3"></i>Mot de passe oublié</p>
+        		</div>
 
-        {% for message in app.flashes('error') %}
+				<form action="{{ path('ts_nao_recovery') }}" method="post">
+					<div class="form-group">
+						<label for="email">Adresse e-mail :</label>
+						<input type="email" id="email" class="form-control" name="email" autocomplete="off" value="mbenguia.husseini@live.fr" required />
+					</div>
 
-            <div>
-                {{ message }}
-            </div>
-
-        {% endfor %}
-
-		<form action="{{ path('ts_nao_recovery') }}" method="post">
-			<label for="email">Adresse e-mail</label>
-			<input type="email" id="email" name="email" autocomplete="off" value="mbenguia.husseini@live.fr" required />
-
-			<input type="hidden" id="ts_naobundle_user__token" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-			<input type="submit" value="Réinitialiser" />
-		</form>
-
+					<input type="hidden" id="ts_naobundle_user__token" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+					<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Réinitialiser" />
+				</form>
+			</div>
+		</div>
 	{% endblock %}

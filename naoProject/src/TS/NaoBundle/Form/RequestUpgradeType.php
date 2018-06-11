@@ -31,7 +31,6 @@ class RequestUpgradeType extends AbstractType
                         'uploadFormSizeErrorMessage' => $message)),
                     new NotBlank(array(
                         'message' => 'Aucun fichier n\'a été sélectionné.'))),
-                'required' => false))
-                ->add('Envoyer', SubmitType::class);
+                'required' => false));
     }
 }

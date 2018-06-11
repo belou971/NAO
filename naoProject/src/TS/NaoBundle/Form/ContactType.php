@@ -16,22 +16,24 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', TextType::class, array(
-                    'label' => 'Nom *',
+                    'label' => 'Nom',
                     'constraints' => new Length(array(
                         'min' => 2,
                         'minMessage' => 'Le nom doit comporter au minimum 2 caractères.'))))
                 ->add('surname', TextType::class, array(
-                    'label' => 'Prénom *',
+                    'label' => 'Prénom',
                     'constraints' => new Length(array(
                         'min' => 2,
                         'minMessage' => 'Le prénom doit comporter au minimum 2 caractères.'))))
                 ->add('email', RepeatedType::class, array(
                     'type' => EmailType::class,
                     'invalid_message' => 'L\'adresse e-mail doit être identique.',
-                    'first_options' => array('label' => 'Adresse e-mail *'),
-                    'second_options' => array('label' => 'Confirmez votre adresse e-mail *')))
+                    'first_options' => array('label' => 'Adresse e-mail'),
+                    'second_options' => array('label' => 'Confirmez votre adresse e-mail')))
                 ->add('message', TextareaType::class, array(
-                    'label' => 'Message *'))
-                ->add('Envoyer', SubmitType::class);
+                    'label' => 'Message',
+                    'constraints' => new Length(array(
+                        'min' => 10,
+                        'minMessage' => 'Le message doit comporter au moins 10 caractères.'))));
     }
 }

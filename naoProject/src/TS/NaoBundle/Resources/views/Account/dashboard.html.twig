@@ -4,40 +4,154 @@
 
 	{% block content %}
 
-		{% for message in app.flashes('success') %}
+		<div class="transparent">
 
-			<div>
-				{{ message }}
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-binoculars mr-3"></i>Vos observations</p>
+				</div>
+				<div class="table_layout">
+					<table class="table table-striped">
+						<div class="table_head_layout validated_obs">Observations validées</div>
+						<thead>
+							<tr>
+								<th>Titre de l'observation</th>
+								<th>Espèce</th>
+								<th>Date de publication</th>
+								<th>#</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Observation récente</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+							<tr>
+								<td>Observation plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+							<tr>
+								<td>Observation encore plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+							<tr>
+								<td>Observation encore plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+							<tr>
+								<td>Observation encore plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+							<tr>
+								<td>Observation encore plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-check"></i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="table_layout">
+					<table class="table table-striped">
+						<div class="table_head_layout pending_obs">Observations en attente</div>
+						<thead>
+							<tr>
+								<th>Titre de l'observation</th>
+								<th>Espèce</th>
+								<th>Date de publication</th>
+								<th>#</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Observation récente</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-clock"></i></td>
+							</tr>
+							<tr>
+								<td>Observation plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-clock"></i></td>
+							</tr>
+							<tr>
+								<td>Observation encore plus ancienne</td>
+								<td>Espèce</td>
+								<td>Date de publication</td>
+								<td><i class="fa fa-clock"></i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="table_layout">
+					<table class="table table-striped">
+						<div class="table_head_layout refused_obs">Observations rejetés</div>
+						<thead>
+							<tr>
+								<th>Titre de l'observation</th>
+								<th>Espèce</th>
+								<th>Date de publication</th>
+								<th>#</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td class="text-center">Rien à afficher</td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
+			<div class="form_layout mt-5">
+				<div class="form_head">
+					<p><i class="fa fa-cogs mr-3"></i>Vos actions</p>
+				</div>
+				<div class="actions_layout mt-5">
+					{% if is_granted('ROLE_NATURALIST') %}
+					<p>
+						<a class="btn btn-primary observations d-block mx-auto" role="button" href="#" >Valider des observations</a>
+					</p>
+					{% endif %}
 
-		{% endfor %}
+					{% if 'ROLE_ADMIN' in app.user.roles %}
+					<p>
+						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
+					</p>
+					{% endif %}
 
-		{% for message in app.flashes('error') %}
+					{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
+					<p>
+						<a class="btn btn-primary naturalist d-block mx-auto" role="button" href="{{ path('ts_nao_request_upgrade') }}">Être reconnu(e) comme naturaliste</a>
+					</p>
+					{% endif %}
 
-			<div>
-				{{ message }}
+					<p>
+						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="#">Modifier mes informations</a>
+					</p>
+
+					{% if 'ROLE_BIRD_FANCIER' in app.user.roles or 'ROLE_NATURALIST' in app.user.roles %}
+					<p>
+						<a class="btn btn-primary delete d-block mx-auto" role="button" href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
+					</p>
+					{% endif %}
+				</div>
 			</div>
-
-		{% endfor %}
-
-		<p>
-			<a href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
-		</p>
-
-		{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
-			<p>
-				<a href="{{ path('ts_nao_request_upgrade') }}">Demander une amélioration du compte</a>
-			</p>
-		{% endif %}
-
-		{% if 'ROLE_ADMIN' in app.user.roles %}
-			<p>
-				<a href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
-			</p>
-		{% endif %}
-
-		<p>
-			<a href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
-		</p>
+		</div>
 
 	{% endblock %}

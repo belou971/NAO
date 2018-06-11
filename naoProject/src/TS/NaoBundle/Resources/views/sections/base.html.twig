@@ -25,7 +25,7 @@
         <title>{% block title %}{% endblock %}</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="{{ asset('bundles/tsnao/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+        <link href="{{ asset('bundles/tsnao/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
         <!-- Theme CSS -->
         {% stylesheets 'bundles/tsnao/css/nao.css' %}
@@ -53,26 +53,17 @@
 
 <body>
 
-    {%   include 'TSNaoBundle:sections:header.html.twig' %}
+    {%   include 'TSNaoBundle:sections:header_working.html.twig' %}
 
-    <!-- Content Body -->
-    <div class="container-fluid position-content">
-        <div class="row">
-            <!-- Main Page Contain -->
-            <div class="main-contain col-lg-offset-1 col-lg-7 col-sm-6">
-                {% block content %}{% endblock %}
-            </div>
 
-            <!-- Sidebar template -->
-            {% include '@TSNao/sections/sidebar.html.twig' %}
-        </div>
-    </div>
+    {% block content %}{% endblock %}
 
-    {% include 'TSNaoBundle:sections:footer.html.twig' %}
+
+    {% include 'TSNaoBundle:sections:footer_working.html.twig' %}
 
     <!-- jQuery -->
     <script src="{{ asset('bundles/tsnao/jquery/jquery.min.js' ) }}"></script>
-    <script src="{{ asset('bundles/tsnao/bootstrap/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('bundles/tsnao/bootstrap/js/bootstrap.min.js') }}"></script>
 
     {% block js %}{% endblock %}
 

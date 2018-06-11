@@ -60,7 +60,7 @@ class UserController extends Controller
     		$accountService = $this->get('naobundle.account.account');
     		$accountService->recovery($email);
 
-    		return $this->redirectToRoute('ts_nao_homepage');
+    		return $this->redirectToRoute('ts_nao_recovery');
     	}
 
     	return $this->render('@TSNao/User/recovery.html.twig');

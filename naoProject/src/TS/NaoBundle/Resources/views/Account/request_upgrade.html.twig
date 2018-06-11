@@ -4,25 +4,34 @@
 
 	{% block content %}
 
-		{% for message in app.flashes('success') %}
+		<div class="transparent">
 
-            <div>
-                {{ message }}
-            </div>
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
 
-        {% endfor %}
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-arrow-up mr-3"></i></i>Demande d'upgrade de compte</p>
+				</div>
 
-        {% for message in app.flashes('error') %}
 
-            <div>
-                {{ message }}
-            </div>
+				{{ form_start(form) }}
+				{{ form_errors(form) }}
 
-        {% endfor %}
+				<div class="form-group">
+					<p>
+						Veuillez remplir le formulaire suivant en envoyant votre diplôme ou tout autre document attestant votre capacité de Naturaliste pour avoir accès aux fonctionnalités avancées.
+					</p>
+					{{ form_label(form.grade) }}<span class="starchip">*</span>
+					{{ form_errors(form.grade) }}
+					{{ form_widget(form.grade, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
 
-		<p>Veuillez remplir le formulaire suivant en envoyant votre diplôme ou tout autre document attestant votre capacité de Naturaliste pour avoir accès aux fonctionnalités avancées.</p>
-			
-			{{ form(form) }}
+				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Envoyer" />
+
+				{{ form_rest(form) }}
+
+			</div>
+		</div>
 			
 	{% endblock %}
 	
