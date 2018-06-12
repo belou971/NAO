@@ -14,7 +14,14 @@ services:
           - { name: form.type }
 
 
-#  ts_nao.fileuploader:
-#    class: TS\NaoBundle\Component\FileUploader
-#    arguments: ["%galery_directory%" ]
-#
+  tsnao.fileuploader:
+    class: TS\NaoBundle\Component\FileUploader
+    arguments:
+      - "%galery_directory%"
+    public: true
+
+  form.type.image:
+          class: TS\NaoBundle\Form\ImageType
+          arguments: ["@tsnao.fileuploader"]
+          tags:
+            - { name: form.type }

@@ -101,10 +101,27 @@ class Observation
     /**
      * @var Image
      *
-     * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Image", mappedBy="observation", cascade={"remove"})
-     *
+     * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Image", mappedBy="observation", cascade={"persist","remove"})
+     * @Assert\Valid()
      */
     private $images;
+
+    /**
+     * @var Image
+     *
+     */
+    private $image1;
+    /**
+     * @var Image
+     *
+     */
+    private $image2;
+
+    /**
+     * @var Image
+     *
+     */
+    private $image3;
 
     /**
      * @var User
@@ -366,7 +383,9 @@ class Observation
      */
     public function addImage(\TS\NaoBundle\Entity\Image $image)
     {
-        $this->images[] = $image;
+        if (!is_null($image) && !is_null($image->getFile())) {
+            $this->images[] = $image;
+        }
 
         return $this;
     }
@@ -440,6 +459,65 @@ class Observation
     {
         return $this->taxref;
     }
+
+
+    /**
+     * @return Image
+     */
+    public function getImage1()
+    {
+        return $this->image1;
+    }
+
+    /**
+     * @param Image $image1
+     */
+    public function setImage1($image1)
+    {
+        $this->image1 = $image1;
+        if(!is_null($this->image1)) {
+            $this->addImage($this->image1);
+        }
+    }
+
+    /**
+     * @return Image
+     */
+    public function getImage2()
+    {
+        return $this->image2;
+    }
+
+    /**
+     * @param Image $image2
+     */
+    public function setImage2($image2)
+    {
+        $this->image2 = $image2;
+        if(!is_null($this->image2)) {
+            $this->addImage($this->image2);
+        }
+    }
+
+    /**
+     * @return Image
+     */
+    public function getImage3()
+    {
+        return $this->image3;
+    }
+
+    /**
+     * @param Image $image3
+     */
+    public function setImage3($image3)
+    {
+        $this->image3 = $image3;
+        if(!is_null($this->image3)) {
+            $this->addImage($this->image3);
+        }
+    }
+
 
     /**
      * @param ExecutionContextInterface $context

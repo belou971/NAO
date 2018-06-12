@@ -4,7 +4,6 @@ namespace TS\NaoBundle\Form;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ResetType;
@@ -15,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use TS\NaoBundle\Component\FileUploader;
 
 class ObservationType extends AbstractType
 {
@@ -41,6 +41,9 @@ class ObservationType extends AbstractType
                                                                'attr' => array('placeholder' => "Entrer le nom de l'espèce")))
             ->add('nbSpecimen', IntegerType::class, array('attr' => array('min'=> 0),
                                                                     'data'=> 0))
+            ->add('image1', ImageType::class)
+            ->add('image2', ImageType::class)
+            ->add('image3', ImageType::class)
             ->add('dtCreation', DateTimePickerType::class, array('required' => true))
             ->add('longitude', NumberType::class, array('scale' => 6,
                                                                   'required' => true,
@@ -61,6 +64,11 @@ class ObservationType extends AbstractType
                     if(count($result) === 1) {
                         $taxref = $result[0];
                         $obsData->setTaxref($taxref);
+
+                        $images = $obsData->getImages();
+                        foreach ($images as $image) {
+                            $image->setSpecimen($taxref);
+                        }
                     }
                 }
 
@@ -75,6 +83,8 @@ class ObservationType extends AbstractType
             'data_class' => 'TS\NaoBundle\Entity\Observation'
         ));
     }
+
+    private function imageFactory() {}
 
     /**
      * {@inheritdoc}

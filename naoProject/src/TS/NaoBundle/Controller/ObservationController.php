@@ -84,6 +84,11 @@ class ObservationController extends Controller {
                     $observation->setUser($user);
                     $observation->updateStatusFromUserRole();
 
+                    $images = $observation->getImages();
+                    foreach ($images as $image) {
+                        $image->setObservation($observation);
+                    }
+
                     $em->persist($observation);
                     $em->flush();
 
