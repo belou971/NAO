@@ -55,6 +55,21 @@
                     {% else %}
                         {% set valid3_css = 'has-error' %}
                     {% endif %}
+                    {% if form.image1.vars.valid  %}
+                        {% set valid8_css = '' %}
+                    {% else %}
+                        {% set valid8_css = 'has-error' %}
+                    {% endif %}
+                    {% if form.image2.vars.valid  %}
+                        {% set valid9_css = '' %}
+                    {% else %}
+                        {% set valid9_css = 'has-error' %}
+                    {% endif %}
+                    {% if form.image3.vars.valid  %}
+                        {% set valid10_css = '' %}
+                    {% else %}
+                        {% set valid10_css = 'has-error' %}
+                    {% endif %}
                     <div class="row form-group {{ valid2_css }}">
                         {{ form_label(form.specimen, 'Espèce *', {'label_attr':{'class': 'col-sm-3 control-label'}}) }}
                         <div class="col-sm-9">
@@ -71,6 +86,35 @@
                         </div>
                         <div class="col-sm-offset-3 col-sm-9">
                             {{ form_errors(form.nbSpecimen) }}
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-sm-12 text-center">Ajouter 3 images maximum</label>
+                    <div class="row form-group {{ valid8_css }}">
+                        {{ form_label(form.image1, "Image n°1", {'label_attr':{'class': 'col-sm-2'}}) }}
+                        <div class="col-sm-10">
+                            {{ form_widget(form.image1) }}
+                        </div>
+                        <div class="col-sm-12">
+                            {{ form_errors(form.image1) }}
+                        </div>
+                    </div>
+                    <div class="row form-group {{ valid9_css }}">
+                        {{ form_label(form.image2, "Image n°2", {'label_attr':{'class': 'col-sm-2'}}) }}
+                        <div class="col-sm-10">
+                            {{ form_widget(form.image2) }}
+                        </div>
+                        <div class="col-sm-12">
+                            {{ form_errors(form.image2) }}
+                        </div>
+                    </div>
+                    <div class="row form-group {{ valid10_css }}">
+                        {{ form_label(form.image3, "Image n°3", {'label_attr':{'class': 'col-sm-2'}}) }}
+                        <div class="col-sm-10">
+                            {{ form_widget(form.image3) }}
+                        </div>
+                        <div class="col-sm-12">
+                            {{ form_errors(form.image3) }}
                         </div>
                     </div>
                 </div>

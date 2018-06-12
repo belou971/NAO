@@ -3,12 +3,16 @@
 namespace TS\NaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use TS\NaoBundle\Entity\Observation;
+use TS\NaoBundle\Entity\TAXREF;
 
 /**
  * Image
  *
  * @ORM\Table(name="nao_image")
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\ImageRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Image
 {
@@ -29,6 +33,14 @@ class Image
     private $url;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="alt", type="string", length=255)
+     */
+    private $alt;
+
+
+    /**
      * @var TAXREF
      *
      * @ORM\ManyToOne(targetEntity="TS\NaoBundle\Entity\TAXREF", cascade={"persist"})
@@ -43,6 +55,14 @@ class Image
      * @ORM\JoinColumn(nullable=false)
      */
     private $observation;
+
+    /*
+     * @var File
+     *
+     */
+    private $file;
+    private $tempFileName;
+    private $targetDirectory = null;
 
 
     /**
@@ -82,11 +102,11 @@ class Image
     /**
      * Set specimen.
      *
-     * @param \TS\NaoBundle\Entity\TAXREF|null $specimen
+     * @param TAXREF|null $specimen
      *
      * @return Image
      */
-    public function setSpecimen(\TS\NaoBundle\Entity\TAXREF $specimen = null)
+    public function setSpecimen(TAXREF $specimen = null)
     {
         $this->specimen = $specimen;
 
@@ -96,7 +116,7 @@ class Image
     /**
      * Get specimen.
      *
-     * @return \TS\NaoBundle\Entity\TAXREF|null
+     * @return TAXREF|null
      */
     public function getSpecimen()
     {
@@ -106,11 +126,11 @@ class Image
     /**
      * Set observation.
      *
-     * @param \TS\NaoBundle\Entity\Observation $observation
+     * @param Observation $observation
      *
      * @return Image
      */
-    public function setObservation(\TS\NaoBundle\Entity\Observation $observation)
+    public function setObservation(Observation $observation)
     {
         $this->observation = $observation;
 
@@ -120,10 +140,129 @@ class Image
     /**
      * Get observation.
      *
-     * @return \TS\NaoBundle\Entity\Observation
+     * @return Observation
      */
     public function getObservation()
     {
         return $this->observation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlt()
+    {
+        return $this->alt;
+    }
+
+    /**
+     * @param string $alt
+     */
+    public function setAlt($alt)
+    {
+        $this->alt = $alt;
+    }
+
+
+    public function setFile(UploadedFile $file)
+    {
+        $this->file = $file;
+
+        if (!is_null($this->url)) {
+            $this->tempFileName = $this->url;
+            $this->url = null;
+            $this->alt =null;
+        }
+    }
+
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if(is_null($this->file)) {
+            return;
+        }
+
+        $this->url = $this->generateUniqueFileName().'.'.$this->file->guessExtension();
+        $this->alt = $this->file->getClientOriginalName();
+    }
+
+
+    /**
+     * Upload the user file into the target directory
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        if(is_null($this->file)) {
+            return;
+        }
+
+        if(!is_null($this->tempFileName)){
+            $oldFile = $this->getTargetDirectory().'/'.$this->tempFileName;
+
+            if(file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
+        if(!is_null($this->url)) {
+            $this->file->move($this->getTargetDirectory(), $this->url);
+        }
+    }
+
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveUpload() {
+        $this->tempFileName = $this->getTargetDirectory().'/'.$this->url;
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload() {
+        if(!is_null($this->tempFileName) && file_exists($this->tempFileName)) {
+            unlink($this->tempFileName);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTargetDirectory()
+    {
+        return $this->targetDirectory;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    private function generateUniqueFileName()
+    {
+        return md5(uniqid());
+    }
+
+    /**
+     * @param mixed $targetDirectory
+     */
+    public function setTargetDirectory($targetDirectory)
+    {
+        $this->targetDirectory = $targetDirectory;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 }
