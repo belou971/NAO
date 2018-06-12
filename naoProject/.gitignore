@@ -25,3 +25,5 @@ Supprimerait var/logs/
 Supprimerait var/sessions/
 Supprimerait .idea/
 /src/TS/NaoBundle/Resources/public/jquery/nao-read.js
+/web/uploads/galery/
+/web/uploads/galery/*
