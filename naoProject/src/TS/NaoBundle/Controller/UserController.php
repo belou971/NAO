@@ -123,6 +123,6 @@ class UserController extends Controller
 			$request->getSession()->getFlashBag()->add('success', 'Message envoyé !');
 		}
 
-		return $this->render('@TSNao/User/contact.html.twig', array('form' => $form->createView()));
+		return $this->render('@TSNao/User/contact.html.twig', array('form' => $form->createView(), 'modal' => false));
 	}
 }
