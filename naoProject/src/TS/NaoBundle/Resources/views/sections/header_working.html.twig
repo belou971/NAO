@@ -1,0 +1,31 @@
+{# #########################################################################################
+ Author     : Eve ODIN
+ Date       : 24/04/18 15:05
+
+ Description: Page Header
+              Set your header on the line below.
+######################################################################################### #}
+<header>
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container-fluid"><a class="navbar-brand" href="{{ path('ts_nao_homepage') }}"></a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse"
+                    id="navcol-1">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item" role="presentation"><a class="nav-link active" href="{{ path('ts_nao_homepage') }}">Accueil</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Nos membres</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Blog</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_contact') }}">Contact</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Proposer une observation</a></li>
+                        {% if is_granted('ROLE_BIRD_FANCIER') %}
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_dashboard') }}">Mon compte</a></li>
+                        {% endif %}
+                    </ul>
+                    {% if is_granted('ROLE_BIRD_FANCIER') %}
+                        <a class="btn btn-primary ml-auto" role="button" href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
+                    {% else %}
+                        <a class="btn btn-primary ml-auto" role="button" href="{{ path('ts_nao_login') }}">Se connecter/S'inscrire</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>

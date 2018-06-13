@@ -4,46 +4,41 @@
 
 	{% block content %}
 
-		{% for message in app.flashes('success') %}
+		<div class="transparent">
 
-            <div>
-                {{ message }}
-            </div>
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
 
-        {% endfor %}
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-bell mr-3"></i>Demandes d'upgrade</p>
+				</div>
+				<div class="actions_layout">
+					{% for request in requestList %}
+						<p class="text-center">
+							{{ request.name }} {{ request.surname }}<br />
+							<a href="{{ asset('uploads/grades/') }}{{ request.grade }}" target="_blank">Document fournis</a>
+						</p>
+						<form action="{{ path('ts_nao_upgrade_request_list') }}" method="post">
+							<div class="form-group mx-auto">
+								<input type="radio" id="agree" name="status" value="1" />
+								<label for="agree">Accepter</label>
 
-        {% for message in app.flashes('error') %}
+								<input type="radio" id="decline" name="status" value="0" />
+								<label for="decline">Refuser</label>
+							</div>
+							<input type="submit" class="btn btn-primary d-block mx-auto" value="Procéder" />
 
-            <div>
-                {{ message }}
-            </div>
+							<input type="hidden" name="email" id="email" value="{{ request.email }}" />
+							{{ form_rest(form) }}
 
-        {% endfor %}
-        
-		<p>
-			<a href="{{ path('ts_nao_dashboard') }}">Retour</a>
-		</p>
+							
+						</form>
 
-		{% for request in requestList %}
-			<p>
-				{{ request.name }} {{ request.surname }}<br />
-				<a href="{{ asset('uploads/grades/') }}{{ request.grade }}" target="_blank">Document fournis</a>
-			</p>
-			<form action="{{ path('ts_nao_upgrade_request_list') }}" method="post">
-				<input type="radio" id="agree" name="status" value="1" />
-				<label for="agree">Accepter</label>
-
-				<input type="radio" id="decline" name="status" value="0" />
-				<label for="decline">Refuser</label>
-
-				<input type="hidden" name="email" id="email" value="{{ request.email }}" />
-				{{ form_rest(form) }}
-
-				<input type="submit" value="Procéder" />
-			</form>
-
-		{% else %}
-			<p>Aucune nouvelle demande d'amélioration.</p>
-		{% endfor %}
+					{% else %}
+						<p>Aucune nouvelle demande d'amélioration.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
 
 	{% endblock %}

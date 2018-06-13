@@ -1,0 +1,58 @@
+{% extends "@TSNao/sections/base.html.twig" %}
+
+	{% block title %}Contact{% endblock %}
+
+	{% block content %}
+
+		{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
+		<div class="transparent">
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-info mr-3"></i>Nous contacter</p>
+				</div>
+				{{ form_start(form) }}
+				{{ form_errors(form) }}
+				<div class="form-group">
+					{{ form_label(form.name) }}<span class="starchip">*</span>
+					{{ form_errors(form.name) }}
+					{% if is_granted('ROLE_BIRD_FANCIER') %}
+						{{ form_widget(form.name, {'attr' : {'class' : 'form-control', 'value' : app.user.name, 'disabled' : 'disabled' }}) }}
+					{% else %}
+						{{ form_widget(form.name, {'attr' : {'class' : 'form-control'}}) }}
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form_label(form.surname) }}<span class="starchip">*</span>
+					{{ form_errors(form.surname) }}
+					{% if is_granted('ROLE_BIRD_FANCIER') %}
+						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control', 'value' : app.user.surname, 'disabled' : 'disabled' }}) }}
+					{% else %}
+						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control'}}) }}
+					{% endif %}
+				</div>
+
+				{% for eachEmail in form.email %}
+				<div class="form-group">
+					{{ form_label(eachEmail) }}<span class="starchip">*</span>
+					{{ form_errors(eachEmail) }}
+					{% if is_granted('ROLE_BIRD_FANCIER') %}
+						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control', 'value' : app.user.email, 'disabled' : 'disabled' }}) }}
+					{% else %}
+						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control'}}) }}
+					{% endif %}
+				</div>
+				{% endfor %}
+
+				<div class="form-group">
+					{{ form_label(form.message) }}<span class="starchip">*</span>
+					{{ form_errors(form.message) }}
+					{{ form_widget(form.message, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+
+				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Envoyer" />
+				{{ form_rest(form) }}
+			</div>
+		</div>
+
+	{% endblock %}

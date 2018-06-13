@@ -4,14 +4,20 @@
 
 	{% block content %}
 
-		<h1>Voulez-vous supprimer votre compte ?</h1>
-
-		<form action="{{ path('ts_nao_delete_account') }}" method="post">
-			<a href="{{ path('ts_nao_dashboard') }}">Retour au tableau de bord</a>
-
-			{{ form_rest(form) }}
-
-			<input type="submit" value="Supprimer" />
-		</form>
+		<div class="transparent">
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-times mr-3"></i>Suppression de compte</p>
+				</div>
+				<form action="{{ path('ts_nao_delete_account') }}" method="post">
+					<div class="text-center">
+						<h4>Voulez-vous supprimer définitivement votre compte ?</h4>
+						<p>Vous perdrez toutes vos observations ! Cette action est irréversible !</p>
+					</div>
+					<input type="submit" class="btn btn-primary delete d-block mx-auto mt-4" value="Supprimer" />
+					{{ form_rest(form) }}
+				</form>
+			</div>
+		</div>
 
 	{% endblock %}

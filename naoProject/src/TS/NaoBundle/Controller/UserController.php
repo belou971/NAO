@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use TS\NaoBundle\Entity\User;
 use TS\NaoBundle\Form\UserType;
+use TS\NaoBundle\Form\ContactType;
 use TS\NaoBundle\Form\ResetPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,6 +17,11 @@ class UserController extends Controller
 {
 	public function registrationAction(Request $request)
 	{
+		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+			
+			return $this->redirectToRoute('ts_nao_dashboard');
+		}
+	
 		$user = new User();
 		$form = $this->createForm(UserType::class, $user);
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -54,7 +60,7 @@ class UserController extends Controller
     		$accountService = $this->get('naobundle.account.account');
     		$accountService->recovery($email);
 
-    		return $this->redirectToRoute('ts_nao_homepage');
+    		return $this->redirectToRoute('ts_nao_recovery');
     	}
 
     	return $this->render('@TSNao/User/recovery.html.twig');
@@ -84,23 +90,39 @@ class UserController extends Controller
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 
+	/**
+     * @Security("has_role('ROLE_BIRD_FANCIER')")
+     */
 	public function deleteAccountAction(Request $request)
 	{
+		$user = $this->getUser();
+
+		if (!$user->getActive()) {
+			return $this->redirectToRoute('ts_nao_disabled');
+		}
+
 		$form = $this->get('form.factory')->create();
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid())
-		{
-			$user= $this->getUser();
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($user);
 			$em->flush();
-
 			$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
 			$this->get('security.token_storage')->setToken(null);
-			$request->getSession()->invalidate();
 
 			return $this->redirectToRoute('ts_nao_homepage');
 		}
 
 		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView()));
+	}
+
+	public function contactAction(Request $request)
+	{
+		$form = $this->createForm(ContactType::class);
+
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+			$request->getSession()->getFlashBag()->add('success', 'Message envoyé !');
+		}
+
+		return $this->render('@TSNao/User/contact.html.twig', array('form' => $form->createView()));
 	}
 }

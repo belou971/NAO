@@ -13,9 +13,13 @@ use TS\NaoBundle\Form\RequestUpgradeType;
 
 class AccountController extends Controller
 {
+	/**
+     * @Security("has_role('ROLE_BIRD_FANCIER')")
+     */
 	public function dashboardAction(Request $request)
 	{
 		$user = $this->getUser();
+
 		if (!$user->getActive()) {
 			return $this->redirectToRoute('ts_nao_disabled');
 		}
@@ -39,30 +43,40 @@ class AccountController extends Controller
 		return $this->redirectToRoute('ts_nao_homepage');
 	}
 	
+	/**
+	 * @Security("has_role('ROLE_BIRD_FANCIER')")
+	 */
 	public function disabledAction(Request $request)
 	{
 		$user = $this->getUser();
-		$form = $this->get('form.factory')->create();
-
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-			$accountService = $this->get('naobundle.account.account');
-			$accountService->sendBackConfirmRegistration($request->request->get('email'));
-
-			return $this->redirectToRoute('ts_nao_homepage');
-		}
 
 		if ($user->getActive()) {
 			return $this->redirectToRoute('ts_nao_dashboard');
 		}
 
-		$this->get('security.token_storage')->setToken(null);
-		$request->getSession()->invalidate();
+		$form = $this->get('form.factory')->create();
+
+		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+			$accountService = $this->get('naobundle.account.account');
+			$accountService->sendBackConfirmRegistration($user->getEmail());
+
+			return $this->redirectToRoute('ts_nao_disabled');
+		}
 
 		return $this->render('@TSNao/Account/disabled_account.html.twig', array('email' => $user->getEmail(), 'form' => $form->createView()));
 	}
 
+	/**
+	 * @Security("has_role('ROLE_BIRD_FANCIER') and user.getRoles() == (['ROLE_BIRD_FANCIER'])")
+	 */
 	public function requestUpgradeAction(Request $request)
 	{
+		$user = $this->getUser();
+
+		if (!$user->getActive()) {
+			return $this->redirectToRoute('ts_nao_disabled');
+		}
+
 		$form = $this->createForm(RequestUpgradeType::class);
 		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
 			
@@ -80,6 +94,12 @@ class AccountController extends Controller
      */
 	public function upgradeRequestListAction(Request $request)
 	{
+		$user = $this->getUser();
+
+		if (!$user->getActive()) {
+			return $this->redirectToRoute('ts_nao_disabled');
+		}
+
 		$requestList = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:User')->getUpgradeRequestList();
 		$form = $this->get('form.factory')->create();
 

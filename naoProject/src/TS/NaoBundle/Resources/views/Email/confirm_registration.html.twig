@@ -5,6 +5,6 @@
 	</head>
 	<body>
 		<p>Bonjour, nous vous souhaitons la bienvenue.</p>
-		<a href="{{ app.request.schemeAndHttpHost }}{{ path('ts_nao_active_account') }}?email={{ email|url_encode }}&amp;identifier={{ identifier|url_encode }}">Activez votre compte</a>
+		<a href="{{ app.request.schemeAndHttpHost }}{{ path('ts_nao_active_account') }}?email={{ email}}&amp;identifier={{ identifier }}">Activez votre compte</a>
 	</body>
 </html>

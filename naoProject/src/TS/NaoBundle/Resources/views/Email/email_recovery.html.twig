@@ -6,7 +6,7 @@
 	<body>
 
 		<p>Veuillez cliquer sur le lien pour redéfinir votre mot de passe :</p>
-		<a href="{{ app.request.schemeAndHttpHost }}{{ path('ts_nao_reset_password') }}?email={{ email|url_encode }}&amp;identifier={{ identifier|url_encode }}">Redéfinir mot de passe</a>
+		<a href="{{ app.request.schemeAndHttpHost }}{{ path('ts_nao_reset_password') }}?email={{ email }}&amp;identifier={{ identifier }}">Redéfinir mot de passe</a>
 		
 	</body>
 </html>
