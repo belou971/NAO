@@ -7,9 +7,11 @@
         <div class="module-content">
             <ol class="list-unstyled">
                 {% for observation in lastObservations %}
-                   {% if observation['url'] is not null %}
+                    {% set images = observation['images'] %}
+                   {% if images|length > 0 %}
+                        {% set img1 = images[0] %}
                         {% set icone %}
-                            <img src="{{ observation['url'] }}" alt="{{ observation['alt'] }}" width="15" height="15" >
+                            <img src="{{ galery }}/{{ img1['url'] }}" alt="{{ img1['alt'] }}" width="45" height="45" >
                         {% endset %}
                    {% else %}
                         {% set icone %}

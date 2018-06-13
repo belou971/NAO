@@ -22,8 +22,7 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         $builder = $this->createQueryBuilder('obs');
         $builder
-            ->select('obs','u.username', 'i.url', 'i.alt')
-            ->leftJoin('obs.images','i')
+            ->select('obs','u.username')
             ->innerJoin('obs.user', 'u')
             ->where($builder->expr()->in('obs.taxref', $subQueryBuilder->getDQL()))
             ->setParameter('name', $specimen_name)
@@ -38,8 +37,7 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         $builder = $this->createQueryBuilder('obs');
         $builder
-            ->select('obs', 'u.username', 'i.url', 'i.alt')
-            ->leftJoin('obs.images','i')
+            ->select('obs', 'u.username')
             ->innerJoin('obs.user', 'u')
             ->where('obs.longitude BETWEEN :minLon AND :maxLon')
             ->setParameter('minLon', $min_lat_lon[0])
@@ -56,31 +54,28 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
     public function findLastObservations($nbObservations) {
         $builder = $this->createQueryBuilder('obs');
-        $builder->select('obs.id', 'obs.specimen')
+        $builder->select('obs', 'i')
             ->leftJoin('obs.images','i')
-            ->addSelect('i.url', 'i.alt')
             ->where('obs.state = :status')
             ->setParameter("status", StateEnum::VALIDATE)
             ->orderBy('obs.dtModification', 'DESC')
             ->setMaxResults($nbObservations);
 
         $query = $builder->getQuery();
-        $statement = $query->getResult();
+        $statement = $query->getArrayResult();
         if (is_int($statement)) {
             return array();
         }
 
-        $results = $statement;
-
-        return $results;
+        return $statement;
     }
 
     public function getObservation($id)
     {
         $builder = $this->createQueryBuilder('obs');
         $builder
-            ->select('obs', 'u.username', 'i.url', 'i.alt', 'taxref.lbNom', 'taxref.nomVern', 'r.label as rang', 'h.label as habitat', 's.label as status')
-            ->leftJoin('obs.images','i')
+            ->select('obs', 'u.username', 'i', 'taxref.cdNom', 'taxref.url', 'taxref.lbNom', 'taxref.nomVern', 'r.label as rang', 'h.label as habitat', 's.label as status')
+            ->leftJoin('obs.images', 'i')
             ->innerJoin('obs.user', 'u')
             ->innerJoin('obs.taxref', 'taxref')
             ->innerJoin('taxref.rang', 'r')
@@ -93,4 +88,5 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         return $observation;
     }
+
 }

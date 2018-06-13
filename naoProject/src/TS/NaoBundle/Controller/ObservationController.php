@@ -35,8 +35,9 @@ class ObservationController extends Controller {
         $parameters = $requestData["input_data"];
 
         $response = $this->getObservation($parameters, $em);
+        $galeryDirectory = $this->getParameter('galery_relative_path');
 
-        $result = $this->renderView('TSNaoBundle:Observation:observation_content.html.twig', array("observation"=>$response["data"][0], "infos"=>$response["data"][1], "modal" => true));
+        $result = $this->renderView('TSNaoBundle:Observation:observation_content.html.twig', array("galery" => $galeryDirectory, "observation"=>$response["data"][0], "infos"=>$response["data"][1], "modal" => true));
         return new  JsonResponse(array("html" => $result), JSON_UNESCAPED_UNICODE);
     }
 
@@ -46,7 +47,8 @@ class ObservationController extends Controller {
 
         $response = $this->getObservation($parameters, $em);
 
-        return $this->render('TSNaoBundle:Observation:observation.html.twig', array("observation"=>$response["data"][0], "infos"=>$response["data"][1], "modal" => false));
+        $galeryDirectory = $this->getParameter('galery_relative_path');
+        return $this->render('TSNaoBundle:Observation:observation.html.twig', array("galery" => $galeryDirectory,"observation"=>$response["data"][0], "infos"=>$response["data"][1], "modal" => false));
     }
 
     public function sidebarAction($max) {
@@ -56,18 +58,14 @@ class ObservationController extends Controller {
         $json_response = DataManager::getInstance($em)->get(ActionType::LAST_OBSERVATIONS, $parameters);
         $response = json_decode($json_response, true);
 
-        return $this->render('TSNaoBundle:sections:sidebar.html.twig', array("lastObservations" => $response["data"]));
+        $galeryDirectory = $this->getParameter('galery_relative_path');
+        return $this->render('TSNaoBundle:sections:sidebar.html.twig', array("lastObservations" => $response["data"], 'galery' => $galeryDirectory));
     }
 
     public function observationFormAction(Request $request) {
 
         $em = $this->getDoctrine()->getManager();
         $observation = new Observation();
-
-        //$session = $request->getSession();
-        //if(!is_null($session) && $session->has('booking')) {
-        //    $booking = $session->get('booking');
-        //}
 
         $form = $this->createForm(ObservationType::class, $observation);
 
@@ -76,7 +74,6 @@ class ObservationController extends Controller {
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()) {
 
-                //$session->set('observation', $form->getData());
                 $user = $this->getUser();
                 $logged = !is_null($user);
                 if($logged) {
