@@ -36,10 +36,10 @@ class ObservationFixture implements FixtureInterface {
         $user1 = new User();
         $user1->setName("user1");
         $user1->setSurname("Tester1");
-        $user1->setPseudo("Amateur1");
+        $user1->setUsername("Amateur1");
         $user1->setEmail("user1.tester1@gmail.fr");
-        $user1->setPwd("pwdToTest1");
-        $user1->setProfil(ProfilEnum::BIRD_FANCIER);
+        $user1->setPassword("pwdToTest1");
+        $user1->setRoles(ProfilEnum::BIRD_FANCIER);
 
         $manager->persist($user1);
 
@@ -76,10 +76,10 @@ class ObservationFixture implements FixtureInterface {
         $user1 = new User();
         $user1->setName("user2");
         $user1->setSurname("Tester2");
-        $user1->setPseudo("Amateur2");
+        $user1->setUsername("Amateur2");
         $user1->setEmail("user2.tester2@gmail.fr");
-        $user1->setPwd("pwdToTest2");
-        $user1->setProfil(ProfilEnum::BIRD_FANCIER);
+        $user1->setPassword("pwdToTest2");
+        $user1->setRoles(ProfilEnum::BIRD_FANCIER);
 
         $manager->persist($user1);
 
@@ -116,10 +116,10 @@ class ObservationFixture implements FixtureInterface {
         $user1 = new User();
         $user1->setName("user3");
         $user1->setSurname("Tester3");
-        $user1->setPseudo("Naturalist1");
+        $user1->setUsername("Naturalist1");
         $user1->setEmail("user3.tester3@gmail.fr");
-        $user1->setPwd("pwdToTest3");
-        $user1->setProfil(ProfilEnum::NATURALIST);
+        $user1->setPassword("pwdToTest3");
+        $user1->setRoles(ProfilEnum::NATURALIST);
         $user1->setGrade("Certifation");
 
         $manager->persist($user1);
@@ -179,10 +179,10 @@ class ObservationFixture implements FixtureInterface {
         $user1 = new User();
         $user1->setName("user2");
         $user1->setSurname("Tester2");
-        $user1->setPseudo("Amateur2");
+        $user1->setUsername("Amateur2");
         $user1->setEmail("user2.tester2@gmail.fr");
-        $user1->setPwd("pwdToTest2");
-        $user1->setProfil(ProfilEnum::BIRD_FANCIER);
+        $user1->setPassword("pwdToTest2");
+        $user1->setRoles(ProfilEnum::BIRD_FANCIER);
 
         $manager->persist($user1);
 
@@ -219,10 +219,10 @@ class ObservationFixture implements FixtureInterface {
         $user1 = new User();
         $user1->setName("user2");
         $user1->setSurname("Tester2");
-        $user1->setPseudo("Amateur2");
+        $user1->setUsername("Amateur2");
         $user1->setEmail("user2.tester2@gmail.fr");
-        $user1->setPwd("pwdToTest2");
-        $user1->setProfil(ProfilEnum::BIRD_FANCIER);
+        $user1->setPassword("pwdToTest2");
+        $user1->setRoles(ProfilEnum::BIRD_FANCIER);
 
         $manager->persist($user1);
 

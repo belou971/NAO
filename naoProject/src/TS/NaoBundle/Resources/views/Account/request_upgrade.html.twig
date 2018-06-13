@@ -1,15 +1,37 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Demande d'amélioration de compte</title>
-	</head>
-
-	<body>
-
-		<p>Veuillez remplir le formulaire suivant en envoyant votre diplôme ou tout autre document attestant votre capacité de Naturaliste pour avoir accès aux fonctionnalités avancées.</p>
-			
-			{{ form(form) }}
+{% extends "@TSNao/sections/base.html.twig" %}
 	
-	</body>
-<html>
+	{% block title %}Demande d'amélioration de compte{% endblock %}
+
+	{% block content %}
+
+		<div class="transparent">
+
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fa fa-arrow-up mr-3"></i></i>Demande d'upgrade de compte</p>
+				</div>
+
+
+				{{ form_start(form) }}
+				{{ form_errors(form) }}
+
+				<div class="form-group">
+					<p>
+						Veuillez remplir le formulaire suivant en envoyant votre diplôme ou tout autre document attestant votre capacité de Naturaliste pour avoir accès aux fonctionnalités avancées.
+					</p>
+					{{ form_label(form.grade) }}<span class="starchip">*</span>
+					{{ form_errors(form.grade) }}
+					{{ form_widget(form.grade, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+
+				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Envoyer" />
+
+				{{ form_rest(form) }}
+
+			</div>
+		</div>
+			
+	{% endblock %}
+	

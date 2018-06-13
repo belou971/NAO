@@ -1,17 +1,27 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Mot de passe oublié</title>
-	</head>
+{% extends "@TSNao/sections/base.html.twig" %}
 
-	<body>
-		<form action="{{ path('ts_nao_recovery') }}" method="post">
-			<label for="email">Adresse e-mail</label>
-			<input type="email" id="email" name="email" autocomplete="off" value="mbenguia.husseini@live.fr" required />
+	{% block title %}Mot de passe oublié{% endblock %}
 
-			<input type="hidden" id="ts_naobundle_user__token" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-			<input type="submit" value="Réinitialiser" />
-		</form>
-	</body>
-<html>
+	{% block content %}
+
+        <div class="transparent">
+
+        	{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
+        	<div class="form_layout">
+        		<div class="form_head">
+        			<p><i class="fa fa-question mr-3"></i>Mot de passe oublié</p>
+        		</div>
+
+				<form action="{{ path('ts_nao_recovery') }}" method="post">
+					<div class="form-group">
+						<label for="email">Adresse e-mail :</label>
+						<input type="email" id="email" class="form-control" name="email" autocomplete="off" value="mbenguia.husseini@live.fr" required />
+					</div>
+
+					<input type="hidden" id="ts_naobundle_user__token" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+					<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Réinitialiser" />
+				</form>
+			</div>
+		</div>
+	{% endblock %}
