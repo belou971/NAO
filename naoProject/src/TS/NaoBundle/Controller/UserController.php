@@ -118,9 +118,21 @@ class UserController extends Controller
 	public function contactAction(Request $request)
 	{
 		$form = $this->createForm(ContactType::class);
-
-		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-			$request->getSession()->getFlashBag()->add('success', 'Message envoyé !');
+		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+			$recaptchaService = $this->get('naobundle.recaptcha.recaptcha');
+			if ($recaptchaService->verify($request->request->get('g-recaptcha-response'))) {
+				$user = $this->getUser();
+				if ($user instanceof User) {
+					$accountService = $this->get('naobundle.account.account');	
+					if (!$accountService->isSameUser($form->get('email')->getData(), $form->get('name')->getData(), $form->get('surname')->getData())) {
+						$request->getSession()->getFlashBag()->add('error', 'Les informations saisies ne correspondent pas à votre compte.');
+						return $this->redirectToRoute('ts_nao_contact');
+					}
+				}
+				$request->getSession()->getFlashBag()->add('success', 'Message envoyé!');
+				return $this->redirectToRoute('ts_nao_contact');
+			}
+			$request->getSession()->getFlashBag()->add('error', 'Le recaptcha est incorrect');
 		}
 
 		return $this->render('@TSNao/User/contact.html.twig', array('form' => $form->createView()));

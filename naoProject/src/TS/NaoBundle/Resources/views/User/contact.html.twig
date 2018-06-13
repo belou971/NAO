@@ -2,31 +2,36 @@
 
 	{% block title %}Contact{% endblock %}
 
+	{% block recaptcha %}
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+	{% endblock %}
+
 	{% block content %}
 
-		{%   include 'TSNaoBundle:sections:message.html.twig' %}
-
 		<div class="transparent">
+
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
 			<div class="form_layout">
 				<div class="form_head">
 					<p><i class="fa fa-info mr-3"></i>Nous contacter</p>
 				</div>
 				{{ form_start(form) }}
-				{{ form_errors(form) }}
+				<span class="starchip">{{ form_errors(form) }}</span>
 				<div class="form-group">
 					{{ form_label(form.name) }}<span class="starchip">*</span>
-					{{ form_errors(form.name) }}
+					<span class="starchip">{{ form_errors(form.name) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(form.name, {'attr' : {'class' : 'form-control', 'value' : app.user.name, 'disabled' : 'disabled' }}) }}
+						{{ form_widget(form.name, {'attr' : {'class' : 'form-control', 'value' : app.user.name }}) }}
 					{% else %}
 						{{ form_widget(form.name, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}
 				</div>
 				<div class="form-group">
 					{{ form_label(form.surname) }}<span class="starchip">*</span>
-					{{ form_errors(form.surname) }}
+					<span class="starchip">{{ form_errors(form.surname) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control', 'value' : app.user.surname, 'disabled' : 'disabled' }}) }}
+						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control', 'value' : app.user.surname }}) }}
 					{% else %}
 						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}
@@ -35,9 +40,9 @@
 				{% for eachEmail in form.email %}
 				<div class="form-group">
 					{{ form_label(eachEmail) }}<span class="starchip">*</span>
-					{{ form_errors(eachEmail) }}
+					<span class="starchip">{{ form_errors(eachEmail) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control', 'value' : app.user.email, 'disabled' : 'disabled' }}) }}
+						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control', 'value' : app.user.email }}) }}
 					{% else %}
 						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}
@@ -46,12 +51,15 @@
 
 				<div class="form-group">
 					{{ form_label(form.message) }}<span class="starchip">*</span>
-					{{ form_errors(form.message) }}
+					<span class="starchip">{{ form_errors(form.message) }}</span>
 					{{ form_widget(form.message, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 
+				<div class="g-recaptcha" data-sitekey="{{ google_recaptcha }}"></div>
+
 				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Envoyer" />
 				{{ form_rest(form) }}
+
 			</div>
 		</div>
 

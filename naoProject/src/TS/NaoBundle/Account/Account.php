@@ -180,4 +180,19 @@ class Account
 
 		$user->setGrade(null);
 	}
+
+	public function isSameUser($email, $name, $surname)
+	{
+		$user = $this->getUser($email);
+
+		if ($user == null) {
+			return false;
+		}
+
+		elseif($name != $user->getName() || $surname != $user->getSurname()) {
+			return false;
+		}
+
+		return true;
+	}
 }
