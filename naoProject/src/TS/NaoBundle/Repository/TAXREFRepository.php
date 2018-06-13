@@ -61,4 +61,22 @@ class TAXREFRepository extends \Doctrine\ORM\EntityRepository
 
         return $specimenNames;
     }
+
+    public function findBySpecimen($specimen) {
+        $builder = $this->createQueryBuilder('taxref');
+        $builder
+         ->where('taxref.lbNom = :name')
+         ->orWhere('taxref.nomVern = :name')
+        ->setParameter('name', $specimen)
+        ->setMaxResults(1);
+        $query = $builder->getQuery();
+        try
+        {
+            $result = $query->getResult();
+            return $result;
+        }
+        catch (\Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
 }

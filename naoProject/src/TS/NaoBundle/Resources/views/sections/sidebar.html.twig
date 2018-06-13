@@ -5,8 +5,21 @@
             <span class="fas fa-binoculars fa-2x space"></span> Les dernières observations
         </h4>
         <div class="module-content">
-            Etiam porta <em>sem malesna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum.
-            Aenean lacinia bibendum nulla sed consectetur.
+            <ol class="list-unstyled">
+                {% for observation in lastObservations %}
+                   {% if observation['url'] is not null %}
+                        {% set icone %}
+                            <img src="{{ observation['url'] }}" alt="{{ observation['alt'] }}" width="15" height="15" >
+                        {% endset %}
+                   {% else %}
+                        {% set icone %}
+                            <span class="fas fa-crow fa-2x bird_icone"></span>
+                        {% endset %}
+                   {% endif %}
+
+                    <a href="{{ path('ts_nao_observation_view', {'id': observation['id']}) }}"> <li class="module-item">{{ icone }}{{ observation['specimen'] }} </li></a>
+                {% endfor %}
+            </ol>
         </div>
     </div>
 </div>

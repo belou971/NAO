@@ -22,6 +22,9 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         $builder = $this->createQueryBuilder('obs');
         $builder
+            ->select('obs','u.username', 'i.url', 'i.alt')
+            ->leftJoin('obs.images','i')
+            ->innerJoin('obs.user', 'u')
             ->where($builder->expr()->in('obs.taxref', $subQueryBuilder->getDQL()))
             ->setParameter('name', $specimen_name)
             ->andWhere('obs.state = :status')
@@ -35,14 +38,59 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
 
         $builder = $this->createQueryBuilder('obs');
         $builder
+            ->select('obs', 'u.username', 'i.url', 'i.alt')
+            ->leftJoin('obs.images','i')
+            ->innerJoin('obs.user', 'u')
             ->where('obs.longitude BETWEEN :minLon AND :maxLon')
             ->setParameter('minLon', $min_lat_lon[0])
             ->setParameter('maxLon', $max_lat_lon[0])
             ->andWhere('obs.latitude BETWEEN :minLat AND :maxLat')
             ->setParameter('minLat', $min_lat_lon[1])
-            ->setParameter('maxLat', $max_lat_lon[1]);
+            ->setParameter('maxLat', $max_lat_lon[1])
+            ->andWhere('obs.state = :status')
+            ->setParameter('status', StateEnum::VALIDATE);
         $observations = $builder->getQuery()->getArrayResult();
 
         return $observations;
+    }
+
+    public function findLastObservations($nbObservations) {
+        $builder = $this->createQueryBuilder('obs');
+        $builder->select('obs.id', 'obs.specimen')
+            ->leftJoin('obs.images','i')
+            ->addSelect('i.url', 'i.alt')
+            ->where('obs.state = :status')
+            ->setParameter("status", StateEnum::VALIDATE)
+            ->orderBy('obs.dtModification', 'DESC')
+            ->setMaxResults($nbObservations);
+
+        $query = $builder->getQuery();
+        $statement = $query->getResult();
+        if (is_int($statement)) {
+            return array();
+        }
+
+        $results = $statement;
+
+        return $results;
+    }
+
+    public function getObservation($id)
+    {
+        $builder = $this->createQueryBuilder('obs');
+        $builder
+            ->select('obs', 'u.username', 'i.url', 'i.alt', 'taxref.lbNom', 'taxref.nomVern', 'r.label as rang', 'h.label as habitat', 's.label as status')
+            ->leftJoin('obs.images','i')
+            ->innerJoin('obs.user', 'u')
+            ->innerJoin('obs.taxref', 'taxref')
+            ->innerJoin('taxref.rang', 'r')
+            ->innerJoin('taxref.habitat', 'h')
+            ->innerJoin('taxref.fr', 's')
+            ->where('obs.id = :id')
+            ->setParameter('id', $id);
+
+        $observation = $builder->getQuery()->getArrayResult();
+
+        return $observation;
     }
 }

@@ -1,0 +1,13 @@
+{# ---- datetime_picker widget ---- #}
+{%- block datetimepicker_widget -%}
+<div {{  block('attributes') }} >
+    {%  set date_value = value %}
+    {% if form.vars.value is empty %}
+        {%  set date_value ="now"|date('d-m-Y H:i') %}
+    {% endif %}
+    <input type='text' class="form-control" {{ block('widget_attributes') }} value="{{ date_value }}" />
+    <span class="input-group-addon">
+        <span class="far fa-calendar-alt"></span>
+    </span>
+</div>
+{%- endblock -%}

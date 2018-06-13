@@ -1,28 +1,3 @@
-/**********************************************************************************************************************/
-/*                                                 Specimen auto-completion manager                                   */
-/**********************************************************************************************************************/
-var xhr = new XMLHttpRequest();
-xhr.open('GET', Routing.generate('ts_nao_specimens_names'), true);
-xhr.onload = function() {
-   var list = JSON.parse(xhr.responseText);
-   var specimenInput = document.querySelector("input#input-specimen");
-   var awesomplete = new Awesomplete(specimenInput,{ list: list });
-    $('#specimen .dropdown-btn').on("click", function() {
-        if (awesomplete.ul.childNodes.length === 0) {
-            awesomplete.minChars = 1;
-            awesomplete.evaluate();
-        }
-        else if (awesomplete.ul.hasAttribute('hidden')) {
-            awesomplete.open();
-        }
-        else {
-            awesomplete.close();
-        }
-    });
-
-};
-xhr.send();
-
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the name of a specimen                             */
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -78,19 +53,6 @@ function removeLayers() {
     resetMap();
     updateZoomMax();
 }
-
-
-/**********************************************************************************************************************/
-/*                                                 Cities auto-completion manager                                     */
-/**********************************************************************************************************************/
-var citiesInput = document.querySelector("input#input-cities");
-var awesomplete2 = new Awesomplete( citiesInput, {
-                                    minChars:1,
-                                    autoFirst:true,
-                                    maxItems:5,
-                                    replace: function(text){
-                                        this.input.value = text;
-                                    } });
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the city                                           */
@@ -298,7 +260,34 @@ function AddMarkersToClusterGroup(obsList) {
 }
 
 function addObservationOnMap(observation) {
-    return L.marker([observation.latitude, observation.longitude], observation.specimen);
+    var lat = observation[0].latitude;
+    var lgn = observation[0].longitude;
+    var marker = L.marker([lat, lgn], {title: observation[0].specimen});
+
+    marker.on('click', getObservationContent(1));
+    return marker;
+}
+
+function getObservationContent(observationId) {
+    return function(event) {
+
+        var $data = {id: observationId};
+        $.ajax({
+            type: 'post',
+            url: Routing.generate('ts_nao_read_observation'),
+            data: JSON.stringify($data),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (content) {
+                var outputData = content.html;
+
+                $('.modal-body').html(outputData);
+                $('#observationModal').modal('show');
+            }
+        });
+
+
+    };
 }
 
 function addPolygonOfCity(contour) {

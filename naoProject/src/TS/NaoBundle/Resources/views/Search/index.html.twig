@@ -48,7 +48,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 search-box">
+        <div class="col-sm-12 search-box ">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#specimen" data-toggle="tab">Recherche à partir du nom</a></li>
                 <li><a href="#cities" data-toggle="tab">Recherche à partir du lieu</a></li>
@@ -58,8 +58,7 @@
                 <div class="tab-pane active" id="specimen">
                     <form class="form-inline">
                         <div class="form-group">
-                            <input id="input-specimen" type="text" name="specimen_name" class="dropdown-input form-control" placeholder="Entrer le nom de l'espèce" />
-                            <button class="dropdown-btn btn dropdown-btn-color" type="button"><i class="fas fa-caret-down"></i></button>
+                            <input id="input-specimen" type="text" name="specimen_name" class="dropdown-input form-control complete-specimen" placeholder="Entrer le nom de l'espèce" />
                         </div>
 
                         <button type="button" name="submit_btn" class="btn submit-btn" disabled="disabled"><i class="fa fa-search fa-fw"></i></button>
@@ -70,7 +69,7 @@
                 <div class="tab-pane" id="cities">
                     <form class="form-inline">
                         <div class="form-group">
-                            <input id="input-cities" type="text" class="dropdown-input form-control" placeholder="Entrer le nom de la ville" />
+                            <input id="input-cities" type="text" class="dropdown-input form-control complete-cities" placeholder="Entrer le nom de la ville" />
                         </div>
 
                         <button type="button" class="btn submit-btn" name="submit_btn" disabled="disabled"><i class="fa fa-search fa-fw"></i></button>
@@ -94,7 +93,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" data-toggle="modal" data-target="#observationModal">
         <div class="search-message text-success purchase-flow-border col-sm-12 text-center" style="display: none;">
         </div>
     </div>
@@ -104,8 +103,12 @@
             <div id="mapid"></div>
         </div>
     </div>
+
+    {% include 'TSNaoBundle:Observation:observation_modal.html.twig' %}
+
 {% endblock %}
 
 {% block js %}
+    <script src="{{ asset('bundles/tsnao/jquery/nao-commons.js') }}"></script>
     <script src="{{ asset('bundles/tsnao/jquery/nao.js') }}"></script>
 {% endblock %}
