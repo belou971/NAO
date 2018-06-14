@@ -22,7 +22,7 @@
 					{{ form_label(form.name) }}<span class="starchip">*</span>
 					<span class="starchip">{{ form_errors(form.name) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(form.name, {'attr' : {'class' : 'form-control', 'value' : app.user.name }}) }}
+						{{ form_widget(form.name, {'attr' : {'class' : 'form-control', 'readonly' : 'readonly', 'value' : app.user.name }}) }}
 					{% else %}
 						{{ form_widget(form.name, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}
@@ -31,7 +31,7 @@
 					{{ form_label(form.surname) }}<span class="starchip">*</span>
 					<span class="starchip">{{ form_errors(form.surname) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control', 'value' : app.user.surname }}) }}
+						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control', 'readonly' : 'readonly', 'value' : app.user.surname }}) }}
 					{% else %}
 						{{ form_widget(form.surname, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}
@@ -42,7 +42,7 @@
 					{{ form_label(eachEmail) }}<span class="starchip">*</span>
 					<span class="starchip">{{ form_errors(eachEmail) }}</span>
 					{% if is_granted('ROLE_BIRD_FANCIER') %}
-						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control', 'value' : app.user.email }}) }}
+						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control', 'readonly' : 'readonly', 'value' : app.user.email }}) }}
 					{% else %}
 						{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control'}}) }}
 					{% endif %}

@@ -29,7 +29,9 @@ class ContactType extends AbstractType
                     'type' => EmailType::class,
                     'invalid_message' => 'L\'adresse e-mail doit être identique.',
                     'first_options' => array('label' => 'Adresse e-mail'),
-                    'second_options' => array('label' => 'Confirmez votre adresse e-mail')))
+                    'second_options' => array(
+                        'label' => 'Confirmez votre adresse e-mail',
+                        'attr' => array('autocomplete' => 'off'))))
                 ->add('message', TextareaType::class, array(
                     'label' => 'Message',
                     'constraints' => new Length(array(
