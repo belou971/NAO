@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserType extends AbstractType
 {
@@ -32,7 +31,9 @@ class UserType extends AbstractType
                     'type' => EmailType::class,
                     'invalid_message' => 'L\'adresse e-mail doit être identique.',
                     'first_options' => array('label' => 'Adresse e-mail'),
-                    'second_options' => array('label' => 'Confirmez votre adresse e-mail')))
+                    'second_options' => array(
+                        'label' => 'Confirmez votre adresse e-mail',
+                        'attr' => array('autocomplete' => 'off'))))
                 ->add('password', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'invalid_message' => 'Le mot de passe doit être identique.',
