@@ -116,6 +116,47 @@ class Account
 		$this->flashMessage->add('success', 'Votre demande de renvoi d\'e-mail a bien été prise en compte.');
 	}
 
+	public function edit($email, $form)
+	{
+		$user = $this->getUser($email);
+
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible de mettre à jour vos informations.');
+			return;
+		}
+
+		if ($user->getPassword() != $form->get('current_password')->getData()) {
+			$this->flashMessage->add('error', 'Votre mot de passe actuel est incorrect.');
+			return;
+		}
+
+		$username = $form->get('username')->getData();
+		$email = $form->get('email')->getData();
+		$password = $form->get('password')->getData();
+
+		if ($username) {
+			$user->setUsername($username);
+		}
+
+		if ($email) {
+			$existingUser = $this->getUser($email);
+
+			if ($existingUser instanceof User) {
+				$this->flashMessage->add('error', 'Cette adresse e-mail est déjà prise.');
+				return;
+			}
+
+			$user->setEmail($email);
+		}
+
+		if ($password) {
+			$user->setPassword($password);
+		}
+
+		$this->em->flush();
+		$this->flashMessage->add('success', 'Mise à jour effectuée.');
+	}
+
 	public function saveGrade(File $file)
 	{
 		$fileName = md5(uniqid()) . '.' . $file->guessExtension();

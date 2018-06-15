@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="nao_user")
  * @ORM\Entity(repositoryClass="TS\NaoBundle\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Cette adresse e-mail est déjà utilisée.")
- * @UniqueEntity(fields="username", message="Ce nom d'utilisateur existe déjà.")
  */
 class User implements UserInterface
 {

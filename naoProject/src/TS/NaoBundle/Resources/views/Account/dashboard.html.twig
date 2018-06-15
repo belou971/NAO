@@ -142,7 +142,7 @@
 					{% endif %}
 
 					<p>
-						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="#">Modifier mes informations</a>
+						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="{{ path('ts_nao_editinfos') }}">Modifier mes informations</a>
 					</p>
 
 					{% if 'ROLE_BIRD_FANCIER' in app.user.roles or 'ROLE_NATURALIST' in app.user.roles %}

@@ -25,7 +25,7 @@ class UserType extends AbstractType
                 ->add('surname', TextType::class, array(
                     'label' => 'Prénom'))
                 ->add('username', TextType::class, array(
-                    'label' => 'Pseudo',
+                    'label' => 'Nom d\'affichage',
                     'required' => false))
                 ->add('email', RepeatedType::class, array(
                     'type' => EmailType::class,
