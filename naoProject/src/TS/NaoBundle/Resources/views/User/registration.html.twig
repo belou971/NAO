@@ -10,7 +10,8 @@
 					<p>Inscrivez-vous</p>
 				</div>
 
-				<input type="button" class="btn btn-primary neutral d-block mb-4 mt-5 mx-auto" value="S'inscrire avec Facebook" onclick="logInFacebook()" />
+				<div class="facebook mb-2 mt-5" onclick="logInFacebook()"><i class="fab fa-facebook-f mr-3 fb_logo"></i>Continuer avec Facebook</div>
+				<div id="gButton" class="google mb-5" onclick="logInGoogle()"><i class="fab fa-google mr-3 go_logo"></i>Continuer avec Google</div>
 
 				{{ form_start(form) }}
 				<span class="starchip">{{ form_errors(form) }}</span>
@@ -63,5 +64,6 @@
 	{% block js %}
 
 	<script src="{{ asset('bundles/tsnao/jquery/social_login.js' ) }}"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
 
 	{% endblock %}
