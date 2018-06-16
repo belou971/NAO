@@ -65,6 +65,7 @@ services:
             - "@security.token_storage"
             - "@request_stack"
             - "%grades_directory%"
+            - "%anonymous_email%"
         public: true
 
     naobundle.recaptcha.recaptcha:

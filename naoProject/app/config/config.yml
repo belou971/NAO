@@ -8,6 +8,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    anonymous_email: kapooral.pro@gmail.com
     grades_directory: '%kernel.project_dir%/web/uploads/grades/'
     galery_directory: '%kernel.project_dir%/web/uploads/galery'
     google_public_recaptcha: 6Lfx0V4UAAAAAP8Vk0J7yZCDgcg2ggWPISBrsai0

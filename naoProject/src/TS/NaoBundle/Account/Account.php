@@ -22,15 +22,17 @@ class Account
 	private $currentUser;
 	private $flashMessage;
 	private $targetDirectory;
+	private $anonymousEmail;
 	private $em;
 	private $encoder;
 
-	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
+	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, $anonymousEmail, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
 	{
 		$this->mailer = $mailer;
 		$this->currentUser = $tokenStorage->getToken()->getUser();
 		$this->flashMessage = $requestStack->getCurrentRequest()->getSession()->getFlashBag();
 		$this->targetDirectory = $targetDirectory;
+		$this->anonymousEmail = $anonymousEmail;
 		$this->em = $em;
 		$this->encoder = $encoder;
 	}
@@ -246,5 +248,25 @@ class Account
 		$user->setPassword($encoded);
 
 		return $user;
+	}
+
+	public function switchUsers(User $user)
+	{
+		$anonymousAccount = $this->getUser($this->anonymousEmail);
+		if($anonymousAccount == null) {
+			$this->flashMessage->add('error', 'Impossible de supprimer votre compte pour le moment.');
+			return false;
+		}
+
+		$observations = $user->getObservations();
+
+		foreach($observations->getIterator() as $oneObs) {
+
+			$anonymousAccount->addObservation($oneObs);
+			$user->removeObservation($oneObs);
+		}
+
+		$this->deleteGrade($user);
+		return true;
 	}
 }

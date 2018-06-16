@@ -55,6 +55,11 @@ class UserController extends Controller
 
 	public function recoveryAction(Request $request)
 	{
+		if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+			
+			return $this->redirectToRoute('ts_nao_dashboard');
+		}
+		
 		$submittedToken = $request->request->get('_csrf_token');
     	if($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $submittedToken))
     	{
@@ -105,13 +110,16 @@ class UserController extends Controller
 
 		$form = $this->get('form.factory')->create();
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-			$em = $this->getDoctrine()->getManager();
-			$em->remove($user);
-			$em->flush();
-			$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
-			$this->get('security.token_storage')->setToken(null);
+			$switchService = $this->get('naobundle.doctrine_listener.switch_anonymous');
+			if ($switchService->switchUsers($user)) {
+				$em = $this->getDoctrine()->getManager();
+				$em->remove($user);
+				$em->flush();
+				$request->getSession()->getFlashBag()->add('success', 'Votre compte a bien été supprimé.');
+				$this->get('security.token_storage')->setToken(null);
 
-			return $this->redirectToRoute('ts_nao_homepage');
+				return $this->redirectToRoute('ts_nao_homepage');
+			}
 		}
 
 		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView()));

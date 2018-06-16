@@ -91,7 +91,7 @@ class User implements UserInterface
     /**
      * @var Observation
      *
-     * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Observation", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="TS\NaoBundle\Entity\Observation", mappedBy="user")
      */
     private $observations;
 
