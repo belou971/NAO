@@ -34,6 +34,11 @@ ts_nao_delete_account:
     defaults:
         _controller: TSNaoBundle:User:deleteAccount
 
+ts_nao_editinfos:
+    path: /account/edit
+    defaults:
+        _controller: TSNaoBundle:Account:editInfos
+
 ts_nao_dashboard:
     path: /account
     defaults:

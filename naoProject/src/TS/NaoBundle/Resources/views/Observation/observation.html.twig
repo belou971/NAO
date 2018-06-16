@@ -23,14 +23,27 @@
 {% endblock %}
 
 {% block content %}
-{% include 'TSNaoBundle:Observation:observation_content.html.twig' %}
-{% endblock %}
+       <!-- Content Body -->
+    <div class="container-fluid position-content">
+        <div class="row">
+            <!-- Main Page Contain -->
+            {% if modal == false %}
+                {% set classes = "main-contain-border col-lg-9 col-sm-6"  %}
+            {% else %}
+                {% set classes = "col-sm-12"  %}
+            {% endif %}
+            <div class="main-contain {{ classes }}">
+                <div>
 
-{% block sidebar %}
-    <!-- Sidebar template -->
-    {% if modal == false  %}
-        {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
-    {% endif %}
+                 {% include 'TSNaoBundle:Observation:observation_content.html.twig' %}
+
+               </div>
+            </div>
+
+            <!-- Sidebar template -->
+            {% if modal == false  %}
+                {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
+            {% endif %}
 
 {% endblock %}
 

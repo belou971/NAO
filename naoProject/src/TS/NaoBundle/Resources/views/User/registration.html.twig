@@ -9,28 +9,32 @@
 				<div class="form_head">
 					<p>Inscrivez-vous</p>
 				</div>
+
+				<div class="facebook mb-2 mt-5" onclick="logInFacebook()"><i class="fab fa-facebook-f mr-3 fb_logo"></i>Continuer avec Facebook</div>
+				<div id="gButton" class="google mb-5" onclick="logInGoogle()"><i class="fab fa-google mr-3 go_logo"></i>Continuer avec Google</div>
+
 				{{ form_start(form) }}
-				{{ form_errors(form) }}
+				<span class="starchip">{{ form_errors(form) }}</span>
 				<div class="form-group">
 					{{ form_label(form.name) }}<span class="starchip">*</span>
-					{{ form_errors(form.name) }}
+					<span class="starchip">{{ form_errors(form.name) }}</span>
 					{{ form_widget(form.name, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 				<div class="form-group">
 					{{ form_label(form.surname) }}<span class="starchip">*</span>
-					{{ form_errors(form.surname) }}
+					<span class="starchip">{{ form_errors(form.surname) }}</span>
 					{{ form_widget(form.surname, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 				<div class="form-group">
 					{{ form_label(form.username) }}
-					{{ form_errors(form.username) }}
+					<span class="starchip">{{ form_errors(form.username) }}</span>
 					{{ form_widget(form.username, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 
 				{% for eachEmail in form.email %}
 				<div class="form-group">
 					{{ form_label(eachEmail) }}<span class="starchip">*</span>
-					{{ form_errors(eachEmail) }}
+					<span class="starchip">{{ form_errors(eachEmail) }}</span>
 					{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 				{% endfor %}
@@ -38,22 +42,19 @@
 				{% for eachPwd in form.password %}
 				<div class="form-group">
 					{{ form_label(eachPwd) }}<span class="starchip">*</span>
-					{{ form_errors(eachPwd) }}
+					<span class="starchip">{{ form_errors(eachPwd) }}</span>
 					{{ form_widget(eachPwd, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 				{% endfor %}
 
 				<div class="form-group">
-					{{ form_errors(form.cgu) }}
+					<span class="starchip">{{ form_errors(form.cgu) }}</span>
 					{{ form_widget(form.cgu) }}
 					<span>J'accepte <a href="#">les conditions générales d'utilisation</a><span class="starchip">*</span></span>
 				</div>
 
 				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Inscription" />
 				{{ form_rest(form) }}
-
-
-				<div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
 
 			</div>
 		</div>
@@ -62,17 +63,7 @@
 
 	{% block js %}
 
-		<script>
+	<script src="{{ asset('bundles/tsnao/jquery/social_login.js' ) }}"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
 
-			(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-
-			js = d.createElement(s); js.id = id;
-			js.src = 'https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v3.0&appId=154192048755869&autoLogAppEvents=1';
-			fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-
-		</script>
-
-{% endblock %}
+	{% endblock %}

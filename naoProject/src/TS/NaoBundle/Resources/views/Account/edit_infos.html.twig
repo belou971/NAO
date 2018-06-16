@@ -1,0 +1,53 @@
+{% extends "@TSNao/sections/base.html.twig" %}
+
+	{% block title %}Modification d'informations{% endblock %}
+
+	{% block content %}
+
+		<div class = "transparent">
+
+			{%   include 'TSNaoBundle:sections:message.html.twig' %}
+
+			<div class="form_layout">
+				<div class="form_head">
+					<p><i class="fas fa-edit mr-3"></i>Modifier mes informations</p>
+				</div>
+
+				{{ form_start(form) }}
+				<span class="starchip">{{ form_errors(form) }}</span>
+				
+				<div class="form-group">
+					{{ form_label(form.username) }}
+					<span class="starchip">{{ form_errors(form.username) }}</span>
+					{{ form_widget(form.username, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+
+				{% for eachEmail in form.email %}
+				<div class="form-group">
+					{{ form_label(eachEmail) }}
+					<span class="starchip">{{ form_errors(eachEmail) }}</span>
+					{{ form_widget(eachEmail, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+				{% endfor %}
+
+				{% for eachPwd in form.password %}
+				<div class="form-group">
+					{{ form_label(eachPwd) }}
+					<span class="starchip">{{ form_errors(eachPwd) }}</span>
+					{{ form_widget(eachPwd, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+				{% endfor %}
+
+				<div class="form-group">
+					{{ form_label(form.current_password) }}<span class="starchip">*</span>
+					<span class="starchip">{{ form_errors(form.current_password) }}</span>
+					{{ form_widget(form.current_password, {'attr' : {'class' : 'form-control'}}) }}
+				</div>
+
+				<input type="submit" class="btn btn-primary d-block mx-auto mt-4" value="Modifier" />
+				{{ form_rest(form) }}
+
+			</div>
+		</div>
+	
+	{% endblock %}

@@ -22,7 +22,7 @@
 						Veuillez remplir le formulaire suivant en envoyant votre diplôme ou tout autre document attestant votre capacité de Naturaliste pour avoir accès aux fonctionnalités avancées.
 					</p>
 					{{ form_label(form.grade) }}<span class="starchip">*</span>
-					{{ form_errors(form.grade) }}
+					<span class="starchip">{{ form_errors(form.grade) }}</span>
 					{{ form_widget(form.grade, {'attr' : {'class' : 'form-control'}}) }}
 				</div>
 

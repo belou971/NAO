@@ -25,6 +25,18 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Content Body -->
+    <div class="container-fluid position-content">
+        <div class="row">
+            <!-- Main Page Contain -->
+            {% if modal == false %}
+                {% set classes = "main-contain-border col-lg-9 col-sm-6"  %}
+            {% else %}
+                {% set classes = "col-sm-12"  %}
+            {% endif %}
+            <div class="main-contain {{ classes }}">
+                <div>
+
 
     {% for message in app.flashes('success') %}
 
@@ -50,9 +62,9 @@
     <div class="row">
         <div class="col-sm-12 search-box ">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#specimen" data-toggle="tab">Recherche à partir du nom</a></li>
-                <li><a href="#cities" data-toggle="tab">Recherche à partir du lieu</a></li>
-                <li><a href="#coord" data-toggle="tab">Recherche à partir de coordonnées GPS</a></li>
+                <li class="active"><a href="#specimen" data-toggle="tab" class="nav-link">Recherche à partir du nom</a></li>
+                <li><a href="#cities" data-toggle="tab" class="nav-link">Recherche à partir du lieu</a></li>
+                <li><a href="#coord" data-toggle="tab" class="nav-link">Recherche à partir de coordonnées GPS</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="specimen">
@@ -106,14 +118,17 @@
 
     {% include 'TSNaoBundle:Observation:observation_modal.html.twig' %}
 
-{% endblock %}
 
-{% block sidebar %}
-    <!-- Sidebar template -->
-    {% if modal == false  %}
-        {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
-    {% endif %}
 
+                </div>
+            </div>
+
+            <!-- Sidebar template -->
+            {% if modal == false  %}
+                {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use TS\NaoBundle\Entity\User;
+use TS\NaoBundle\Form\InfosType;
 use TS\NaoBundle\Form\RequestUpgradeType;
 
 class AccountController extends Controller
@@ -101,9 +102,9 @@ class AccountController extends Controller
 		}
 
 		$requestList = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:User')->getUpgradeRequestList();
-		$form = $this->get('form.factory')->create();
+		$token = $request->request->get('_csrf_token');
 
-		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+		if ($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $token)) {
 			$email = $request->request->get('email');
 			$status = $request->request->get('status');
 			$accountService = $this->get('naobundle.account.account');
@@ -112,6 +113,23 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_upgrade_request_list');
 		}
 
-		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList, 'form' => $form->createView()));
+		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList, 'authenticate' => $token));
+	}
+
+	/**
+	 * @Security("has_role('ROLE_BIRD_FANCIER')")
+	 */
+	public function editInfosAction(Request $request)
+	{
+		$form = $this->createForm(InfosType::class);
+		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+			$user = $this->getUser();
+			$accountService = $this->get('naobundle.account.account');
+			$accountService->edit($user->getEmail(), $form);
+
+			return $this->redirectToRoute('ts_nao_editinfos');
+		}
+
+		return $this->render('@TSNao/Account/edit_infos.html.twig', array('form' => $form->createView()));
 	}
 }

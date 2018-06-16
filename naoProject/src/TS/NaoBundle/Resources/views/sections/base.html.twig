@@ -49,6 +49,8 @@
         {% block jsspec %}{% endblock %}
 
     {% endblock %}
+    {% block recaptcha %}
+    {% endblock %}
 </head>
 
 <body>
@@ -56,24 +58,9 @@
         {%   include 'TSNaoBundle:sections:header_working.html.twig' %}
     {% endif %}
 
-    <!-- Content Body -->
-    <div class="container-fluid position-content">
-        <div class="row">
-            <!-- Main Page Contain -->
-            {% if modal == false %}
-                {% set classes = "main-contain-border col-lg-offset-1 col-lg-7 col-sm-6"  %}
-            {% else %}
-                {% set classes = "col-sm-12"  %}
-            {% endif %}
-            <div class="main-contain {{ classes }}">
-                <div>
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
 
-            {% block sidebar %}{% endblock %}
-        </div>
-    </div>
+        {% block content %}{% endblock %}
+
 
 
     {% if modal == false %}
