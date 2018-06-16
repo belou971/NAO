@@ -26,10 +26,12 @@ class UserController extends Controller
 		$form = $this->createForm(UserType::class, $user);
 		if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 			
+			$accountService = $this->get('naobundle.account.account');
+			$accountService->encodePassword($user, $form->get('password')->getData());
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
-			$request->getSession()->getFlashBag()->add('success', 'Compte crée avec succès.');
+			$request->getSession()->getFlashBag()->add('success', 'Compte créé avec succès.');
 
 			return $this->redirectToRoute('ts_nao_login');
 		}

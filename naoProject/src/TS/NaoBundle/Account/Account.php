@@ -3,6 +3,7 @@
 
 namespace TS\NaoBundle\Account;
 
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use TS\NaoBundle\PasswordRecovery\PasswordRecovery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -22,14 +23,16 @@ class Account
 	private $flashMessage;
 	private $targetDirectory;
 	private $em;
+	private $encoder;
 
-	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, EntityManagerInterface $em)
+	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
 	{
 		$this->mailer = $mailer;
 		$this->currentUser = $tokenStorage->getToken()->getUser();
 		$this->flashMessage = $requestStack->getCurrentRequest()->getSession()->getFlashBag();
 		$this->targetDirectory = $targetDirectory;
 		$this->em = $em;
+		$this->encoder = $encoder;
 	}
 
 	public function getUser($email)
@@ -96,7 +99,7 @@ class Account
 			return;
 		}
 
-		$user->setPassword($password);
+		$this->encodePassword($user, $password);
 		$user->setConfirmToken(null);
 		$this->em->flush();
 		$this->mailer->confirmEditPassword($user);
@@ -125,7 +128,7 @@ class Account
 			return;
 		}
 
-		if ($user->getPassword() != $form->get('current_password')->getData()) {
+		if (!$this->encoder->isPasswordValid($user, $form->get('current_password')->getData())) {
 			$this->flashMessage->add('error', 'Votre mot de passe actuel est incorrect.');
 			return;
 		}
@@ -150,7 +153,7 @@ class Account
 		}
 
 		if ($password) {
-			$user->setPassword($password);
+			$this->encodePassword($user, $password);
 		}
 
 		$this->em->flush();
@@ -235,5 +238,13 @@ class Account
 		}
 
 		return true;
+	}
+
+	public function encodePassword($user, $password)
+	{
+		$encoded = $this->encoder->encodePassword($user, $password);
+		$user->setPassword($encoded);
+
+		return $user;
 	}
 }
