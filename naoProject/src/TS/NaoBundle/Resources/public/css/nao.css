@@ -283,27 +283,27 @@ footer {
 
 .main-contain{
     background-color: #ffffff;
+    padding: 2em;
 }
 
 .main-contain-border{
-    border-right: 1px solid #663300;
     margin-right: 20px;
 }
 
 .sidebar {
-    background-color: #ffffff;
+    background-color: #ffffff52;
 }
 
 .sidebar-module {
     margin-top: 50px;
     margin-bottom: 15px;
-    background-color: #B7872A;
+    background-color: #ffffff;
 }
 
 .sidebar-subtitle {
-    border-top: #B7872A 15px solid;
-    border-left: #B7872A 12px solid;
-    border-right: #B7872A 10px solid;
+    border-top: #ffffff 15px solid;
+    border-left: #ffffff 12px solid;
+    border-right: #ffffff 10px solid;
     background-color: #663300;
     color: #ffffff;
 }
@@ -370,9 +370,15 @@ footer {
 }
 
 .bird_icone {
-    background-color: #42840e;
+    background-color: #7d7e80b8;
     padding: 0.3em;
-    color: #663300;
+    color: #222;
+    margin-bottom: 0.2em;
+}
+
+.bird-img {
+    padding: 0.3em;
+    margin-bottom: 0.2em;
 }
 
 .btn-width {
@@ -384,7 +390,7 @@ footer {
 }
 
 .awesomplete,.input-with{
-    width: 100%;
+    width: 80%;
 }
 
 /**********************************************************************************************************************/
@@ -410,7 +416,7 @@ padding-right: 2.5em;
 
 input#input-specimen,
 input#input-cities {
-    width: 45em;
+    width: 80%;
     height: 4em;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -452,4 +458,91 @@ input#longitude {
 
 .awesomplete > ul {
     z-index: 401 !important;
+}
+
+
+/**********************************************************************************************************************/
+/*                                                Fiche d'observation style                                           */
+/**********************************************************************************************************************/
+.header-obs {
+    border: 3px outset #275d429e;
+    background-color: #66cc99;
+}
+
+.title-obs-card {
+    margin: 0.5em 0.1em;
+    background-color: #FFFFFF;
+}
+
+.infos-author {
+    color: #222;
+    font-size: 18px;
+    margin-top: 3em;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.main-content-card {
+    border: 1px solid #716e6e;
+    margin-top: 1.6em;
+    background-color: #abb0b9b8;
+    padding: 30px 10px 40px 10px;
+}
+
+.taxref table{
+    background-color: #FFFFFF;
+    border: #275d429e;
+}
+
+.taxref-header {
+    color: #42840e;
+    font-size: 14px;
+}
+
+.description {
+    background-color: #FFFFFF;
+    padding-top: 0.5em;
+    padding-bottom: 2em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+.speci-nb {
+    border: 2px outset #d4d4d4;
+    margin-right: 0.2em;
+    padding: 1em;
+}
+.nb-value {
+    border: 2px outset #d4d4d4;
+    padding: 1em;
+    margin-left: 0.2em;
+}
+
+.header-description {
+    width: 100%;
+    padding: 0.8em;
+    border-bottom: 2px solid #dee2e6;
+    color: #42840e;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.area-text {
+    margin-top: 3em;
+    font-size: 14px;
+}
+
+.inpm-area {
+    margin-top: 10px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.inpm-area a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 16px;
+    text-transform: uppercase;
 }
