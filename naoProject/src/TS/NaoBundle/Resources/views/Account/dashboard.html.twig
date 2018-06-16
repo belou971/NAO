@@ -33,44 +33,69 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="table_layout">
-					<table class="table table-striped">
-						<div class="table_head_layout pending_obs">Observations en attente</div>
-						<thead>
-							<tr>
-								<th>Titre de l'observation</th>
-								<th>Espèce</th>
-								<th>Date de publication</th>
-								<th>#</th>
-							</tr>
-						</thead>
-						<tbody>
-                        	{{ render(controller("TSNaoBundle:Observation:userPendingObservations", {'user_id':app.user.id})) }}
-						</tbody>
-					</table>
-				</div>
-				<div class="table_layout">
-					<table class="table table-striped">
-						<div class="table_head_layout refused_obs">Observations rejetés</div>
-						<thead>
-							<tr>
-								<th>Titre de l'observation</th>
-								<th>Espèce</th>
-								<th>Date de publication</th>
-								<th>#</th>
-							</tr>
-						</thead>
-						<tbody>
-                        	{{ render(controller("TSNaoBundle:Observation:userRejectedObservations", {'user_id':app.user.id})) }}
-						</tbody>
-					</table>
-				</div>
+
+				{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
+					<div class="table_layout">
+						<table class="table table-striped">
+							<div class="table_head_layout pending_obs">Observations en attente</div>
+							<thead>
+								<tr>
+									<th>Titre de l'observation</th>
+									<th>Espèce</th>
+									<th>Date de publication</th>
+									<th>#</th>
+								</tr>
+							</thead>
+							<tbody>
+	                        	{{ render(controller("TSNaoBundle:Observation:userPendingObservations", {'user_id':app.user.id})) }}
+							</tbody>
+						</table>
+					</div>
+				{% endif %}
+				{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
+					<div class="table_layout">
+						<table class="table table-striped">
+							<div class="table_head_layout refused_obs">Observations rejetés</div>
+							<thead>
+								<tr>
+									<th>Titre de l'observation</th>
+									<th>Espèce</th>
+									<th>Date de publication</th>
+									<th>#</th>
+								</tr>
+							</thead>
+							<tbody>
+	                        	{{ render(controller("TSNaoBundle:Observation:userRejectedObservations", {'user_id':app.user.id})) }}
+							</tbody>
+						</table>
+					</div>
+				{% endif %}
+
+				{% if 'ROLE_NATURALIST' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+                    <div class="table_layout">
+                        <table class="table table-striped">
+                            <div class="table_head_layout pending_obs">Observations en attente de validation</div>
+                            <thead>
+                            <tr>
+                                <th>Titre de l'observation</th>
+                                <th>Espèce</th>
+                                <th>Date de publication</th>
+                                <th>#</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ render(controller("TSNaoBundle:Observation:getAllObservationsToValidate", {'user_id':app.user.id})) }}
+                            </tbody>
+                        </table>
+                	</div>
+                {% endif %}
 			</div>
 			<div class="form_layout mt-5">
 				<div class="form_head">
 					<p><i class="fa fa-cogs mr-3"></i>Vos actions</p>
 				</div>
 				<div class="actions_layout mt-5">
+
 					{% if 'ROLE_ADMIN' in app.user.roles %}
 					<p>
 						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>
@@ -84,7 +109,7 @@
 					{% endif %}
 
 					<p>
-						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="#">Modifier mes informations</a>
+						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="{{ path('ts_nao_editinfos') }}">Modifier mes informations</a>
 					</p>
 
 					{% if 'ROLE_BIRD_FANCIER' in app.user.roles or 'ROLE_NATURALIST' in app.user.roles %}
@@ -93,28 +118,10 @@
 					</p>
 					{% endif %}
 
-                    {% if 'ROLE_NATURALIST' in app.user.roles %}
-                        <div class="table_layout">
-                        <table class="table table-striped">
-                            <div class="table_head_layout pending_obs">Observations à vérifier</div>
-                            <thead>
-                            <tr>
-                                <th>Titre de l'observation</th>
-                                <th>Espèce</th>
-                                <th>Date de publication</th>
-                                <th>#</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {{ render(controller("TSNaoBundle:Observation:getAllObservationsToValidate", {'user_id':app.user.id})) }}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% endif %}
 				</div>
 			</div>
 		</div>
-
+		
         {% include 'TSNaoBundle:Observation:observation_modal.html.twig' %}
 
 	{% endblock %}

@@ -19,6 +19,7 @@ use TS\NaoBundle\Entity\Observation;
 use TS\NaoBundle\Enum\ProfilEnum;
 use TS\NaoBundle\Enum\StateEnum;
 use TS\NaoBundle\Form\ObservationType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ObservationController extends Controller {
 
@@ -64,6 +65,9 @@ class ObservationController extends Controller {
         return $this->render('TSNaoBundle:sections:sidebar.html.twig', array("lastObservations" => $response["data"], 'galery' => $galeryDirectory));
     }
 
+    /**
+     * @Security("has_role('ROLE_BIRD_FANCIER')")
+     */
     public function observationFormAction(Request $request) {
 
         $user = $this->getUser();

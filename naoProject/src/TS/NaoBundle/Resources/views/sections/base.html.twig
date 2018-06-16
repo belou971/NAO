@@ -49,36 +49,18 @@
         {% block jsspec %}{% endblock %}
 
     {% endblock %}
+    {% block recaptcha %}
+    {% endblock %}
 </head>
 
 <body>
-    {% if modal == false %}
         {%   include 'TSNaoBundle:sections:header_working.html.twig' %}
-    {% endif %}
-
-    <!-- Content Body -->
-    <div class="container-fluid position-content">
-        <div class="row">
-            <!-- Main Page Contain -->
-            {% if modal == false %}
-                {% set classes = "main-contain-border col-lg-offset-1 col-lg-7 col-sm-6"  %}
-            {% else %}
-                {% set classes = "col-sm-12"  %}
-            {% endif %}
-            <div class="main-contain {{ classes }}">
-                <div>
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
-
-            {% block sidebar %}{% endblock %}
-        </div>
-    </div>
 
 
-    {% if modal == false %}
+        {% block content %}{% endblock %}
+
+
         {% include 'TSNaoBundle:sections:footer_working.html.twig' %}
-    {% endif %}
 
     <!-- jQuery -->
     <script src="{{ asset('bundles/tsnao/jquery/jquery.min.js' ) }}"></script>
