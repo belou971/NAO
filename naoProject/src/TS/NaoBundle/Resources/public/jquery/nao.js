@@ -1,10 +1,13 @@
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the name of a specimen                             */
 /* ------------------------------------------------------------------------------------------------------------------ */
-document.getElementById("input-specimen").addEventListener("awesomplete-selectcomplete", function (event) {
-    $('#input-specimen').val(event.text.value);
-    $('#specimen button[name=submit_btn]').prop('disabled', false);
-});
+var inputSpecimen = document.getElementById("input-specimen");
+if (inputSpecimen) {
+    inputSpecimen.addEventListener("awesomplete-selectcomplete", function (event) {
+        $('#input-specimen').val(event.text.value);
+        $('#specimen button[name=submit_btn]').prop('disabled', false);
+    });
+}
 
 $specimen_search_btn = $('#specimen button[name=submit_btn]');
 $specimen_search_btn.on('click', function () {
@@ -68,9 +71,12 @@ $("input#input-cities").on("keyup", function() {
     })
 });
 
-document.getElementById("input-cities").addEventListener("awesomplete-selectcomplete", function (event) {
-    $('#cities button[name=submit_btn]').prop('disabled', false);
-});
+var inputCities = document.getElementById("input-cities");
+if (inputCities) {
+    inputCities.addEventListener("awesomplete-selectcomplete", function (event) {
+        $('#cities button[name=submit_btn]').prop('disabled', false);
+    });
+}
 
 $('#cities button[name=submit_btn]').on('click', function() {
     removeLayers();
@@ -231,26 +237,27 @@ $('#coord button[name=submit_btn]').on('click', function(event) {
 /**********************************************************************************************************************/
 /*                                                 OpenStreetMap manager                                              */
 /**********************************************************************************************************************/
-var mymap = L.map('mapid').setView([46.90296, 1.90925], 6);
+if ($('#mapid').length > 0) {
+    var mymap = L.map('mapid').setView([46.90296, 1.90925], 6);
 
-var mapLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    /*maxZoom: 14,*/
-    id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoiYmVsb3U5NzEiLCJhIjoiY2pnbXBrMW52MnhzNDJxbnpnb3p5YjU0MCJ9.yh0DNDJQUqv1IHeb9OEbtA'
-});
+    var mapLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        /*maxZoom: 14,*/
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoiYmVsb3U5NzEiLCJhIjoiY2pnbXBrMW52MnhzNDJxbnpnb3p5YjU0MCJ9.yh0DNDJQUqv1IHeb9OEbtA'
+    });
 
-mymap.addLayer(mapLayer);
+    mymap.addLayer(mapLayer);
 
-var markersOnMap = [];
-var contourOnMap = [];
-var clusterGroup = new L.MarkerClusterGroup();
-mymap.addLayer(clusterGroup);
+    var markersOnMap = [];
+    var contourOnMap = [];
+    var clusterGroup = new L.MarkerClusterGroup();
+    mymap.addLayer(clusterGroup);
+}
 
 function resetMap() {
     mymap.setView([46.90296, 1.90925], 6);
 }
-
 
 function AddMarkersToClusterGroup(obsList) {
     markersOnMap = obsList.map(addObservationOnMap);
@@ -283,6 +290,16 @@ function getObservationContent(observationId) {
 
                 $('.modal-body').html(outputData);
                 $('#observationModal').modal('show');
+
+                $('#observationModal .btn-validate').on('click', function() {
+                    var observationId = $(this).parent().parent().data('id');
+                    updateStatus(observationId, 'validate');
+                });
+
+                $('#observationModal .btn-reject').on('click', function() {
+                    var observationId = $(this).parent().parent().data('id');
+                    updateStatus(observationId, 'invalidate');
+                });
             }
         });
 
@@ -309,4 +326,34 @@ function updateZoomMax() {
             }
         });
 
+}
+
+$('.obs-row').on('click', function () {
+    var observationId = $(this).data('id');
+    var observationFunction = getObservationContent(observationId);
+    observationFunction();
+});
+
+$('.remove-obs').on('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var observationId = $(this).parent().data('id');
+    updateStatus(observationId, 'delete');
+});
+
+function updateStatus(observationId, status) {
+        var $data = {observation_id: observationId, observation_status: status};
+        $.ajax({
+            type: 'post',
+            url: Routing.generate('ts_nao_update_status'),
+            data: JSON.stringify($data),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (content) {
+                var ouputData = content.data;
+                if(ouputData && ouputData.hasChanged === true) {
+                    window.location.reload();
+                }
+            }
+        });
 }

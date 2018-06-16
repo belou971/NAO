@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validation;
+use TS\NaoBundle\Enum\StateEnum;
 
 class RequestManager
 {
@@ -72,6 +73,9 @@ class RequestManager
             }
             else if (ActionType::READ_OBSERVATION === $action) {
                 $response = $this->inputReadObservationAction($content);
+            }
+            else if (ActionType::UPDATE_OBSERVATION_STATUS === $action) {
+                $response = $this->updateObservationStatusAction($content);
             }
             else {
                 $response["errors"] = array("The request method is not a post");
@@ -205,6 +209,29 @@ class RequestManager
         }
 
         $response["input_data"] = $parameters;
+        return $response;
+    }
+
+    private function updateObservationStatusAction($parameters) {
+        $response = array("errors" => array(), "input_data" => array() );
+
+        if(!array_key_exists("observation_id", $parameters)) {
+            $response["errors"] = array("l'observation n'a pas été identifié");
+        }
+        if(!array_key_exists("observation_status", $parameters)) {
+            $response["errors"] = array("Le nouveau status de l'observation est requis");
+        }
+        if($parameters["observation_status"] !== StateEnum::VALIDATE &&
+            $parameters["observation_status"] !== StateEnum::INVALIDATE &&
+            $parameters["observation_status"] !== StateEnum::DELETE &&
+            $parameters["observation_status"] !== StateEnum::STANDBY &&
+            $parameters["observation_status"] !== StateEnum::SUBMIT) {
+            $response["errors"] = array("Ce status n'est pas identifié pour une observation");
+            return $response;
+        }
+
+        $response["input_data"] = $parameters;
+
         return $response;
     }
 }

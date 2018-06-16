@@ -2,6 +2,11 @@
 
 	{% block title %}Dashboard{% endblock %}
 
+{% block jsspec %}
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+{% endblock %}
+
 	{% block content %}
 
 		<div class="transparent">
@@ -24,42 +29,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>Observation récente</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
-							<tr>
-								<td>Observation plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
-							<tr>
-								<td>Observation encore plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
-							<tr>
-								<td>Observation encore plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
-							<tr>
-								<td>Observation encore plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
-							<tr>
-								<td>Observation encore plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-check"></i></td>
-							</tr>
+							{{ render(controller("TSNaoBundle:Observation:userValidatedObservations", {'user_id':app.user.id})) }}
 						</tbody>
 					</table>
 				</div>
@@ -75,7 +45,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
+                        	{{ render(controller("TSNaoBundle:Observation:userPendingObservations", {'user_id':app.user.id})) }}
+							{#<tr>
 								<td>Observation récente</td>
 								<td>Espèce</td>
 								<td>Date de publication</td>
@@ -92,7 +63,7 @@
 								<td>Espèce</td>
 								<td>Date de publication</td>
 								<td><i class="fa fa-clock"></i></td>
-							</tr>
+							</tr> #}
 						</tbody>
 					</table>
 				</div>
@@ -108,12 +79,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td></td>
-								<td class="text-center">Rien à afficher</td>
-								<td></td>
-								<td></td>
-							</tr>
+                        	{{ render(controller("TSNaoBundle:Observation:userRejectedObservations", {'user_id':app.user.id})) }}
+							{# <tr>
+								<td class="text-center" colspan="4">Rien à afficher</td>
+							</tr> #}
 						</tbody>
 					</table>
 				</div>
@@ -150,9 +119,30 @@
 						<a class="btn btn-primary delete d-block mx-auto" role="button" href="{{ path('ts_nao_delete_account') }}">Supprimer mon compte</a>
 					</p>
 					{% endif %}
+
+                    {% if 'ROLE_NATURALIST' in app.user.roles %}
+                        <div class="table_layout">
+                        <table class="table table-striped">
+                            <div class="table_head_layout pending_obs">Observations à vérifier</div>
+                            <thead>
+                            <tr>
+                                <th>Titre de l'observation</th>
+                                <th>Espèce</th>
+                                <th>Date de publication</th>
+                                <th>#</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ render(controller("TSNaoBundle:Observation:getAllObservationsToValidate", {'user_id':app.user.id})) }}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
 				</div>
 			</div>
 		</div>
+
+        {% include 'TSNaoBundle:Observation:observation_modal.html.twig' %}
 
 	{% endblock %}
 

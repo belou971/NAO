@@ -119,7 +119,7 @@ textarea {
     width: 90%;
     margin: 30px auto;
     overflow: auto;
-    min-height: 1.5;
+    min-height: 1.5em;
     max-height: 200px;
 }
 
@@ -137,11 +137,23 @@ textarea {
 }
 
 .pending_obs {
-    background-color: #858585;
+    background-color: #858585 ;
 }
 
 .refused_obs {
     background-color: #EF7676;
+}
+
+.obs-row:hover {
+    background-color: #aacd4e !important;
+}
+
+.obs-row {
+    cursor: pointer;
+}
+
+.remove-obs:hover {
+    color: red;
 }
 
 /**********************************************************************************************************************/

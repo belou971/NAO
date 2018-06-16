@@ -15,7 +15,7 @@
                         <li class="nav-item" role="presentation"><a class="nav-link" href="#">Nos membres</a></li>
                         <li class="nav-item" role="presentation"><a class="nav-link" href="#">Blog</a></li>
                         <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_contact') }}">Contact</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Proposer une observation</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_observation_form') }}">Proposer une observation</a></li>
                         {% if is_granted('ROLE_BIRD_FANCIER') %}
                             <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_dashboard') }}">Mon compte</a></li>
                         {% endif %}

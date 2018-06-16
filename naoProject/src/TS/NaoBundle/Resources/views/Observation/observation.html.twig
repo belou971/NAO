@@ -26,6 +26,14 @@
 {% include 'TSNaoBundle:Observation:observation_content.html.twig' %}
 {% endblock %}
 
+{% block sidebar %}
+    <!-- Sidebar template -->
+    {% if modal == false  %}
+        {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
+    {% endif %}
+
+{% endblock %}
+
 {% block js %}
     <script src="{{ asset('bundles/tsnao/jquery/nao-read.js') }}"></script>
 {% endblock %}

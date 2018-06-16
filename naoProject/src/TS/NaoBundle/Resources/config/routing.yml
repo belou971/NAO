@@ -94,5 +94,10 @@ ts_nao_observation_view:
     _controller: TSNaoBundle:Observation:readOnly
 
 ts_nao_observation_form:
-  path: /observation/form
+  path: /account/observation/form
   defaults: { _controller: TSNaoBundle:Observation:observationForm }
+
+ts_nao_update_status:
+  path: /account/update_obs_state
+  defaults:
+    _controller: TSNaoBundle:Observation:updateObservationStatus

@@ -10,6 +10,7 @@ namespace TS\NaoBundle\Component;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use TS\NaoBundle\Enum\ProfilEnum;
+use TS\NaoBundle\Enum\StateEnum;
 
 class DataManager
 {
@@ -29,7 +30,7 @@ class DataManager
         return self::$instance;
     }
 
-    public function get($action, $parameters) {
+    public function get($action, $parameters, $json_format = true) {
         //initialize the output of the function
         $response = array("errors" => array(), "data" => array() );
 
@@ -43,7 +44,11 @@ class DataManager
             $response = $this->doAction($action, $parameters);
         }
 
-        return json_encode($response, JSON_UNESCAPED_UNICODE);
+        if($json_format) {
+            return json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+
+        return $response;
     }
 
     private function doAction($action, $parameters) {
@@ -75,6 +80,22 @@ class DataManager
 
         if (ActionType::READ_OBSERVATION === $action) {
             $response = $this->getObservation($parameters);
+        }
+
+        if (ActionType::VALIDATED_OBSERVATIONS === $action) {
+            $response = $this->getValidatedObservations($parameters);
+        }
+
+        if (ActionType::REJECTED_OBSERVATIONS === $action) {
+            $response = $this->getRejectedObservations($parameters);
+        }
+
+        if (ActionType::PENDING_OBSERVATIONS === $action) {
+            $response = $this->getPendingObservations($parameters);
+        }
+
+        if (ActionType::UPDATE_OBSERVATION_STATUS === $action) {
+            $response = $this->updateObservationStatus($parameters);
         }
 
         return $response;
@@ -290,7 +311,7 @@ class DataManager
             $response["errors"] = array("Le paramètre 'profil' est introuvable");
         }
 
-        if(true === $parameters['logged']) {
+        if(true === $parameters['logged'] && true === $parameters['active']) {
             $profil = $parameters["profil"];
             $response["data"] = array("zoomMax" => $zoomMaxSetting[$profil]);
         }
@@ -361,6 +382,137 @@ class DataManager
             unset($listObservations[0][0]);
             array_unshift($listObservations, $observation);
             $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    private function getValidatedObservations($parameters)
+    {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        if(!array_key_exists("user_id", $parameters)) {
+            $response["errors"] = array("l'utilisateur n'a pas été identifié");
+        }
+
+        //Find in database the validated observations of the user identified by the given user id in parameter
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+            $criteria = array("user" => $parameters["user_id"], "state" => StateEnum::VALIDATE);
+            $order_by = array("dtModification" => "desc");
+            $listObservations = $observationRepo->findBy($criteria,$order_by);
+
+            $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    private function getRejectedObservations($parameters)
+    {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        if(!array_key_exists("user_id", $parameters)) {
+            $response["errors"] = array("l'utilisateur n'a pas été identifié");
+        }
+
+        //Find in database the validated observations of the user identified by the given user id in parameter
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+            $criteria = array("user" => $parameters["user_id"], "state" => StateEnum::INVALIDATE);
+            $order_by = array("dtModification" => "desc");
+            $listObservations = $observationRepo->findBy($criteria,$order_by);
+
+            $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    private function getPendingObservations($parameters)
+    {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        if(!array_key_exists("user_id", $parameters)) {
+            $response["errors"] = array("l'utilisateur n'a pas été identifié");
+        }
+
+        //Find in database the validated observations of the user identified by the given user id in parameter
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+            if($parameters["user_id"] === -1) {
+                $criteria = array("state" => StateEnum::SUBMIT);
+            }
+            else {
+                $criteria = array("user" => $parameters["user_id"], "state" => StateEnum::SUBMIT);
+            }
+            $order_by = array("dtModification" => "desc");
+            $listObservations = $observationRepo->findBy($criteria,$order_by);
+
+            $response["data"] = $listObservations;
+        }
+        catch (ORMException $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+        catch (\Exception $e) {
+            $response["errors"] = array($e->getMessage());
+        }
+
+        return $response;
+    }
+
+    private function updateObservationStatus($parameters) {
+        $response = array("errors" => array(), "data" => array(), "messages" => array() );
+
+        //Update the status of an given observation
+        $observationRepo = $this->em->getRepository('TSNaoBundle:Observation');
+        if(is_null($observationRepo)) {
+            $response["errors"] = array("Impossible d'accèder à la table des observations");
+        }
+
+        try {
+
+            $criteria = array("id" => $parameters["observation_id"],
+                              "state" => $parameters["observation_status"]);
+
+            //$order_by = array("dtModification" => "desc");
+            $nbModifiedRow = $observationRepo->updateStatus($criteria);
+            if($nbModifiedRow === 1 ) {
+                $response["data"] = array("hasChanged" =>true);
+            }
+            else {
+                $response["data"]= array("hasChanged" =>false);
+            }
         }
         catch (ORMException $e) {
             $response["errors"] = array($e->getMessage());

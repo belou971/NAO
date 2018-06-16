@@ -104,12 +104,12 @@
     </div>
 
     {% if (is_granted('ROLE_NATURALIST') or is_granted('ROLE_ADMIN'))and (observation['state'] == 'submit') %}
-        <div class="row">
+        <div class="row" data-id="{{ observation['id'] }}">
             <div class="col-sm-6">
-                <button type="button" class="btn btn-success">Valider</button>
+                <button type="button" class="btn btn-success btn-validate">Valider</button>
             </div>
             <div class="col-sm-6">
-                <button type="button" class="btn btn-danger">Refuser</button>
+                <button type="button" class="btn btn-danger btn-reject">Refuser</button>
             </div>
         </div>
     {% endif %}

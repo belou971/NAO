@@ -71,10 +71,7 @@
                 </div>
             </div>
 
-            <!-- Sidebar template -->
-            {% if modal == false %}
-                {{ render(controller("TSNaoBundle:Observation:sidebar", {'max':4})) }}
-            {% endif %}
+            {% block sidebar %}{% endblock %}
         </div>
     </div>
 

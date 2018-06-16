@@ -16,6 +16,8 @@ use TS\NaoBundle\Component\ActionType;
 use TS\NaoBundle\Component\DataManager;
 use TS\NaoBundle\Component\RequestManager;
 use TS\NaoBundle\Entity\Observation;
+use TS\NaoBundle\Enum\ProfilEnum;
+use TS\NaoBundle\Enum\StateEnum;
 use TS\NaoBundle\Form\ObservationType;
 
 class ObservationController extends Controller {
@@ -64,6 +66,12 @@ class ObservationController extends Controller {
 
     public function observationFormAction(Request $request) {
 
+        $user = $this->getUser();
+        if(is_null($user) || !$user->getActive()) {
+            return $this->redirectToRoute('ts_nao_login');
+        }
+
+
         $em = $this->getDoctrine()->getManager();
         $observation = new Observation();
 
@@ -98,6 +106,55 @@ class ObservationController extends Controller {
         return $this->render('TSNaoBundle:Observation:observationForm.html.twig', array('form' => $form->createView(), "modal" => false));
     }
 
+    public function userValidatedObservationsAction($user_id) {
+
+        $response = $this->getUserSelectedObservations($user_id, ActionType::VALIDATED_OBSERVATIONS);
+
+        return $this->render('TSNaoBundle:sections:table_content.html.twig', array("listObservations" => $response["data"], "state" => StateEnum::VALIDATE));
+    }
+
+    public function userRejectedObservationsAction($user_id) {
+
+        $response = $this->getUserSelectedObservations($user_id, ActionType::REJECTED_OBSERVATIONS);
+
+        return $this->render('TSNaoBundle:sections:table_content.html.twig', array("listObservations" => $response["data"], "state" => StateEnum::INVALIDATE));
+    }
+
+    public function userPendingObservationsAction($user_id) {
+
+        $response = $this->getUserSelectedObservations($user_id, ActionType::PENDING_OBSERVATIONS);
+
+        return $this->render('TSNaoBundle:sections:table_content.html.twig', array("listObservations" => $response["data"], "state" => StateEnum::SUBMIT));
+    }
+
+    public function getAllObservationsToValidateAction() {
+        $user_id = -1;
+        $response = $this->getUserSelectedObservations($user_id, ActionType::PENDING_OBSERVATIONS);
+
+        return $this->render('TSNaoBundle:sections:table_content.html.twig', array("listObservations" => $response["data"], "state" => StateEnum::STANDBY));
+    }
+
+    public function updateObservationStatusAction(Request $request) {
+        $user = $this->getUser();
+        if(is_null($user)) {
+            return $this->redirectToRoute('ts_nao_homepage');
+        }
+
+        //step1 : tester la validité de la request
+        $requestParams= array("method" => $request->getMethod(), "content"=>$request->getContent());
+        $requestData = RequestManager::getInstance()->get(ActionType::UPDATE_OBSERVATION_STATUS, $requestParams);
+        if(count($requestData["errors"]) > 0) {
+            $response["errors"] = $requestData["errors"];
+            return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+
+        $em = $this->getDoctrine()->getManager();
+        $parameters = $requestData["input_data"];
+        $response = DataManager::getInstance($em)->get(ActionType::UPDATE_OBSERVATION_STATUS, $parameters, false);
+
+        return new Response(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
 
     private function getObservation($parameters, $manager)
     {
@@ -106,4 +163,14 @@ class ObservationController extends Controller {
 
         return $response;
     }
+
+    private function getUserSelectedObservations($user_id, $action_type, $json_format=false) {
+
+        $em = $this->getDoctrine()->getManager();
+        $parameters = array("user_id"=> $user_id);
+        $response = DataManager::getInstance($em)->get($action_type, $parameters, $json_format);
+
+        return $response;
+    }
+
 }

@@ -1,0 +1,32 @@
+{% set icone %}
+    {%  if state == 'validate' %}
+        <i class="fa fa-check"></i>
+    {% elseif state == 'invalidate' %}
+        <i class="fas fa-trash-alt" style="color:inherit"></i>
+    {% elseif state == 'submit' %}
+        <i class="fa fa-clock"></i>
+    {% elseif state == 'standby' %}
+        <i class="fas fa-hand-point-up"></i>
+    {% endif %}
+{% endset %}
+
+{% if state == 'invalidate' %}
+    {% set spe_trash = "remove-obs" %}
+{% else %}
+    {%  set spe_trash = "" %}
+{% endif %}
+
+{% if listObservations|length > 0 %}
+    {% for observation in listObservations %}
+        <tr class="obs-row" data-id="{{ observation.id }}">
+            <td>{{ observation.title }}</td>
+            <td>{{ observation.specimen }}</td>
+            <td>{{ observation.dtModification|date('d-m-Y') }}</td>
+            <td class="{{ spe_trash }}">{{ icone }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td class="text-center" colspan="4">Rien à afficher</td>
+    </tr>
+{% endif %}

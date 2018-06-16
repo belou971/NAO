@@ -90,7 +90,7 @@ class SearchController extends Controller
 
         $user = $this->getUser();
         $logged = !is_null($user);
-        $parameters = array("logged"=>$logged, "profil"=>"");
+        $parameters = array("logged"=>$logged, "profil"=>"", "active" => false);
         if($logged) {
             $roles  = $user->getRoles();
             if(in_array(ProfilEnum::ADMIN, $roles)){
@@ -100,6 +100,8 @@ class SearchController extends Controller
             } else {
                 $parameters["profil"] = ProfilEnum::BIRD_FANCIER;
             }
+
+            $parameters["active"] = $user->getActive();
         }
 
         $em = $this->getDoctrine()->getManager();

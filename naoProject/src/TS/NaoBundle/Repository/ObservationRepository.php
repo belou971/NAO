@@ -1,6 +1,7 @@
 <?php
 
 namespace TS\NaoBundle\Repository;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use TS\NaoBundle\Enum\StateEnum;
 
 /**
@@ -89,4 +90,17 @@ class ObservationRepository extends \Doctrine\ORM\EntityRepository
         return $observation;
     }
 
+    public function updateStatus($criteria) {
+        $builder = $this->_em->createQueryBuilder();
+        $builder->update('TSNaoBundle:Observation', 'obs')
+                         ->set('obs.state', '?0')
+                         ->set('obs.dtModification', '?1')
+                         ->where('obs.id = ?2')
+                         ->setParameter(0, $criteria['state'])
+                         ->setParameter(1, new \DateTime())
+                         ->setParameter(2, $criteria['id']);
+
+        $toto = $builder->getQuery()->execute();
+        return $toto;
+    }
 }
