@@ -27,13 +27,17 @@ xhr.send();
 /*                                                 Cities auto-completion manager                                     */
 /**********************************************************************************************************************/
 var citiesInput = document.querySelector("input.complete-cities");
-var awesomplete2 = new Awesomplete( citiesInput, {
-                                    minChars:1,
-                                    autoFirst:true,
-                                    maxItems:5,
-                                    replace: function(text){
-                                        this.input.value = text;
-                                    } });
+var awesomplete2;
+if (citiesInput) {
+    awesomplete2 = new Awesomplete(citiesInput, {
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 5,
+        replace: function (text) {
+            this.input.value = text;
+        }
+    });
+}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                       Event on search button of the research by the city                                           */
