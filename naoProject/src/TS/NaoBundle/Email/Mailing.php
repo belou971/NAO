@@ -46,6 +46,19 @@ class Mailing
 		$this->mailer->send($message);
 	}
 
+	public function contactMail($form)
+	{
+		$name = $form->get('name')->getData();
+		$surname = $form->get('surname')->getData();
+		$email = $form->get('email')->getData();
+		$contact_message = $form->get('message')->getData();
+
+		$message = new \Swift_Message('Demande d\'informations');
+		$message->setBody($this->templating->render('@TSNao/Email/contact.html.twig', array('name' => $name, 'surname' => $surname, 'email' => $email, 'message' => $contact_message)), 'text/html');
+		$message->setFrom([$this->mailerUser => 'Nos Amis les Oiseaux'])->setTo($this->mailerUser);
+		$this->mailer->send($message);
+	}
+
 	public function deleteAccount(User $user)
 	{
 		$message = new \Swift_Message('Suppression de compte');

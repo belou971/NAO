@@ -3,6 +3,7 @@
 
 namespace TS\NaoBundle\Account;
 
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use TS\NaoBundle\PasswordRecovery\PasswordRecovery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -21,15 +22,19 @@ class Account
 	private $currentUser;
 	private $flashMessage;
 	private $targetDirectory;
+	private $anonymousEmail;
 	private $em;
+	private $encoder;
 
-	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, EntityManagerInterface $em)
+	public function __construct(Mailing $mailer, TokenStorageInterface $tokenStorage, RequestStack $requestStack, $targetDirectory, $anonymousEmail, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
 	{
 		$this->mailer = $mailer;
 		$this->currentUser = $tokenStorage->getToken()->getUser();
 		$this->flashMessage = $requestStack->getCurrentRequest()->getSession()->getFlashBag();
 		$this->targetDirectory = $targetDirectory;
+		$this->anonymousEmail = $anonymousEmail;
 		$this->em = $em;
+		$this->encoder = $encoder;
 	}
 
 	public function getUser($email)
@@ -96,7 +101,7 @@ class Account
 			return;
 		}
 
-		$user->setPassword($password);
+		$this->encodePassword($user, $password);
 		$user->setConfirmToken(null);
 		$this->em->flush();
 		$this->mailer->confirmEditPassword($user);
@@ -114,6 +119,48 @@ class Account
 
 		$this->mailer->confirmRegistration($user);
 		$this->flashMessage->add('success', 'Votre demande de renvoi d\'e-mail a bien été prise en compte.');
+	}
+
+	public function edit($email, $form)
+	{
+		$user = $this->getUser($email);
+
+		if ($user == null) {
+			$this->flashMessage->add('error', 'Impossible de mettre à jour vos informations.');
+			return;
+		}
+
+		if (!$this->encoder->isPasswordValid($user, $form->get('current_password')->getData())) {
+			$this->flashMessage->add('error', 'Votre mot de passe actuel est incorrect.');
+			return;
+		}
+
+		$username = $form->get('username')->getData();
+		$email = $form->get('email')->getData();
+		$password = $form->get('password')->getData();
+
+		if ($username) {
+			$user->setUsername($username);
+		}
+
+		if ($email) {
+			$existingUser = $this->getUser($email);
+
+			if ($existingUser instanceof User) {
+				$this->flashMessage->add('error', 'Cette adresse e-mail est déjà prise.');
+				return;
+			}
+
+			$user->setEmail($email);
+		}
+
+		if ($password) {
+			$this->encodePassword($user, $password);
+			$this->mailer->confirmEditPassword($user);
+		}
+
+		$this->em->flush();
+		$this->flashMessage->add('success', 'Mise à jour effectuée.');
 	}
 
 	public function saveGrade(File $file)
@@ -179,5 +226,48 @@ class Account
 		}
 
 		$user->setGrade(null);
+	}
+
+	public function isSameUser($email, $name, $surname)
+	{
+		$user = $this->getUser($email);
+
+		if ($user == null) {
+			return false;
+		}
+
+		elseif($name != $user->getName() || $surname != $user->getSurname()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function encodePassword($user, $password)
+	{
+		$encoded = $this->encoder->encodePassword($user, $password);
+		$user->setPassword($encoded);
+
+		return $user;
+	}
+
+	public function switchUsers(User $user)
+	{
+		$anonymousAccount = $this->getUser($this->anonymousEmail);
+		if($anonymousAccount == null) {
+			$this->flashMessage->add('error', 'Impossible de supprimer votre compte pour le moment.');
+			return false;
+		}
+
+		$observations = $user->getObservations();
+
+		foreach($observations->getIterator() as $oneObs) {
+
+			$anonymousAccount->addObservation($oneObs);
+			$user->removeObservation($oneObs);
+		}
+
+		$this->deleteGrade($user);
+		return true;
 	}
 }

@@ -2,7 +2,9 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
-        TS\NaoBundle\Entity\User: plaintext
+        TS\NaoBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 12
     
     role_hierarchy:
         ROLE_NATURALIST: [ROLE_BIRD_FANCIER]

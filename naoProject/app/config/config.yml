@@ -8,9 +8,13 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    anonymous_email: kapooral.pro@gmail.com
     grades_directory: '%kernel.project_dir%/web/uploads/grades/'
     galery_directory: '%kernel.project_dir%/web/uploads/galery'
     galery_relative_path: '/uploads/galery'
+    google_public_recaptcha: 6Lfx0V4UAAAAAP8Vk0J7yZCDgcg2ggWPISBrsai0
+    google_secret_recaptcha: 6Lfx0V4UAAAAAAwDtduOwJpuaMiE8FN2GzJPrI_G
+    google_url_recaptcha: https://www.google.com/recaptcha/api/siteverify
 
 framework:
     #esi: ~
@@ -44,6 +48,8 @@ twig:
     form_themes:
         - 'bootstrap_3_layout.html.twig'
         - 'TSNaoBundle:sections:custom_theme.html.twig'
+    globals:
+        google_recaptcha: "%google_public_recaptcha%"
 
 # Doctrine Configuration
 doctrine:

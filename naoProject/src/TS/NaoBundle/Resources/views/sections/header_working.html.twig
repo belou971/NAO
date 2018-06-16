@@ -12,13 +12,12 @@
                     id="navcol-1">
                     <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item" role="presentation"><a class="nav-link active" href="{{ path('ts_nao_homepage') }}">Accueil</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Nos membres</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Blog</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="https://www.koxeo.com/nao/">Blog</a></li>
                         <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_contact') }}">Contact</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_observation_form') }}">Proposer une observation</a></li>
                         {% if is_granted('ROLE_BIRD_FANCIER') %}
                             <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_dashboard') }}">Mon compte</a></li>
                         {% endif %}
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="{{ path('ts_nao_observation_form') }}">Proposer une observation</a></li>
                     </ul>
                     {% if is_granted('ROLE_BIRD_FANCIER') %}
                         <a class="btn btn-primary ml-auto" role="button" href="{{ path('ts_nao_logout') }}">Se déconnecter</a>
