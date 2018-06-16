@@ -46,24 +46,6 @@
 						</thead>
 						<tbody>
                         	{{ render(controller("TSNaoBundle:Observation:userPendingObservations", {'user_id':app.user.id})) }}
-							{#<tr>
-								<td>Observation récente</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-clock"></i></td>
-							</tr>
-							<tr>
-								<td>Observation plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-clock"></i></td>
-							</tr>
-							<tr>
-								<td>Observation encore plus ancienne</td>
-								<td>Espèce</td>
-								<td>Date de publication</td>
-								<td><i class="fa fa-clock"></i></td>
-							</tr> #}
 						</tbody>
 					</table>
 				</div>
@@ -80,9 +62,6 @@
 						</thead>
 						<tbody>
                         	{{ render(controller("TSNaoBundle:Observation:userRejectedObservations", {'user_id':app.user.id})) }}
-							{# <tr>
-								<td class="text-center" colspan="4">Rien à afficher</td>
-							</tr> #}
 						</tbody>
 					</table>
 				</div>
@@ -92,12 +71,6 @@
 					<p><i class="fa fa-cogs mr-3"></i>Vos actions</p>
 				</div>
 				<div class="actions_layout mt-5">
-					{% if is_granted('ROLE_NATURALIST') %}
-					<p>
-						<a class="btn btn-primary observations d-block mx-auto" role="button" href="#" >Valider des observations</a>
-					</p>
-					{% endif %}
-
 					{% if 'ROLE_ADMIN' in app.user.roles %}
 					<p>
 						<a class="btn btn-primary neutral d-block mx-auto" role="button" href="{{ path('ts_nao_upgrade_request_list') }}">Liste des demandes d'amélioration de compte</a>

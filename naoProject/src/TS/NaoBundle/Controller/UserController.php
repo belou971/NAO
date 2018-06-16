@@ -34,7 +34,7 @@ class UserController extends Controller
 			return $this->redirectToRoute('ts_nao_login');
 		}
 		
-		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView()));
+		return $this->render('@TSNao/User/registration.html.twig', array('form' => $form->createView(), "modal" => false));
 	}
 
 	public function loginAction()
@@ -64,7 +64,7 @@ class UserController extends Controller
     		return $this->redirectToRoute('ts_nao_recovery');
     	}
 
-    	return $this->render('@TSNao/User/recovery.html.twig');
+    	return $this->render('@TSNao/User/recovery.html.twig', array("modal" => false));
 	}
 
 	public function resetPasswordAction(Request $request)
@@ -77,7 +77,7 @@ class UserController extends Controller
 				$accountService->resetPassword($request->request->get('email'), $form->get('password')->getData());
 				return $this->redirectToRoute('ts_nao_login');
 			}
-			return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $request->request->get('email')));
+			return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $request->request->get('email'), "modal" => false));
 		}
 
 		if ($request->query->get('email') && $request->query->get('identifier')) {
@@ -85,7 +85,7 @@ class UserController extends Controller
 			$token = $request->query->get('identifier');
 			if ($accountService->verify($email, $token) != null) {
 
-				return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $email));
+				return $this->render('@TSNao/User/reset_password.html.twig', array('form' => $form->createView(), 'email' => $email, "modal" => false));
 			}
 		}
 		return $this->redirectToRoute('ts_nao_homepage');
@@ -113,7 +113,7 @@ class UserController extends Controller
 			return $this->redirectToRoute('ts_nao_homepage');
 		}
 
-		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView()));
+		return $this->render('@TSNao/User/delete_account.html.twig', array('form' => $form->createView(), 'modal' => false));
 	}
 
 	public function contactAction(Request $request)

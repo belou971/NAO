@@ -63,7 +63,7 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_disabled');
 		}
 
-		return $this->render('@TSNao/Account/disabled_account.html.twig', array('email' => $user->getEmail(), 'form' => $form->createView()));
+		return $this->render('@TSNao/Account/disabled_account.html.twig', array('email' => $user->getEmail(), 'form' => $form->createView(), 'modal' => false));
 	}
 
 	/**
