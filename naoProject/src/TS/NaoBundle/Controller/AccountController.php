@@ -102,9 +102,9 @@ class AccountController extends Controller
 		}
 
 		$requestList = $this->getDoctrine()->getManager()->getRepository('TSNaoBundle:User')->getUpgradeRequestList();
-		$form = $this->get('form.factory')->create();
+		$token = $request->request->get('_csrf_token');
 
-		if ($request->isMethod('POST') && $form->handleRequest($request) && $form->isValid()) {
+		if ($request->isMethod('POST') && $this->isCsrfTokenValid('authenticate', $token)) {
 			$email = $request->request->get('email');
 			$status = $request->request->get('status');
 			$accountService = $this->get('naobundle.account.account');
@@ -113,7 +113,7 @@ class AccountController extends Controller
 			return $this->redirectToRoute('ts_nao_upgrade_request_list');
 		}
 
-		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList, 'form' => $form->createView()));
+		return $this->render('@TSNao/Account/upgrade_request_list.html.twig', array('requestList' => $requestList, 'authenticate' => $token));
 	}
 
 	/**
