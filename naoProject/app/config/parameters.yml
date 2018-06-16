@@ -1,0 +1,17 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: projet_5
+    database_user: root
+    database_password: null
+
+    mailer_transport: smtp
+    mailer_host: smtp.gmail.com
+    mailer_user: oc.student.husseini@gmail.com
+    mailer_password: La_terre_10
+    mailer_auth_mode: login
+    mailer_port: 587
+    mailer_encryption: tls
+
+    secret: dd78f52e0bab1047627d6ef70475fa0017f00fb0

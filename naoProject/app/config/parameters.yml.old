@@ -1,0 +1,15 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: localhost
+    database_port: 3306
+    database_name: p5db
+    database_user: p5admin
+    database_password: p5nao
+    mailer_transport: gmail
+    mailer_host: stmp.gmail.com
+    mailer_user: belou.atlantis
+    mailer_password: null
+    mailer_auth_mode: login
+    mailer_encryption: ssl
+    mailer_port: 465
+    secret: 4f1e813d726285b8dab87721ecbd98eef8509571
