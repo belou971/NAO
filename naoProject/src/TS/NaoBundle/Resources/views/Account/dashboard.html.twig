@@ -89,42 +89,6 @@
                         </table>
                 	</div>
                 {% endif %}
-	            {% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
-					<div class="table_layout">
-						<table class="table table-striped">
-							<div class="table_head_layout pending_obs">Observations en attente</div>
-							<thead>
-								<tr>
-									<th>Titre de l'observation</th>
-									<th>Espèce</th>
-									<th>Date de publication</th>
-									<th>#</th>
-								</tr>
-							</thead>
-							<tbody>
-	                        	{{ render(controller("TSNaoBundle:Observation:userPendingObservations", {'user_id':app.user.id})) }}
-							</tbody>
-						</table>
-					</div>
-				{% endif %}
-				{% if 'ROLE_BIRD_FANCIER' in app.user.roles %}
-					<div class="table_layout">
-						<table class="table table-striped">
-							<div class="table_head_layout refused_obs">Observations rejetés</div>
-							<thead>
-								<tr>
-									<th>Titre de l'observation</th>
-									<th>Espèce</th>
-									<th>Date de publication</th>
-									<th>#</th>
-								</tr>
-							</thead>
-							<tbody>
-	                        	{{ render(controller("TSNaoBundle:Observation:userRejectedObservations", {'user_id':app.user.id})) }}
-							</tbody>
-						</table>
-					</div>
-				{% endif %}
 			</div>
 			<div class="form_layout mt-5">
 				<div class="form_head">
